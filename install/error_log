@@ -1,0 +1,24 @@
+[27-Jan-2025 18:45:03 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect database name 'salondb	' in /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php:378
+Stack trace:
+#0 /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php(378): mysqli_select_db()
+#1 /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/index.php(37): require('/home/hg260vn60...')
+#2 {main}
+  thrown in /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php on line 378
+[27-Jan-2025 18:45:41 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect database name 'salondb	' in /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php:378
+Stack trace:
+#0 /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php(378): mysqli_select_db()
+#1 /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/index.php(37): require('/home/hg260vn60...')
+#2 {main}
+  thrown in /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php on line 378
+[27-Jan-2025 18:47:08 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Incorrect database name 'salondb	' in /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php:378
+Stack trace:
+#0 /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php(378): mysqli_select_db()
+#1 /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/index.php(37): require('/home/hg260vn60...')
+#2 {main}
+  thrown in /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php on line 378
+[27-Jan-2025 18:49:06 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'salondb'@'localhost' (using password: YES) in /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php:373
+Stack trace:
+#0 /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php(373): mysqli_connect()
+#1 /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/index.php(37): require('/home/hg260vn60...')
+#2 {main}
+  thrown in /home/hg260vn60h0l/public_html/salon.vermont-technology.com/install/install.php on line 373
