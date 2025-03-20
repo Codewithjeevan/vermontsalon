@@ -1,0 +1,29 @@
+html
+{
+  box-sizing: border-box;
+  overflow: -moz-scrollbars-vertical;
+  overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after
+{
+  box-sizing: inherit;
+}
+
+body
+{
+  margin:0;
+  background: #fafafa;
+}
+.topbar-wrapper .link { display: none !important; }
+.topbar{
+  display: none;
+}
+.version-stamp{
+  display: none !important;
+}
+.main .link{
+  display: none;
+}
