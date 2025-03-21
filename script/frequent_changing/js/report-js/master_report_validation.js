@@ -34,11 +34,11 @@ $(function () {
     $(document).on('click', '.employeeSaleReport', function(){
         let error = false;
         let user_id = $('#user_id').val();
-        if (user_id == '') {
-            error = true;
-            $('#user_id_err_msg').text(The_Employee_field_is_required);
-            $('.user_id_err_msg_contnr').show(200).delay(6000).hide(200, function () {});
-        }
+        // if (user_id == '') {
+        //     error = true;
+        //     $('#user_id_err_msg').text(The_Employee_field_is_required);
+        //     $('.user_id_err_msg_contnr').show(200).delay(6000).hide(200, function () {});
+        // }
         if(error == true){
             return false;
         }

@@ -2454,9 +2454,9 @@ class Common_model extends CI_Model {
         $role = $this->session->userdata('role');
         $this->db->select('id,full_name,phone');
         $this->db->from('tbl_users');
-        if($role != '1'){
-            $this->db->where('id', $user_id);
-        }
+        // if($role != '1'){
+            // $this->db->where('id', $user_id);
+        // }
         $this->db->where('company_id', $company_id);
 		$this->db->where('del_status','Live');
 		$this->db->order_by('full_name','ASC');

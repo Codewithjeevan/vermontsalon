@@ -43,7 +43,8 @@ if ($this->session->flashdata('exception')) {
                     <tbody>
                         <?php
                         $i = 1;
-                        foreach ($roles as $role) {  ?>
+                        foreach ($roles as $role) { ?>
+                        <?php if($role->id != '1'): ?>
                             <tr>
                                 <td class="op_center"><?php echo $i++; ?></td>
                                 <td><?php echo escape_output($role->role_name); ?></td>
@@ -66,6 +67,7 @@ if ($this->session->flashdata('exception')) {
                                 </td>
                             </tr>
                         <?php
+                        endif;
                         }
                         ?>
                     </tbody>

@@ -44,7 +44,12 @@ class Authentication extends Cl_Controller {
         $this->load->model('Attendance_model');
         $this->Common_model->setDefaultTimezone();
         $this->load->library('form_validation');
-        // print_r('dddef'); die;
+        $userrole = @$this->Authentication_model->getProfileInformation()->role;
+        if ($userrole != @$this->session->userdata('role')) {
+            $this->session->sess_destroy();
+            $this->session->set_flashdata('error', 'Your role has been changed, please login again.');
+            redirect('Authentication/index');
+        }
     }
 
 
