@@ -3073,15 +3073,15 @@ if (!function_exists('getOutletsForReport')) {
         $user_id = $CI->session->userdata('user_id');
         $company_id = $CI->session->userdata('company_id');
         $outlets = $CI->session->userdata('session_outlets');
-        if($company_id == 1 && $user_id == 1){
+        // if($company_id == 1 && $user_id == 1){
             $result = $CI->db->query("SELECT id,outlet_name FROM tbl_outlets WHERE FIND_IN_SET(`company_id`, '$company_id') AND del_status='Live'")->result();
-        }else{
-            if($role=="1"){
-                $result = $CI->db->query("SELECT id,outlet_name FROM tbl_outlets WHERE FIND_IN_SET(`company_id`, '$company_id') AND del_status='Live'")->result();
-            }else{
-                $result = $CI->db->query("SELECT id,outlet_name FROM tbl_outlets WHERE FIND_IN_SET(`id`, '$outlets') AND del_status='Live'")->result();
-            }
-        }
+        // }else{
+        //     if($role=="1"){
+        //         $result = $CI->db->query("SELECT id,outlet_name FROM tbl_outlets WHERE FIND_IN_SET(`company_id`, '$company_id') AND del_status='Live'")->result();
+        //     }else{
+        //         $result = $CI->db->query("SELECT id,outlet_name FROM tbl_outlets WHERE FIND_IN_SET(`id`, '$outlets') AND del_status='Live'")->result();
+        //     }
+        // }
         return $result;
     }
 }
@@ -3094,6 +3094,22 @@ if (!function_exists('getOutletsForReport')) {
  */
 if (!function_exists('getOutletName')) {
     function getOutletName($outlet_id) {
+        $CI = & get_instance();
+        $information = $CI->db->query("SELECT outlet_name FROM tbl_outlets where `id`='$outlet_id'")->row();
+        if($information){
+            return $information->outlet_name;
+        }else{
+            return "";
+        }
+    }
+}
+/**
+ * getOutletName
+ * @param int
+ * @return string
+ */
+if (!function_exists('getECommerceSetting')) {
+    function getECommerceSetting($outlet_id) {
         $CI = & get_instance();
         $information = $CI->db->query("SELECT outlet_name FROM tbl_outlets where `id`='$outlet_id'")->row();
         if($information){

@@ -87,9 +87,9 @@
                                 <label><?php echo lang('designation'); ?><span class="required_star"> *</span></label>
                                 <select name="designation" class="form-control select2">
                                     <option><?php echo lang('select'); ?></option>
-                                    <?php foreach($roles as $role){?>
+                                    <?php foreach($roles as $role){ if($role->id != 1){?>
                                     <option value="<?php echo escape_output($role->id) ?>" <?php echo set_select('designation', $role->id); ?>><?php echo escape_output($role->role_name) ?></option>
-                                    <?php } ?>
+                                    <?php } } ?>
                                 </select>
                             </div>
                             <?php if (form_error('designation')) { ?>

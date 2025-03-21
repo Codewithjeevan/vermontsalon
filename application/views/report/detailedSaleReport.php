@@ -216,12 +216,12 @@
             <div class="col-sm-12 col-md-6 mb-2">
                 <div class="form-group">
                     <select  class="form-control select2 op_width_100_p" id="user_id" name="user_id">
-                        <?php
+                        <!-- <php
                             $role = $this->session->userdata('role');
                             if($role == '1'){
-                        ?>
-                        <option value=""><?php echo lang('select_employee') ?></option>
-                        <?php } ?>
+                        ?> -->
+                        <option value=""><?php echo lang('all') ?></option>
+                        <!-- <php } ?> -->
                         <?php
                         foreach ($users as $value) {
                             ?>

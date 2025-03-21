@@ -219,13 +219,14 @@
             <div class="col-sm-12 col-md-6 mb-2">
                 <div class="form-group">
                     <select  class="form-control select2 op_width_100_p" id="user_id" name="user_id">
-                        <?php
+                        <!-- <php
                             $role = $this->session->userdata('role');
                             if($role == '1'){
-                        ?>
-                        <option value=""><?php echo lang('select_employee') ?></option>
-                        <?php } ?>
+                        ?> -->
+                        <option value=""><?php echo lang('all') ?></option>
+                        <!-- <php } ?> -->
                         <?php
+                        
                         foreach ($users as $value) {
                             ?>
                             <option value="<?php echo escape_output($value->id) ?>" <?php echo set_select('user_id', $value->id); ?>><?php echo escape_output($value->full_name) ?></option>
@@ -251,12 +252,12 @@
             <div class="col-sm-12 col-md-6 mb-2">
                 <div class="form-group">
                     <select  class="form-control select2 ir_w_100" id="outlet_id" name="outlet_id">
-                        <?php
+                        <!-- <php
                             $role = $this->session->userdata('role');
                             if($role == '1'){
-                        ?>
+                        ?> -->
                         <option value=""><?php echo lang('select_outlet') ?></option>
-                        <?php } ?>
+                        <!-- <php } ?> -->
                         <?php
                         $outlets = getOutletsForReport();
                         foreach ($outlets as $value):
