@@ -382,6 +382,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <iconify-icon icon="solar:monitor-broken" width="22"></iconify-icon>
                             </a>
                         </li>
+                        <li>
+                            <a tabindex="-1" href="<?php echo base_url()?>Booking/booking" class="header_menu_icon offline_prevent" target="_blank" data-tippy-content="<?php echo lang('booking');?>">
+                            <iconify-icon icon="solar:bookmark-broken" width="22"></iconify-icon>
+                            </a>
+                        </li>
                     </ul>
                     <ul class="icon__menu">
                         <li>
@@ -2914,6 +2919,12 @@ $company_short_name =  $getCompanyInfo->short_name;
                     <li data-access="employee_sale_report-249" class="menu_assign_class " module-is-hide="Employee Sale Report-YES">
                         <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/employeeSaleReport'?>">
                             <?php echo lang('employee_sale_report'); ?>
+                            <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
+                        </a>
+                    </li>
+                    <li data-access="commission_report-249" class="menu_assign_class " module-is-hide="Commission Report-YES">
+                        <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/commissionReport'?>">
+                            <?php echo lang('commission')." ".lang('report'); ?>
                             <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
                         </a>
                     </li>
