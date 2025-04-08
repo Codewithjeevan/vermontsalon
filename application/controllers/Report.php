@@ -62,6 +62,8 @@ class Report extends Cl_Controller {
             $function = "service_sale_report";
         }elseif($segment_1=="Report" && $segment_2 == "employeeSaleReport"){
             $function = "employee_sale_report";
+        }elseif($segment_1=="Report" && $segment_2 == "commissionReport"){
+            $function = "employee_sale_report";
         }elseif($segment_1=="Report" && $segment_2 == "productSaleReport"){
             $function = "product_sale_report";
         }elseif($segment_1=="Report" && $segment_2 == "detailedSaleReport"){
@@ -359,6 +361,42 @@ class Report extends Cl_Controller {
         // pre($data['employeeSaleReport']);
         $data['users'] = $this->Common_model->getAllUsersNameMobileForReportDropdown();
         $data['main_content'] = $this->load->view('report/employeeSaleReport', $data, TRUE);
+        $this->load->view('userHome', $data);
+    }
+
+    /**
+     * employeeSaleReport
+     * @access public
+     * @param no
+     * @return void
+     */
+    public function commissionReport() {
+        $data = array();
+        $outlet_id  = isset($_POST['outlet_id']) && $_POST['outlet_id']?$_POST['outlet_id']:'';
+        $data['outlet_id'] = $outlet_id;
+        $data['product_invoice'] = '';
+        if (htmlspecialcharscustom($this->input->post('submit'))) {
+            $data['report_generate_time'] = generatedOnCurrentDateTime();
+            $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
+            $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
+            $user_id = htmlspecialcharscustom($this->input->post($this->security->xss_clean('user_id')));
+            $product_invoice = htmlspecialcharscustom($this->input->post($this->security->xss_clean('product_invoice')));
+            $data['user_id'] = $user_id;
+            $data['start_date'] = $start_date;
+            $data['end_date'] = $end_date;
+            $data['product_invoice'] = $product_invoice;
+            if($product_invoice == 'Combo_Product_Wise'){
+                $data['employeeSaleReport'] = $this->Report_model->commboWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id, $product_invoice);
+            }else if($product_invoice == 'Invoice_Wise'){
+                $data['employeeSaleReport'] = $this->Report_model->saleWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id, $product_invoice);
+            }else{
+                $data['employeeSaleReport'] = $this->Report_model->productWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id, $product_invoice);
+            }
+            $data['userInfo'] = getUserName($user_id);
+        }
+        // pre($data['employeeSaleReport']);
+        $data['users'] = $this->Common_model->getAllUsersNameMobileForReportDropdown();
+        $data['main_content'] = $this->load->view('report/commissionSaleReport', $data, TRUE);
         $this->load->view('userHome', $data);
     }
 

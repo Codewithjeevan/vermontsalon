@@ -1252,7 +1252,7 @@ class Report_model extends CI_Model {
      */
     public function productWiseEmployeeReport($startMonth = '', $endMonth = '', $outlet_id='', $user_id = '') {
         $company_id = $this->session->userdata('company_id');
-        $this->db->select('s.date_time,s.sale_no,u.commission, c.name as customer_name, c.phone as customer_phone, i.name as item_name, i.code,sd.qty,sd.menu_unit_price,sd.menu_price_with_discount as total_payable, ut.unit_name');
+        $this->db->select('s.date_time,s.sale_no,u.commission,u.full_name as emp_name, c.name as customer_name, c.phone as customer_phone, i.name as item_name, i.code,sd.qty,sd.menu_unit_price,sd.menu_price_with_discount as total_payable, ut.unit_name');
         $this->db->from('tbl_sales_details sd');
         $this->db->join('tbl_sales s', 's.id = sd.sales_id', 'left');
         $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
@@ -1277,7 +1277,7 @@ class Report_model extends CI_Model {
         }
         $this->db->where('sd.delivery_status', 'Cash Received');
         $this->db->where('sd.company_id', $company_id);
-        $this->db->order_by('sd.id', 'ASC');
+        $this->db->order_by('sd.id', 'DESC');
         $query_result = $this->db->get();
         return $query_result->result();
     }
@@ -1292,7 +1292,7 @@ class Report_model extends CI_Model {
      */
     public function commboWiseEmployeeReport($startMonth = '', $endMonth = '', $outlet_id='', $user_id = '') {
         $company_id = $this->session->userdata('company_id');
-        $this->db->select('s.date_time,s.sale_no,u.commission, c.name as customer_name, c.phone as customer_phone, i.name as item_name, i.code,cs.combo_item_qty as qty, sum(cs.combo_item_price * cs.combo_item_qty) as total_payable, cs.combo_item_price as single_price, ut.unit_name');
+        $this->db->select('s.date_time,s.sale_no,u.commission,u.full_name as emp_name, c.name as customer_name, c.phone as customer_phone, i.name as item_name, i.code,cs.combo_item_qty as qty, sum(cs.combo_item_price * cs.combo_item_qty) as total_payable, cs.combo_item_price as single_price, ut.unit_name');
         $this->db->from('tbl_combo_item_sales cs');
         $this->db->join('tbl_sales_details sd', 'sd.id = cs.combo_sale_item_id', 'left');
         $this->db->join('tbl_sales s', 's.id = sd.sales_id', 'left');

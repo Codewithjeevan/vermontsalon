@@ -139,13 +139,14 @@ class User extends Cl_Controller {
                 }
             }
             if ($this->form_validation->run() == TRUE) {
+                
                 $user_info = array();
                 $user_info['full_name'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('full_name')));
                 $user_info['email_address'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('email_address')));
                 $user_info['phone'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('phone')));
                 $user_info['salary'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('salary')));
                 $user_info['photo'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('photo')));
-                if($id != '1'){
+                if($id != '1' && $this->input->post($this->security->xss_clean('designation')) != '' && $this->input->post($this->security->xss_clean('designation')) != "Select"){
                     $user_info['role'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('designation')));
                 }
                 $user_info['commission'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('commission')));
