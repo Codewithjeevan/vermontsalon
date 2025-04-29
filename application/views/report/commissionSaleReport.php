@@ -99,7 +99,7 @@
                                     <th class="text-center"><?php echo lang('subtotal'); ?></th>
                                 <?php }else if($product_invoice == 'Product_Wise'){ ?>
                                     <th><?php echo lang('item'); ?></th>
-                                    <th class="text-center"><?php echo lang('item_price'); ?></th>
+                                    <th class="text-center"><?php echo lang('subtotal'); ?></th>
                                 <?php }else{?>
                                     <th><?php echo lang('items'); ?></th>
                                     <th class="text-center"><?php echo lang('subtotal'); ?></th>
@@ -112,10 +112,12 @@
                             <?php
                             $pGrandTotal = 0;
                             $commissionTotal = 0;
+                            $totalPayable = 0;
                             $commission = 0;
                             if (isset($employeeSaleReport)):
                                 foreach ($employeeSaleReport as $key => $value) {
                                     $key++;
+                                    $totalPayable += $value->total_payable;
                                     if($product_invoice == 'Product_Wise'){
                                         $commission = ($value->total_payable * $value->commission) / 100;
                                     }else if($product_invoice == 'Invoice_Wise'){
@@ -173,8 +175,8 @@
                                 <th></th>
                                 <th></th>
                                 <th></th>
-                                <th></th>
-                                <th></th>
+                                <th class="text-center">Total Sales</th>
+                                <th class="text-center"><?php echo getAmtCustom($totalPayable); ?></th>
                                 <th class="text-center"><?php echo lang('total_commisssion');?></th>
                                 <th><?php echo getAmtCustom($commissionTotal);?></th>
                             </tr>

@@ -499,8 +499,8 @@ class Sale extends Cl_Controller {
             }
         }
         // Get Sale Info
-        $sale_details = $this->Common_model->getDataById(1, "tbl_sales");
-
+        $sale_details = $this->Common_model->getDataById($sales_id, "tbl_sales");
+        
         if($fiscal_printer_status == 'ON'){
             //add variable for fiscal data
             $fiscal_data = '#*3#'.($this->session->userdata('user_id')).'#'.($this->session->userdata('full_name')).'#'.$sale_details->sale_no.'#'.$sale_details->id.'##0#';
@@ -879,7 +879,8 @@ class Sale extends Cl_Controller {
             $i = count($sales);
         }
         foreach ($sales as $value){
-
+            $payements = $this->Sale_model->getPaymentsBySaleId($value->id);
+            $paymentmethod = implode(',', array_column($payements, 'payment_name'));
             $html = '';
             if ($this->session->userdata('role') == '1'||checkAccess(138,'delete')){ 
                 $html .= '<a class="delete btn btn-danger" href="'.base_url().'Sale/deleteSale/'. $this->custom->encrypt_decrypt($value->id, 'encrypt') .'" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="'.lang('delete').'">
@@ -904,7 +905,8 @@ class Sale extends Cl_Controller {
             $sub_array[] = dateFormat($value->date_time);
             $sub_array[] = $value->customer_name;
             $sub_array[] = getAmtCustom($value->total_payable);
-            $sub_array[] = $delivery_html;
+            // $sub_array[] = $delivery_html;
+            $sub_array[] = $paymentmethod;
             $sub_array[] = $value->full_name;
             $sub_array[] = dateFormat($value->added_date);
             $sub_array[] =  '
