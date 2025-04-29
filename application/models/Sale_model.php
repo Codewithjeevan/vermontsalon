@@ -1181,6 +1181,13 @@ class Sale_model extends CI_Model {
     return $data;
   }
 
+  public function getPaymentsBySaleId($sale_id){
+    $this->db->select("sp.*,pm.name as payment_name,pm.id as payment_id");
+    $this->db->from('tbl_sale_payments sp');
+    $this->db->join('tbl_payment_methods pm', 'pm.id = sp.payment_id', 'left');
+    $this->db->where("sp.sale_id", $sale_id);
+    return $this->db->get()->result();
+  }
 
 
   /**
