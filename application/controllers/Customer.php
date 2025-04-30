@@ -270,43 +270,42 @@ class Customer extends Cl_Controller {
                     $totalrows = $objPHPExcel->setActiveSheetIndex(0)->getHighestRow();   //Count Numbe of rows avalable in excel
                     $objWorksheet = $objPHPExcel->setActiveSheetIndex(0);
                     //loop from first data untill last data
-                    if ($totalrows < 54) {
-                        $arrayerror = '';
-                        for ($i = 4; $i <= $totalrows; $i++) {
-                            $name = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(0, $i)->getValue()));
-                            $phone = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(1, $i)->getValue()));
-                            $email = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(2, $i)->getValue()));
-                            $opening_balance = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(3, $i)->getValue()));
-                            $opening_balance_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(4, $i)->getValue()));
-                            $credit_limit = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(5, $i)->getValue()));
-                            $discount = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(6, $i)->getValue()));
-                            $price_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(7, $i)->getValue()));
-                            $address = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue()));
-                            $dob = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(9, $i)->getValue()));
-                            $doa = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue()));
-                            if ($name == '') {
-                                if ($arrayerror == '') {
-                                    $arrayerror.= lang('Row_Number') . " $i " . lang('column_A_required');
-                                } else {
-                                    $arrayerror.= "<br>" . lang('Row_Number') . " $i " . lang('column_A_required');
-                                }
-                            }
-                            if ($phone == '') {
-                                if ($arrayerror == '') {
-                                    $arrayerror.= lang('Row_Number') . " $i " . lang('column_B_required');
-                                } else {
-                                    $arrayerror.= "<br>" . lang('Row_Number') . " $i " . lang('column_B_required');
-                                }
-                            }
-                            if ($email != '' && $this->validateEmail($email)== false) {
-                                if ($arrayerror == '') {
-                                    $arrayerror.= lang('Row_Number') . " $i " . lang('column_C_required');
-                                } else {
-                                    $arrayerror.= "<br>" . lang('Row_Number') . " $i " . lang('column_C_required');
-                                }
-                            }
-                        }
-                        if ($arrayerror == '') {
+                        // $arrayerror = '';
+                        // for ($i = 4; $i <= $totalrows; $i++) {
+                        //     $name = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(0, $i)->getValue()));
+                        //     $phone = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(1, $i)->getValue()));
+                        //     $email = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(2, $i)->getValue()));
+                        //     $opening_balance = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(3, $i)->getValue()));
+                        //     $opening_balance_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(4, $i)->getValue()));
+                        //     $credit_limit = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(5, $i)->getValue()));
+                        //     $discount = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(6, $i)->getValue()));
+                        //     $price_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(7, $i)->getValue()));
+                        //     $address = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue()));
+                        //     $dob = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(9, $i)->getValue()));
+                        //     $doa = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue()));
+                        //     if ($name == '') {
+                        //         if ($arrayerror == '') {
+                        //             $arrayerror.= lang('Row_Number') . " $i " . lang('column_A_required');
+                        //         } else {
+                        //             $arrayerror.= "<br>" . lang('Row_Number') . " $i " . lang('column_A_required');
+                        //         }
+                        //     }
+                        //     if ($phone == '') {
+                        //         if ($arrayerror == '') {
+                        //             $arrayerror.= lang('Row_Number') . " $i " . lang('column_B_required');
+                        //         } else {
+                        //             $arrayerror.= "<br>" . lang('Row_Number') . " $i " . lang('column_B_required');
+                        //         }
+                        //     }
+                        //     if ($email != '' && $this->validateEmail($email)== false) {
+                        //         if ($arrayerror == '') {
+                        //             $arrayerror.= lang('Row_Number') . " $i " . lang('column_C_required');
+                        //         } else {
+                        //             $arrayerror.= "<br>" . lang('Row_Number') . " $i " . lang('column_C_required');
+                        //         }
+                        //     }
+                        // }
+                        // if ($arrayerror == '') {
                             if(!is_null($this->input->post('remove_previous'))){
                                 $this->db->query("DELETE FROM tbl_customers WHERE name != 'Walk-in Customer'");
                             }
@@ -322,6 +321,16 @@ class Customer extends Cl_Controller {
                                 $address = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue()));
                                 $dob = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(9, $i)->getValue()));
                                 $doa = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue()));
+
+                                if ($name == '') {
+                                    continue;
+                                }
+                                if ($phone == '' || $this->Common_model->getAllCustomData('tbl_customers','id','asc','phone',$phone)) {
+                                    continue;
+                                }
+                                if ($email != '' && $this->validateEmail($email)== false) {
+                                    continue;
+                                }
                                 $customer_info = array();
                                 $customer_info['name'] = $name;
                                 $customer_info['phone'] = $phone;
@@ -332,8 +341,8 @@ class Customer extends Cl_Controller {
                                 $customer_info['discount'] = $discount;
                                 $customer_info['price_type'] = $price_type;
                                 $customer_info['address'] = $address;
-                                $customer_info['date_of_birth'] = excelDateConverter($dob);
-                                $customer_info['date_of_anniversary'] = excelDateConverter($doa);
+                                $customer_info['date_of_birth'] = $dob ? excelDateConverter($dob) : NULL;
+                                $customer_info['date_of_anniversary'] = $doa ? excelDateConverter($doa) : NULL;
                                 $customer_info['added_date'] = date('Y-m-d H:i:s');
                                 $customer_info['user_id'] = $this->session->userdata('user_id');
                                 $customer_info['company_id'] = $this->session->userdata('company_id');
@@ -342,14 +351,10 @@ class Customer extends Cl_Controller {
                             unlink(FCPATH . 'assets/upload-sample/excel/' . $file_name); //File Deleted After uploading in database .
                             $this->session->set_flashdata('exception', lang('Imported_successfully'));
                             redirect('Customer/customers');
-                        } else {
-                            unlink(FCPATH . 'assets/upload-sample/excel/' . $file_name); //File Deleted After uploading in database .
-                            $this->session->set_flashdata('exception_err', lang('Required_Data_Missing') . " : $arrayerror");
-                        }
-                    } else {
-                        unlink(FCPATH . 'assets/upload-sample/excel/' . $file_name); //File Deleted After uploading in database .
-                        $this->session->set_flashdata('exception_err', lang('Entry_is_more_than_50'));
-                    }
+                    // } else {
+                    //     unlink(FCPATH . 'assets/upload-sample/excel/' . $file_name); //File Deleted After uploading in database .
+                    //     $this->session->set_flashdata('exception_err', lang('Entry_is_more_than_50'));
+                    // }
                 } else {
                     $error = $this->upload->display_errors();
                     $this->session->set_flashdata('exception_err', "$error");
