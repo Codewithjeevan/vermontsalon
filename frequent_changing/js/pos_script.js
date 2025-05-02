@@ -2321,12 +2321,15 @@ $(function () {
                         }
                     });
                 }
-            }else if(item_type == 'Service_Product'){
+            }else if(direct_cart == 'Yes'){
+                generalItemdirectAddToCart(item_id, item_type, default_qty);
+            }
+            else if(item_type == 'Service_Product'){
                 callAddToCartModal(item_id, item_type, default_qty)
             }else if(item_type == 'Combo_Product'){
                 callAddToCartModal(item_id, item_type, default_qty)
             }else{
-                generalItemdirectAddToCart(item_id, item_type, default_qty)
+                generalItemdirectAddToCart(item_id, item_type, default_qty);
             }
         } else {
             if(item_type != 'Service_Product' && item_type != 'Combo_Product'){
@@ -2382,7 +2385,10 @@ $(function () {
                         };
                     };
                 }
-            }else if(item_type == 'Service_Product'){
+            }else if(direct_cart == 'Yes'){
+                generalItemdirectAddToCart(item_id, item_type, default_qty);
+            }
+            else if(item_type == 'Service_Product'){
                 callAddToCartModal(item_id, item_type, default_qty)
             }else if(item_type == 'Combo_Product'){
                 callAddToCartModal(item_id, item_type, default_qty)

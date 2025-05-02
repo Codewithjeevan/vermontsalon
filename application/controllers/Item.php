@@ -779,10 +779,13 @@ class Item extends Cl_Controller {
         $category_id = htmlspecialcharscustom($this->input->post('category_id'));
         $supplier_id = htmlspecialcharscustom($this->input->post('supplier_id'));
         $products = $this->Master_model->make_datatables($company_id,$category_id,$supplier_id);
-        $data = array();
-        if ($products && !empty($products)) {
-            $i = count($products);
-        }
+        $all_data = $this->Master_model->get_all_data($company_id,$category_id,$supplier_id);
+        $start  = (int) $this->input->post('start');    // zero-based offset
+        $i      = $start + 1;                           // first serial number on this page
+        // $data = array();
+        // if ($products && !empty($products)) {
+        //     $i = $all_data;
+        // }
         $row_count = 0;
         foreach ($products as $value){
             if($value->del_status=="Live"):
@@ -825,7 +828,7 @@ class Item extends Cl_Controller {
                         <span class="checkmark"></span>
                     </label>
                 </td>';
-            $sub_array[] = $i--;
+            $sub_array[] = $i++;
             if(isset($variations) && $variations){
                 $var_htl = '<tr><th>'.lang('name').'('.lang('code').')</th><th>'.lang('sale_price').'</th><th>'.lang('purchase_price').'</th></tr>';
                 foreach ($variations as $variation){
@@ -850,7 +853,8 @@ class Item extends Cl_Controller {
             endif;
         }
         $output = array(
-            "recordsTotal" => $this->Master_model->get_all_data($company_id,$category_id,$supplier_id),
+            "draw"            => intval($this->input->post('draw')),
+            "recordsTotal" => $all_data,
             "recordsFiltered" => $this->Master_model->get_filtered_data($company_id,$category_id,$supplier_id),
             "data" => $data
         );
@@ -952,159 +956,159 @@ class Item extends Cl_Controller {
                         $objWorksheet = $objPHPExcel->setActiveSheetIndex(0);
                         // Get Company Vat
                         $company_vat = get_company_vat();
-                        if ($totalrows >= 4 && $totalrows < 54) {
-                            $arrayerror = '';
-                            for ($i = 4; $i <= $totalrows; $i++) {
-                                $type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(0, $i)->getValue() ?? '')); //Excel Column 0//Required
-                                $name = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(1, $i)->getValue() ?? '')); //Excel Column 1//Required
-                                $sale_price = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(2, $i)->getValue() ?? '')); //Excel Column 2//Required
-                                $whole_sale_price = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(3, $i)->getValue() ?? '')); //Excel Column 3
-                                $purchase_price = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(4, $i)->getValue() ?? '')); //Excel Column 4
-                                $category_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(5, $i)->getValue() ?? '')); //Excel Column 5
-                                $code = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(6, $i)->getValue() ?? '')); //Excel Column 6
-                                $supplier_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(7, $i)->getValue() ?? '')); //Excel Column 7
-                                $unit_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue() ?? '')); //Excel Column 8//Required
-                                $purchase_unit_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(9, $i)->getValue() ?? '')); //Excel Column 9//Required if Unit type = Double_Unit
-                                $sale_unit_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue() ?? '')); //Excel Column 10//Required if Unit type = Single_Unit
-                                $conversion_rate = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(11, $i)->getValue() ?? '')); //Excel Column 11//Required if Unit type = Double_Unit
-                                $warranty = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(12, $i)->getValue() ?? '')); //Excel Column 12
-                                $warranty_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(13, $i)->getValue() ?? '')); //Excel Column 13
-                                $guarantee = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(14, $i)->getValue() ?? '')); //Excel Column 14
-                                $guarantee_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(15, $i)->getValue() ?? '')); //Excel Column 15
-                                $brand_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(16, $i)->getValue() ?? '')); //Excel Column 16
-                                $outlets = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(17, $i)->getValue() ?? '')); //Excel Column 17
-                                $outlet_stock_value = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(18, $i)->getValue() ?? '')); //Excel Column 18
-                                $alert_quantity = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(19, $i)->getValue() ?? '')); //Excel Column 21
-                                $description = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(20, $i)->getValue() ?? '')); //Excel Column 20
-                                $image = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(21, $i)->getValue() ?? '')); //Excel Column 21
-                                $vat_name = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(22, $i)->getValue() ?? '')); //Excel Column 22
-                                $vat_percent = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(23, $i)->getValue() ?? '')); //Excel Column 23  
+                        // dd($totalrows);
+                        // if ($totalrows >= 4 && $totalrows < 54) {
+                            // $arrayerror = '';
+                            // for ($i = 4; $i <= $totalrows; $i++) {
+                            //     $type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(0, $i)->getValue() ?? '')); //Excel Column 0//Required
+                            //     $name = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(1, $i)->getValue() ?? '')); //Excel Column 1//Required
+                            //     $sale_price = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(2, $i)->getValue() ?? '')); //Excel Column 2//Required
+                            //     $whole_sale_price = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(3, $i)->getValue() ?? '')); //Excel Column 3
+                            //     $purchase_price = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(4, $i)->getValue() ?? '')); //Excel Column 4
+                            //     $category_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(5, $i)->getValue() ?? '')); //Excel Column 5
+                            //     $code = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(6, $i)->getValue() ?? '')); //Excel Column 6
+                            //     $supplier_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(7, $i)->getValue() ?? '')); //Excel Column 7
+                            //     $unit_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue() ?? '')); //Excel Column 8//Required
+                            //     $purchase_unit_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(9, $i)->getValue() ?? '')); //Excel Column 9//Required if Unit type = Double_Unit
+                            //     $sale_unit_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue() ?? '')); //Excel Column 10//Required if Unit type = Single_Unit
+                            //     $conversion_rate = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(11, $i)->getValue() ?? '')); //Excel Column 11//Required if Unit type = Double_Unit
+                            //     $warranty = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(12, $i)->getValue() ?? '')); //Excel Column 12
+                            //     $warranty_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(13, $i)->getValue() ?? '')); //Excel Column 13
+                            //     $guarantee = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(14, $i)->getValue() ?? '')); //Excel Column 14
+                            //     $guarantee_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(15, $i)->getValue() ?? '')); //Excel Column 15
+                            //     $brand_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(16, $i)->getValue() ?? '')); //Excel Column 16
+                            //     $outlets = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(17, $i)->getValue() ?? '')); //Excel Column 17
+                            //     $outlet_stock_value = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(18, $i)->getValue() ?? '')); //Excel Column 18
+                            //     $alert_quantity = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(19, $i)->getValue() ?? '')); //Excel Column 21
+                            //     $description = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(20, $i)->getValue() ?? '')); //Excel Column 20
+                            //     $image = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(21, $i)->getValue() ?? '')); //Excel Column 21
+                            //     $vat_name = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(22, $i)->getValue() ?? '')); //Excel Column 22
+                            //     $vat_percent = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(23, $i)->getValue() ?? '')); //Excel Column 23  
 
-                                if ($type == '') {
-                                    if ($arrayerror == '') {
-                                        $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_A_required');
-                                    } else {
-                                        $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_A_required');
-                                    }
-                                }
-                                if ($name == '') {
-                                    if ($arrayerror == '') {
-                                        $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_B_required');
-                                    } else {
-                                        $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_B_required');
-                                    }
-                                }
+                            //     if ($type == '') {
+                            //         if ($arrayerror == '') {
+                            //             $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_A_required');
+                            //         } else {
+                            //             $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_A_required');
+                            //         }
+                            //     }
+                            //     if ($name == '') {
+                            //         if ($arrayerror == '') {
+                            //             $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_B_required');
+                            //         } else {
+                            //             $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_B_required');
+                            //         }
+                            //     }
 
-                                if ($sale_price == '' ||  !is_numeric($sale_price)) {
-                                    if ($arrayerror == '') {
-                                        $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_C_required_or_can_not_be_text');
-                                    } else {
-                                        $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_C_required_or_can_not_be_text');
-                                    }
-                                }
-                                $tmp_outlet_name = explode(',',$outlets);
-                                $tmp_outlet_stock_value = explode(',',$outlet_stock_value);
-                                $sum_of_stock = 0;
-                                for($x = 0; $x < count($tmp_outlet_stock_value); $x++){
-                                    $sum_of_stock += (int)$tmp_outlet_stock_value[$x] ;
-                                }
-                                if ($outlets || $outlet_stock_value) {
-                                    if(sizeof($tmp_outlet_name) != sizeof($tmp_outlet_stock_value)){                                        
-                                        if ($arrayerror == '') {
-                                            $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('R_and_S_does_not_match');
-                                        } else {
-                                            $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('R_and_S_does_not_match');
-                                        }
-                                    }
+                            //     if ($sale_price == '' ||  !is_numeric($sale_price)) {
+                            //         if ($arrayerror == '') {
+                            //             $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_C_required_or_can_not_be_text');
+                            //         } else {
+                            //             $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_C_required_or_can_not_be_text');
+                            //         }
+                            //     }
+                            //     $tmp_outlet_name = explode(',',$outlets);
+                            //     $tmp_outlet_stock_value = explode(',',$outlet_stock_value);
+                            //     $sum_of_stock = 0;
+                            //     for($x = 0; $x < count($tmp_outlet_stock_value); $x++){
+                            //         $sum_of_stock += (int)$tmp_outlet_stock_value[$x] ;
+                            //     }
+                            //     if ($outlets || $outlet_stock_value) {
+                            //         if(sizeof($tmp_outlet_name) != sizeof($tmp_outlet_stock_value)){                                        
+                            //             if ($arrayerror == '') {
+                            //                 $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('R_and_S_does_not_match');
+                            //             } else {
+                            //                 $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('R_and_S_does_not_match');
+                            //             }
+                            //         }
                                     
-                                }
-                                $status = checkItemUnique($code);
-                                if($status=="Yes"){
-                                    if ($arrayerror == '') {
-                                        $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_J_item_code_already_exist');
-                                    } else {
-                                        $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_J_item_code_already_exist');
-                                    }
-                                }
-                                if ($unit_type == '') {
-                                    if ($arrayerror == '') {
-                                        $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_I_required');
-                                    } else {
-                                        $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_I_required');
-                                    }
-                                }
-                                // For Single Unit Validation
-                                if ($unit_type == 'Single_Unit') {
-                                    if ($sale_unit_id == '') {
-                                        if ($arrayerror == '') {
-                                            $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_K_required');
-                                        } else {
-                                            $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_K_required');
-                                        }
-                                    }
-                                // For Double Unit Validaton
-                                }else if($unit_type == 'Double_Unit'){
-                                    if ($purchase_unit_id == '') {
-                                        if ($arrayerror == '') {
-                                            $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_J_required');
-                                        } else {
-                                            $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_J_required');
-                                        }
-                                    }
-                                    if ($sale_unit_id == '') {
-                                        if ($arrayerror == '') {
-                                            $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_K_required');
-                                        } else {
-                                            $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_K_required');
-                                        }
-                                    }
-                                    if ($conversion_rate == ''  ||  !is_numeric($conversion_rate)) {
-                                        if ($arrayerror == '') {
-                                            $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_L_required_or_can_not_be_text');
-                                        } else {
-                                            $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_L_required_or_can_not_be_text');
-                                        }
-                                    }
-                                }else{
-                                    if ($arrayerror == '') {
-                                        $arrayerror.= lang('Something_went_wrong_about_single_unit_or_double_unit');
-                                    } 
-                                }
-                                if ($alert_quantity != '' && !is_numeric($alert_quantity)) {
-                                    if ($arrayerror == '') {
-                                        $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_T_required_or_can_not_be_text');
-                                    } else {
-                                        $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_T_required_or_can_not_be_text');
-                                    }
-                                }
-                                if($vat_name != 'None'){
-                                    $val_organize = str_replace(",",":",$vat_name);
-                                    $vat_match = strcmp($val_organize . ':', $company_vat);
-                                    if($vat_match != 0){
-                                        if ($arrayerror == '') {
-                                            $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_W_doesnt_math_with_the_system');
-                                        } else {
-                                            $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_W_doesnt_math_with_the_system');
-                                        }
-                                    }
-                                    $tmp_vat_name = explode(',',$vat_name);
-                                    $tmp_vat_percent = explode(',',$vat_percent);
-                                    if ($vat_name || $tmp_vat_percent) {
-                                        if(sizeof($tmp_vat_name) != sizeof($tmp_vat_percent)){
-                                            if ($arrayerror == '') {
-                                                $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('W_and_Y_does_not_match');
-                                            } else {
-                                                $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('W_and_Y_does_not_match');
-                                            }
-                                        } 
-                                    }
-                                }
+                            //     }
+                            //     $status = checkItemUnique($code);
+                            //     if($status=="Yes"){
+                            //         if ($arrayerror == '') {
+                            //             $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_J_item_code_already_exist');
+                            //         } else {
+                            //             $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_J_item_code_already_exist');
+                            //         }
+                            //     }
+                            //     if ($unit_type == '') {
+                            //         if ($arrayerror == '') {
+                            //             $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_I_required');
+                            //         } else {
+                            //             $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_I_required');
+                            //         }
+                            //     }
+                            //     // For Single Unit Validation
+                            //     if ($unit_type == 'Single_Unit') {
+                            //         if ($sale_unit_id == '') {
+                            //             if ($arrayerror == '') {
+                            //                 $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_K_required');
+                            //             } else {
+                            //                 $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_K_required');
+                            //             }
+                            //         }
+                            //     // For Double Unit Validaton
+                            //     }else if($unit_type == 'Double_Unit'){
+                            //         if ($purchase_unit_id == '') {
+                            //             if ($arrayerror == '') {
+                            //                 $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_J_required');
+                            //             } else {
+                            //                 $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_J_required');
+                            //             }
+                            //         }
+                            //         if ($sale_unit_id == '') {
+                            //             if ($arrayerror == '') {
+                            //                 $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_K_required');
+                            //             } else {
+                            //                 $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_K_required');
+                            //             }
+                            //         }
+                            //         if ($conversion_rate == ''  ||  !is_numeric($conversion_rate)) {
+                            //             if ($arrayerror == '') {
+                            //                 $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_L_required_or_can_not_be_text');
+                            //             } else {
+                            //                 $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_L_required_or_can_not_be_text');
+                            //             }
+                            //         }
+                            //     }else{
+                            //         if ($arrayerror == '') {
+                            //             $arrayerror.= lang('Something_went_wrong_about_single_unit_or_double_unit');
+                            //         } 
+                            //     }
+                            //     if ($alert_quantity != '' && !is_numeric($alert_quantity)) {
+                            //         if ($arrayerror == '') {
+                            //             $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_T_required_or_can_not_be_text');
+                            //         } else {
+                            //             $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_T_required_or_can_not_be_text');
+                            //         }
+                            //     }
+                            //     if($vat_name != 'None'){
+                            //         $val_organize = str_replace(",",":",$vat_name);
+                            //         $vat_match = strcmp($val_organize . ':', $company_vat);
+                            //         if($vat_match != 0){
+                            //             if ($arrayerror == '') {
+                            //                 $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_W_doesnt_math_with_the_system');
+                            //             } else {
+                            //                 $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('column_W_doesnt_math_with_the_system');
+                            //             }
+                            //         }
+                            //         $tmp_vat_name = explode(',',$vat_name);
+                            //         $tmp_vat_percent = explode(',',$vat_percent);
+                            //         if ($vat_name || $tmp_vat_percent) {
+                            //             if(sizeof($tmp_vat_name) != sizeof($tmp_vat_percent)){
+                            //                 if ($arrayerror == '') {
+                            //                     $arrayerror.= lang('Row_Number') . ' ' . "$i" . ' ' . lang('W_and_Y_does_not_match');
+                            //                 } else {
+                            //                     $arrayerror.= "<br>" . lang('Row_Number') . ' ' . "$i" . ' ' . lang('W_and_Y_does_not_match');
+                            //                 }
+                            //             } 
+                            //         }
+                            //     }
                                 
-                            }
-                            if ($arrayerror == '') {
-                                if(!is_null($this->input->post('remove_previous'))){
-                                    $this->db->query("TRUNCATE table `tbl_items`");
-                                }
+                            // }
+
+                            // dd($arrayerror);
+                            // if ($arrayerror == '') {
                                 $company = getCompanyInfo();
                                 $outlet_taxes = json_decode($company->tax_setting);
                                 $company_id = $this->session->userdata('company_id');
@@ -1121,6 +1125,17 @@ class Item extends Cl_Controller {
                                     $supplier_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(7, $i)->getValue() ?? '')); //Excel Column 7
                                     $supplier_id = $this->get_supplier_id($supplier_id);
                                     $unit_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue() ?? '')); //Excel Column 8//Required
+                                    if ($type == '') {
+                                       continue;
+                                    }
+                                    if ($name == '' || $this->Common_model->getAllCustomData('tbl_items','id','asc','name',$name)) {
+                                        continue;
+                                    }
+                                    if ($sale_price == '') {
+                                        continue;
+                                    }
+
+
                                     if($unit_type == 'Single_Unit'){
                                         $sale_unit_id = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue() ?? '')); //Excel Column 10//Required if Unit type = Single_Unit
                                         $sale_unit_id = isset($sale_unit_id) && $sale_unit_id ? $this->get_unit_id($sale_unit_id) : '';
@@ -1236,14 +1251,14 @@ class Item extends Cl_Controller {
                                 unlink(FCPATH . 'assets/upload-sample/excel/' . $file_name); //File Deleted After uploading in database .
                                 $this->session->set_flashdata('exception', lang('Imported_successfully'));
                                 redirect('Item/items');
-                            } else {
-                                unlink(FCPATH . 'assets/upload-sample/excel/' . $file_name); //File Deleted After uploading in database .
-                                $this->session->set_flashdata('exception_err', lang('Required_Data_Missing') . ' ' . $arrayerror);
-                            }
-                        } else {
-                            unlink(FCPATH . 'assets/upload-sample/excel/' . $file_name); //File Deleted After uploading in database .
-                            $this->session->set_flashdata('exception_err', lang('Entry_is_more_than_50_or_No_entry_found'));
-                        }
+                        //     } else {
+                        //         unlink(FCPATH . 'assets/upload-sample/excel/' . $file_name); //File Deleted After uploading in database .
+                        //         $this->session->set_flashdata('exception_err', lang('Required_Data_Missing') . ' ' . $arrayerror);
+                        //     }
+                        // } else {
+                        //     unlink(FCPATH . 'assets/upload-sample/excel/' . $file_name); //File Deleted After uploading in database .
+                        //     $this->session->set_flashdata('exception_err', lang('Entry_is_more_than_50_or_No_entry_found'));
+                        // }
                     } else {
                         $error = $this->upload->display_errors();
                         $this->session->set_flashdata('exception_err', "$error");

@@ -223,11 +223,10 @@ class Stock_model extends CI_Model {
         $company_id = $this->session->userdata('company_id');
         $where = '';
         $order_statgus = "i.id DESC";
-
         if ($grocerexp) {
-            $order_statgus = "i.name ASC";  // Use table alias 'i' for consistency
+            // $order_statgus = "i.name ASC";  // Use table alias 'i' for consistency
         }
-
+        
         if ($brand_id != '') {
             $where .= " AND i.brand_id = '$brand_id'";
         }
