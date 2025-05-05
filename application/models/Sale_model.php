@@ -873,12 +873,26 @@ class Sale_model extends CI_Model {
    */
   public function make_query($outlet_id, $delivery_status=""){
     $company_id = $this->session->userdata('company_id');
-    $this->db->select("s.id,s.sale_no,s.sale_date,s.date_time,s.total_payable,s.delivery_status,s.added_date,s.online_yes_no,u.full_name,c.name as customer_name");
+    $this->db->select("
+        s.id,
+        s.sale_no,
+        s.sale_date,
+        s.date_time,
+        s.total_payable,
+        s.delivery_status,
+        s.added_date,
+        s.online_yes_no,
+        u.full_name,
+        c.name as customer_name,
+        GROUP_CONCAT(DISTINCT seller.full_name SEPARATOR ', ') as seller_names
+    ");
     $this->db->from('tbl_sales s');
     $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
     $this->db->join('tbl_users u', 'u.id = s.user_id', 'left');
     $this->db->join('tbl_sale_payments sp', 'sp.sale_id = s.id', 'left');
     $this->db->join('tbl_payment_methods pm', 'pm.id = sp.payment_id', 'left');
+    $this->db->join('tbl_sales_details sd', 'sd.sales_id = s.id', 'left');
+    $this->db->join('tbl_users seller', 'sd.item_seller_id = seller.id', 'left');
     if($_POST["search"]["value"]) {
       $this->db->group_start();
       $this->db->like("sale_no",$_POST["search"]["value"]);

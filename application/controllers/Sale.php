@@ -907,8 +907,9 @@ class Sale extends Cl_Controller {
             $sub_array[] = getAmtCustom($value->total_payable);
             // $sub_array[] = $delivery_html;
             $sub_array[] = $paymentmethod;
+            $sub_array[] = @$value->seller_names ? $value->seller_names : 'N/A';
             $sub_array[] = $value->full_name;
-            $sub_array[] = dateFormat($value->added_date);
+            // $sub_array[] = dateFormat($value->added_date);
             $sub_array[] =  '
             <div class="btn_group_wrap">
                 <a class="btn btn-deep-purple view_challan" href="javascript:void(0)" sale_id="'. $this->custom->encrypt_decrypt($value->id, 'encrypt') .'" data-bs-toggle="tooltip" data-bs-placement="top"
@@ -2457,29 +2458,6 @@ class Sale extends Cl_Controller {
                                 <td>'.$value->seller_name.'</td>
                                 <th class="w-35"></th>
                                 <td>'.$value->total_sales_amount.'</td>
-                            </tr>';
-                        }
-                    }
-
-                    $html_content .= '<tr style="border: 1px solid #000;">
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                </tr>';
-
-                    // Expense Data
-                    $html_content .= '
-                                    <tr>
-                                        <th class="w-35 text-start">'.lang('expense').'</th>
-                                        <th class="w-35 text-start"></th>
-                                        <th class="w-35 text-start">'.lang('total').'</th>
-                                    </tr>';
-                                if(isset($expensesdata)){
-                                    foreach ($expensesdata as $key=>$value){
-                                        $html_content .= '<tr>
-                                <td>'.$value->category_name.'</td>
-                                <th class="w-35"></th>
-                                <td>'.$value->total_amount.'</td>
                             </tr>';
                         }
                     }

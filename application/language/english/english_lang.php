@@ -438,6 +438,7 @@ $lang['user'] = 'User';
 $lang['Paypal'] = 'Paypal';
 $lang['Strip'] = 'Strip';
 $lang['opening_date_time'] = 'Opening Date & Time';
+$lang['mode_of_payment'] = 'Mode of Payment';
 $lang['closing_date_time'] = 'Closing Date & Time';
 $lang['paid_amount'] = 'Paid Amount';
 $lang['opening_balance'] = 'Opneing Balance';

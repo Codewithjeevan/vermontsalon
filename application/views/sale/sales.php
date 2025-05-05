@@ -50,9 +50,10 @@
                             <th class="w-13"><?php echo lang('customer'); ?></th>
                             <th class="w-12 text-center"><?php echo lang('total_payable'); ?></th>
                             <!-- <th class="w-20"><php echo lang('delivery_status'); ?></th> -->
-                            <th class="w-20">Mode of payment</th>
+                            <th class="w-20"><?php echo lang('mode_of_payment') ?></th>
+                            <th class="w-20"><?php echo lang('employee') ?></th>
                             <th class="w-10"><?php echo lang('added_by'); ?></th>
-                            <th class="w-10"><?php echo lang('added_date'); ?></th>
+                            <!-- <th class="w-10"><?php echo lang('added_date'); ?></th> -->
                             <th class="w-5"><?php echo lang('actions'); ?></th>
                         </tr>
                     </thead>
