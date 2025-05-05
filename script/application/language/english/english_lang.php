@@ -1115,6 +1115,7 @@ $lang['profit_8'] = 'Total Expenses';
 $lang['profit_9'] = 'Net Profit';
 $lang['profit_10'] = 'Sell Return';
 $lang['register_details'] = 'Register Details';
+$lang['x_report'] = 'X Report';
 $lang['close_register'] = 'Close Register';
 $lang['value'] = 'Value';
 $lang['10_p_or_10'] = 'eg: 10 or 10%';

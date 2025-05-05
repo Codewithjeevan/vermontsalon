@@ -368,6 +368,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                             </a>
                         </li>
                         <li>
+                            <a tabindex="-1" href="javascript:void(0)" id="x_report" class="header_menu_icon x_report" data-tippy-content="<?php echo lang('x_report');?>">
+                            <iconify-icon icon="solar:document-broken" width="22"></iconify-icon>
+                            </a>
+                        </li>
+                        <li>
                             <a tabindex="-1" href="javascript:void(0)" id="keyboard_short_cut" class="header_menu_icon " data-tippy-content="<?php echo lang('keyboard_short_cut');?>">
                             <iconify-icon icon="solar:keyboard-broken" width="22"></iconify-icon>
                             </a>
@@ -2401,6 +2406,25 @@ $company_short_name =  $getCompanyInfo->short_name;
         </footer>
     </div>
     <!-- Ragister Modal End -->
+
+    <!-- x Report Modal Start -->
+    <div class="cus_pos_modal modal" id="x_report_modal">
+        <h1 class="main_header">
+            <?php echo lang('x_report');?>
+            <a href="javascript:void(0)" class="alertCloseIcon pos__modal__close">
+                <i data-feather="x"></i>
+            </a>
+        </h1>
+
+        <div class="pos__modal__body scrollbar-macosx">
+            <div class="default_inner_body" id="x_report_details_content_o">
+                <input type="hidden" class="datatable_name" data-title="<?php echo lang('register_details'); ?>" data-id_name="datatable">
+                <div class="x_report_content">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- x Report Modal End -->
 
     <!-- Tax Modal Start -->
     <div id="tax_modal" class="modal">
