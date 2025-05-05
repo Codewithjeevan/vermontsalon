@@ -31,6 +31,109 @@ class Sale_model extends CI_Model {
       return $result;
   }
 
+  /**
+   * getSaleList
+   * @access public
+   * @param int
+   * @return object
+   */
+  public function getSaleListByDate($outlet_id,$start_date,$end_date) {
+    $query = "SELECT s.*, u.full_name, c.name as customer_name
+          FROM tbl_sales s
+          INNER JOIN tbl_customers c ON s.customer_id = c.id
+          LEFT JOIN tbl_users u ON s.user_id = u.id
+          WHERE s.sale_date >= ? AND s.sale_date <= ?
+          AND s.del_status = 'Live' 
+          AND s.outlet_id = ?
+          ORDER BY s.id DESC";
+
+      $result = $this->db->query($query, [
+      $start_date . ' 00:00:00',
+      $end_date . ' 23:59:59',
+      $outlet_id
+      ])->result();
+      return $result;
+  }
+
+  /**
+   * getSaleList
+   * @access public
+   * @param int
+   * @return object
+   */
+  public function getCatgReportByDate($outlet_id,$start_date,$end_date) {
+    $query = "
+            SELECT 
+                tic.id AS category_id, 
+                tic.name AS category_name, 
+                SUM(ts.qty) AS total_items_sold, 
+                SUM(ts.qty * ts.menu_unit_price) AS total_sales_amount 
+            FROM 
+                tbl_sales s 
+            JOIN 
+                tbl_sales_details ts ON s.id = ts.sales_id 
+            JOIN 
+                tbl_items ti ON ts.food_menu_id = ti.id 
+            JOIN 
+                tbl_item_categories tic ON ti.category_id = tic.id 
+            WHERE 
+                s.sale_date >= ? 
+                AND
+                s.sale_date <= ?
+                AND
+                s.del_status = 'Live' 
+                AND s.outlet_id = ? 
+            GROUP BY 
+                tic.id, tic.name 
+            ORDER BY 
+                total_sales_amount DESC
+          ";
+
+      $result = $this->db->query($query, [
+      $start_date . ' 00:00:00',
+      $end_date . ' 23:59:59',
+      $outlet_id
+      ])->result();
+      return $result;
+  }
+
+
+  public function getSellerReportByDate($outlet_id,$start_date,$end_date) {
+    $query = "
+            SELECT 
+                seller.id AS seller_id, 
+                seller.full_name AS seller_name, 
+                SUM(ts.qty) AS total_items_sold, 
+                SUM(ts.qty * ts.menu_unit_price) AS total_sales_amount 
+            FROM 
+                tbl_sales s 
+            JOIN 
+                tbl_sales_details ts ON s.id = ts.sales_id 
+            JOIN 
+                tbl_users seller ON seller.id = ts.item_seller_id 
+            WHERE 
+                s.sale_date >= ? 
+                AND
+                s.sale_date <= ?
+                AND
+                s.del_status = 'Live' 
+                AND s.outlet_id = ? 
+            GROUP BY 
+                seller.id, seller.full_name 
+            ORDER BY 
+                total_sales_amount DESC
+          ";
+
+      $result = $this->db->query($query, [
+      $start_date . ' 00:00:00',
+      $end_date . ' 23:59:59',
+      $outlet_id
+      ])->result();
+      return $result;
+  }
+
+
+
    /**
    * getFreeItemBySaleDetailsId
    * @access public

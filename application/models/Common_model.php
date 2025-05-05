@@ -65,6 +65,21 @@ class Common_model extends CI_Model {
         return $result;
     }
 
+    public function getExpensesByDate($outlet_id, $start_date, $end_date){
+        $this->db->select('expitem.name as category_name, exp.category_id, SUM(exp.amount) as total_amount');
+        $this->db->from('tbl_expenses exp');
+        $this->db->join('tbl_expense_items expitem', 'expitem.id = exp.category_id');
+        $this->db->where('exp.outlet_id', $outlet_id);
+        $this->db->where('exp.del_status', 'Live');
+        $this->db->where('exp.date >=', $start_date);
+        $this->db->where('exp.date <=', $end_date);
+        $this->db->group_by('exp.category_id');
+        $this->db->order_by('exp.id', 'Desc');
+        $query_result = $this->db->get();
+        $result = $query_result->result();
+        return $result;
+    }
+
     /**
      * getSaleById
      * @access public

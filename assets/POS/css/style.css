@@ -3877,3 +3877,11 @@ aside#pos__sidebar .pos__menu__list > li:nth-child(29) > a > svg {
 .hold_sale_right_buttom button {
   width: 100%;
 }/*# sourceMappingURL=style.css.map */
+
+.p-0 {
+  padding:0px !important;
+}
+
+.m-0 {
+  margin:0px !important;
+}

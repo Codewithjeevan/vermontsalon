@@ -2343,6 +2343,215 @@ class Sale extends Cl_Controller {
         return $register_detail;
     }
 
+    /**
+     * xReportDetailCalculationToShow
+     * @access public
+     * @param no
+     * @return array
+     */
+    public function xReportDetailCalculationToShow(){
+        $outlet_id = $this->session->userdata('outlet_id');
+        $date = date('Y-m-d');
+        $saledata = $this->Sale_model->getSaleListByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        $catgdata = $this->Sale_model->getCatgReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        $empdata = $this->Sale_model->getSellerReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        $expensesdata = $this->Common_model->getExpensesByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        
+        $expamount = array_sum(array_column($expensesdata, 'total_amount')) ?? 0;
+        $paidamount = 0;
+        $cashamt = 0;
+        $cardamt = 0;
+        $chequeamt = 0;
+        $cancelamt = 0;
+        $html_content = '<table  class="datatable table_register_details top_margin_15"> 
+                <thead>
+                    <tr>
+                        <th class="w-35">'.lang('bill_no').'</th>
+                        <th class="w-35">'.lang('mode').'</th>
+                        <th class="w-35">'.lang('total').'</th>
+                    </tr> 
+                </thead>
+                <tbody>';
+                    if(isset($saledata)){
+                        foreach ($saledata as $key=>$value){
+                            $payements = $this->Sale_model->getPaymentsBySaleId($value->id);
+                            $paymentmethod = implode(',', array_column($payements, 'payment_name'));
+                            foreach($payements as $payment){
+                                if($payment->payment_name == "Card"){
+                                    $cardamt += $payment->amount;
+                                }
+                                if($payment->payment_name == "Cash"){
+                                    $cashamt += $payment->amount;
+                                }
+                            }
+                            $paidamount += $value->paid_amount;
+                            $html_content .= '<tr>
+                                <td>'.$value->sale_no.'</td>
+                                <td>'.$paymentmethod.'</td>
+                                <td>'.$value->paid_amount.'</td>
+                            </tr>';
+                        }
+                    }
+                    $html_content .= '<tr style="border: 1px solid #000;">
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>';
+
+                    // First Total
+                    $html_content .= '
+                    <tr>
+                        <td class="w-35">&nbsp;</td>
+                        <th class="text-bold p-0">'.lang('total').'</th>
+                        <td>'.$paidamount.'</td>
+                    </tr>
+                    <tr>
+                        <td class="w-35">&nbsp;</td>
+                        <th class="text-bold p-0">'.lang('cash_amt').'</th>
+                        <td>'.$cashamt.'</td>
+                    </tr>
+                    <tr>
+                        <td class="w-35">&nbsp;</td>
+                        <th class="text-bold p-0">'.lang('card_amt').'</th>
+                        <td>'.$cardamt.'</td>
+                    </tr>
+                    ';
+                    $html_content .= '<tr style="border: 1px solid #000;">
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>';
+
+                    // Category Data
+                    $html_content .= '
+                                    <tr>
+                                        <th class="w-35 text-start">'.lang('category').'</th>
+                                        <th class="w-35 text-start"></th>
+                                        <th class="w-35 text-start">'.lang('total').'</th>
+                                    </tr> ';
+                                if(isset($catgdata)){
+                                    foreach ($catgdata as $key=>$value){
+                                        $html_content .= '<tr>
+                                <td>'.$value->category_name.'</td>
+                                <th class="w-35"></th>
+                                <td>'.$value->total_sales_amount.'</td>
+                            </tr>';
+                        }
+                    }
+                    $html_content .= '<tr style="border: 1px solid #000;">
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>';
+
+                    // Employe Data
+                    $html_content .= '
+                                    <tr>
+                                        <th class="w-35 text-start">'.lang('employee').'</th>
+                                        <th class="w-35 text-start"></th>
+                                        <th class="w-35 text-start">'.lang('total').'</th>
+                                    </tr>';
+                                if(isset($empdata)){
+                                    foreach ($empdata as $key=>$value){
+                                        $html_content .= '<tr>
+                                <td>'.$value->seller_name.'</td>
+                                <th class="w-35"></th>
+                                <td>'.$value->total_sales_amount.'</td>
+                            </tr>';
+                        }
+                    }
+
+                    $html_content .= '<tr style="border: 1px solid #000;">
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>';
+
+                    // Expense Data
+                    $html_content .= '
+                                    <tr>
+                                        <th class="w-35 text-start">'.lang('expense').'</th>
+                                        <th class="w-35 text-start"></th>
+                                        <th class="w-35 text-start">'.lang('total').'</th>
+                                    </tr>';
+                                if(isset($expensesdata)){
+                                    foreach ($expensesdata as $key=>$value){
+                                        $html_content .= '<tr>
+                                <td>'.$value->category_name.'</td>
+                                <th class="w-35"></th>
+                                <td>'.$value->total_amount.'</td>
+                            </tr>';
+                        }
+                    }
+
+                    $html_content .= '<tr style="border: 1px solid #000;">
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>';
+
+                    // Expense Data
+                    $html_content .= '
+                                    <tr>
+                                        <th class="w-35 text-start">'.lang('expense').'</th>
+                                        <th class="w-35 text-start"></th>
+                                        <th class="w-35 text-start">'.lang('total').'</th>
+                                    </tr>';
+                                if(isset($expensesdata)){
+                                    foreach ($expensesdata as $key=>$value){
+                                        $html_content .= '<tr>
+                                <td>'.$value->category_name.'</td>
+                                <th class="w-35"></th>
+                                <td>'.$value->total_amount.'</td>
+                            </tr>';
+                        }
+                    }
+
+                    $html_content .= '<tr style="border: 1px solid #000;">
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>';
+
+
+                    $html_content .= '
+                    
+                        <tr>
+                            <th class="w-35 text-start">'.lang('payment_type').'</th>
+                            <th class="w-35 text-start"></th>
+                            <th class="w-35 text-start">'.lang('total').'</th>
+                        </tr>
+                    
+                    <tr>
+                        <td class="text-bold p-0">'.lang('cash_amt').'</td>
+                        <td class="w-35">&nbsp;</td>
+                        <td>'.$cashamt.'</td>
+                    </tr>
+                    <tr>
+                        <td class="text-bold p-0">'.lang('card_amt').'</td>
+                        <td class="w-35">&nbsp;</td>
+                        <td>'.$cardamt.'</td>
+                    </tr>
+                    <tr>
+                    <td class="text-bold p-0">'.lang('expenses').'(-)</td>
+                        <td class="w-35">&nbsp;</td>
+                        <td>'.$expamount.'</td>
+                    </tr>
+                    <tr>
+                    <td class="text-bold p-0">'.lang('closing_balance').'</td>
+                        <td class="w-35">&nbsp;</td>
+                        <td>'.$paidamount-$expamount.'</td>
+                    </tr>';
+
+                    $html_content .= '
+                            </table>';
+
+        $register_detail = array(
+            'html_content_for_div' => $html_content,
+        );
+        return $register_detail;
+    }
+
 
     /**
      * getOpeningDetails
@@ -2367,6 +2576,11 @@ class Sale extends Cl_Controller {
      */
     public function registerDetailCalculationToShowAjax(){
         $all_register_info_values = $this->registerDetailCalculationToShow();
+        echo json_encode($all_register_info_values);
+    }
+
+    public function xReportDetailCalculationToShowAjax(){
+        $all_register_info_values = $this->xReportDetailCalculationToShow();
         echo json_encode($all_register_info_values);
     }
 
