@@ -677,7 +677,7 @@ $(function () {
                     if(matchRow == ''){
                         generalItemdirectAddToCart(item.item_id,item.item_type,default_unit);
                         $('.item-modal-top-header').css({
-                            'grid-template-columns':'65% 33%',
+                            'grid-template-columns':'60% 40%',
                         });
                         $('.modal_stock_wrapper p').css({
                             'text-align':'left',

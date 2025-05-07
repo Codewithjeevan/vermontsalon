@@ -1001,7 +1001,21 @@ $company_short_name =  $getCompanyInfo->short_name;
                         <p><b><?php echo lang('current_stock'); ?></b>: <span class="current_stock_t">0</span></p>
                         <input type="hidden" id="current_stock_hidden">
                     </div>
-                    <div id="seller_wrapper">
+                    <div class="d-flex" style="gap: 10px;padding-right: 10px;">
+                    <div id="seller_wrapper" style="width: 47%">
+                        <b class="op_margin_bottom_10 op_display_block"><?php echo lang('room'); ?></b>
+                        <select id="room_id" class="select2">
+                            <option value=""><?php echo lang('select_room'); ?></option>
+                            <?php
+                            foreach ($roomdata as $value):
+                            ?>
+                                <option value="<?php echo escape_output($value->id); ?>"><?php echo escape_output($value->name); ?></option>
+                            <?php
+                            endforeach;
+                            ?>
+                        </select>
+                    </div>
+                    <div id="seller_wrapper" style="flex-grow: 1">
                         <b class="op_margin_bottom_10 op_display_block"><?php echo lang('employee'); ?></b>
                         <select id="seller_id" class="select2">
                             <option value=""><?php echo lang('select_employee'); ?></option>
@@ -1016,6 +1030,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                             ?>
                         </select>
                     </div>
+                        </div>
                 </div>
 
                 <!-- Promotion -->

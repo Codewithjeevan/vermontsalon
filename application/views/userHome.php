@@ -628,6 +628,20 @@
                                             <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
                                         </a>
                                     </li>
+
+                                    <li data-access="add-304" class="menu_assign_class " module-is-hide="Room-YES">
+                                        <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Room/addEditRoom'?>">
+                                            <?php echo lang('add_Room'); ?>
+                                            <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
+                                        </a>
+                                    </li>
+                                    <li data-access="list-304" class="menu_assign_class " module-is-hide="Room-YES">
+                                        <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Room/roomList'?>">
+                                            <?php echo lang('list_Room'); ?>
+                                            <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
+                                        </a>
+                                    </li>
+
                                     <li data-access="add-65" class="menu_assign_class" module-is-hide="Unit-YES">
                                         <a class="child-menu " href="<?php echo base_url(); ?>Unit/addEditUnit">
                                             <?php echo lang('add_unit'); ?>

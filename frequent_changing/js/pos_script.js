@@ -720,7 +720,7 @@ $(function () {
                     if(matchRow == ''){
                         generalItemdirectAddToCart(item.item_id,item.item_type,default_unit);
                         $('.item-modal-top-header').css({
-                            'grid-template-columns':'65% 33%',
+                            'grid-template-columns':'55% 45%',
                         });
                         $('.modal_stock_wrapper p').css({
                             'text-align':'left',
@@ -2188,6 +2188,7 @@ $(function () {
         let is_promo = $(this).attr('is_promo');
         $('#edit_item_modal_header').text(itemName);
         $('#seller_id').val('').trigger('change');
+        $('#room_id').val('').trigger('change');
     
         if(item_type == 'Service_Product'){
             $('.service_disabled').css({
@@ -2238,7 +2239,7 @@ $(function () {
                 'cursor':'pointer',
             });
             $('.item-modal-top-header').css({
-                'grid-template-columns':'65% 33%',
+                'grid-template-columns':'55% 45%',
             });
             $('.modal_stock_wrapper p').css({
                 'text-align':'left',
@@ -2252,6 +2253,7 @@ $(function () {
         }
 
         $('#seller_id').attr('tabindex', '-1');
+        $('#room_id').attr('tabindex', '-1');
         if(cartItemLength == '0'){
             itemAppentToCart(item_id, item_type, is_promo, 1);
         }else{
@@ -3067,6 +3069,7 @@ $(function () {
         let modal_discount = $.trim($('#modal_discount').val() ?? 0);
         let item_total_price = $.trim($('#modal_total_price').text());
         let seller_id = $('#seller_id').val();
+        let room_id = $('#room_id').val();
         let IMEI_Serial = $.trim($('#IMEI_Serial').val());
         let modal_item_note = $.trim($('#modal_item_note').val());
         // Promotion Setting And Getter 
@@ -3204,6 +3207,7 @@ $(function () {
 
         function oldItemAppentToCartIMEISerialExpiry(){
             $(`.imei_serial_expiry_${IMEI_Serial} #item_seller_table${item_id}`).text(seller_id);
+            $(`.imei_serial_expiry_${IMEI_Serial} #item_room_table${item_id}`).text(room_id);
             $(`.imei_serial_expiry_${IMEI_Serial} #item_price_table_${item_id}`).text($.trim(modal_item_price));
             $(`.imei_serial_expiry_${IMEI_Serial} #item_total_price_table_${item_id}`).text($.trim(item_total_price));
             $(`.imei_serial_expiry_${IMEI_Serial} #item_quantity_table_${item_id}`).text($.trim(item_quantity_modal_input));
@@ -3217,6 +3221,7 @@ $(function () {
         }
         function oldItemAppentToCart(){
             $(`#item_seller_table${item_id}`).text(seller_id);
+            $(`#item_room_table${item_id}`).text(seller_id);
             $(`#item_price_table_${item_id}`).text($.trim(modal_item_price));
             $(`#item_total_price_table_${item_id}`).text($.trim(item_total_price));
             $(`#item_quantity_table_${item_id}`).text($.trim(item_quantity_modal_input));
@@ -3328,6 +3333,7 @@ $(function () {
             draw_table_for_order = `<div data-sale-unit="${sale_unit_name_modal}" data-variation-parent="${variation_parent}" class="single_order imei_serial_expiry_${IMEI_Serial}" is_promo="${is_promo}" data-qty_default="${default_qty_amt}" data-sale-unit="${sale_unit_name}" id="order_for_item_${item_id}" data-single-order-row-no="" data_cart_item_id="${item_id}">
                 <div class="first_portion">
                     <span id="item_seller_table${item_id}" class="d-none">${seller_id}</span>
+                    <span id="item_room_table${item_id}" class="d-none">${room_id}</span>
                     <span class="expiry_date_maintain d-none" id="expiry_date_maintain_${item_id}">${expiry_date_maintain}</span>
                     <span class="item_type d-none" id="item_type_table${item_id}">${item_type}</span>
                     <span class="item_vat d-none" id="item_vat_percentage_table${item_id}">${modal_item_vat_percentage}</span>
@@ -3634,7 +3640,9 @@ $(function () {
         let item_id = $(this).attr('id').substr(10);
         let item_obj = findItemByItemId(item_id);
         let sellerid = $('#item_seller_table'+item_id).text();
+        let roomid = $('#item_room_table'+item_id).text();
         $('#seller_id').val(sellerid).trigger('change');
+        $('#room_id').val(roomid).trigger('change');
         // Promotion Setter And Getter
         $('#modal_is_promo').text(item_obj.is_promo);
         $('#modal_promo_buy_qty').text(item_obj.promo_qty);
@@ -5044,6 +5052,7 @@ $(function () {
                 let item_name = $(this).find('#item_name_table_' + item_id).text();
                 let expiry_date_maintain = $(this).find('#expiry_date_maintain_' + item_id).text();
                 let item_seller_id = $(this).find('#item_seller_table' + item_id).text();
+                let item_room_id = $(this).find('#item_room_table' + item_id).text();
                 let item_description = $(this).find('.item_modal_description_table_' + item_id).text();
                 let item_last_purchase_price = $(this).find('#item_last_purchase_price_table_' + item_id).text();
                 let item_vat = $(this).find('.item_vat').text();
@@ -5066,6 +5075,7 @@ $(function () {
                 // Initialize item object
                 let item = {
                     item_seller_id: item_seller_id,
+                    item_room_id: item_room_id,
                     item_id: item_id,
                     item_name: item_name,
                     item_last_purchase_price: item_last_purchase_price,
@@ -5097,6 +5107,7 @@ $(function () {
                     let freeItemId = $(this).find('.free-item').attr('data-free-item-id');
                     orderInfo.items.push({
                         item_seller_id: item_seller_id,
+                        item_room_id: item_room_id,
                         item_id: freeItemId,
                         item_name: freeItemName,
                         item_last_purchase_price: "",
@@ -5254,6 +5265,7 @@ $(function () {
                         draw_table_for_order += `<div data-sale-unit="${this_item.sale_unit_name}" data-variation-parent="${variation_parent}" class="single_order imei_serial_expiry_${this_item.expiry_imei_serial}" is_promo="${this_item.is_promo_item}" data-qty_default="" id="order_for_item_${this_item.item_id}" data-single-order-row-no="" data_cart_item_id="${this_item.item_id}">
                             <div class="first_portion">
                                 <span id="item_seller_table${this_item.item_id}" class="d-none">${this_item.item_seller_id}</span>
+                                <span id="item_room_table${this_item.item_id}" class="d-none">${this_item.item_room_id}</span>
                                 <span class="item_type d-none" id="item_type_table${this_item.item_id}">${this_item.item_type}</span>
                                 <span class="item_vat d-none" id="item_vat_percentage_table${this_item.item_id}">${this_item.item_vat}</span>
                                 <span class="item_discount d-none" id="item_discount_table${this_item.item_id}">${percentValueCalculateByPriceQtyDiscount(this_item.item_unit_price, this_item.item_quantity, this_item.item_discount)}</span>
@@ -9210,6 +9222,7 @@ $(function () {
             let discount_type = (item_discount.length > 0 && item_discount.substr(item_discount.length - 1) == '%') ? 'percentage' : 'plain';
             let item_price_without_discount = $(this).find('.item_price_without_discount').text();
             let item_seller_id = $(`#item_seller_table${item_id}`).text();
+            let item_room_id = $(`#item_room_table${item_id}`).text();
             let item_unit_price = $(this).find('#item_price_table_' + item_id).text();
             let item_quantity = $(this).find('#item_quantity_table_' + item_id).text();
             let item_price_with_discount = $(this).find('#item_total_price_table_' + item_id).text();
@@ -9222,6 +9235,7 @@ $(function () {
                 menu_note: menu_note,
                 menu_taxes: menu_taxes,
                 item_seller_id: item_seller_id,
+                item_room_id: item_room_id,
                 item_id: item_id,
                 item_name: item_name,
                 item_discount: item_discount,
@@ -9248,6 +9262,7 @@ $(function () {
                 let freeItemId = $(this).find('.free-item').attr('data-free-item-id');
                 orderInfo.items.push({
                     item_seller_id: item_seller_id,
+                    item_room_id: item_room_id,
                     item_id: freeItemId,
                     item_name: freeItemName,
                     item_last_purchase_price: "",

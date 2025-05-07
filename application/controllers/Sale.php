@@ -172,6 +172,7 @@ class Sale extends Cl_Controller {
         $data['item_categories'] = $this->Sale_model->getItemCategoriesBySorted($company_id, 'tbl_item_categories');
         $data['brands'] = $this->Common_model->getAllByCompanyId($company_id, 'tbl_brands');
         $data['waiters'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id,'tbl_users');
+        $data['roomdata'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id,'tbl_rooms');
         $data['multipleCurrencies'] = $this->Common_model->getAllByCompanyId($company_id, "tbl_multiple_currencies");
         $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');
         $data['delivery_partners'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_delivery_partners');
@@ -447,6 +448,7 @@ class Sale extends Cl_Controller {
                 $item_data['menu_price_without_discount'] = trim_checker($item->item_price_without_discount);
                 $item_data['menu_price_with_discount'] = trim_checker($item->item_price_with_discount);
                 $item_data['item_seller_id'] = trim_checker($item->item_seller_id);
+                $item_data['item_room_id'] = trim_checker($item->item_room_id);
                 $item_data['expiry_imei_serial'] = trim_checker($item->expiry_imei_serial);
                 $item_data['item_type'] = trim_checker($item->item_type);
                 $item_data['menu_unit_price'] = trim_checker($item->item_unit_price);
@@ -1583,6 +1585,7 @@ class Sale extends Cl_Controller {
                 $item_data = array();
                 $item_data['food_menu_id'] = trim_checker($item->item_id);
                 $item_data['item_seller_id'] = trim_checker($item->item_seller_id) ? trim_checker($item->item_seller_id) : 0;
+                $item_data['item_room_id'] = trim_checker($item->item_room_id) ? trim_checker($item->item_room_id) : 0;
                 $item_data['item_type'] = trim_checker($item->item_type);
                 $item_data['qty'] = trim_checker($item->item_quantity);
                 $item_data['menu_price_without_discount'] = trim_checker($item->item_price_without_discount);
