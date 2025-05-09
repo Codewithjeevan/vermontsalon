@@ -195,12 +195,14 @@ $company_short_name =  $getCompanyInfo->short_name;
     <input type="hidden" id="paid_amount_ln" value="<?php echo lang('paid_amount') ?>">
     <input type="hidden" id="total_payable_ln" value="<?php echo lang('total_payable') ?>">
     <input type="hidden" id="charge_ln" value="<?php echo lang('charge') ?>">
+    
 
     <div class="d-none" id="term_conditions"><?php echo $this->session->userdata('term_conditions'); ?></div>
     <div class="d-none" id="invoice_footer"><?php echo $this->session->userdata('invoice_footer'); ?></div>
 
     <input type="hidden" id="letter_head_gap" value="<?php echo $this->session->userdata('letter_head_gap'); ?>">
     <input type="hidden" id="letter_footer_gap" value="<?php echo $this->session->userdata('letter_footer_gap'); ?>">
+    <input type="hidden" id="session_uer_id" value="<?php echo $this->session->userdata('user_id') ?>">
     
     <input type="hidden" id="order_object">
     <input type="hidden" id="is_offline_system">
@@ -2179,7 +2181,7 @@ $company_short_name =  $getCompanyInfo->short_name;
     <!-- Discount Modal Start -->
     <div id="discount_modal" class="modal">
         <div class="modal-content">
-            <h1 class="modal-header-custom"><?php echo lang('discount'); ?>
+            <h1 class="modal-header-custom"><?php echo lang(line: 'discount'); ?>
                 <a href="javascript:void(0)" class="alertCloseIcon">
                     <i data-feather="x"></i>
                 </a>

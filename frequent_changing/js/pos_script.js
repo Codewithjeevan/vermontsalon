@@ -4931,7 +4931,8 @@ $(function () {
         let charge_type = $('#charge_type').find(':selected').val();
         let sale_date = $('#open_date_picker').attr('data-get-date');
         let customer_previous_due = $("#customer_previous_due").val();
-        let delivery_charge = ($('#delivery_charge').val() != "") ? parseFloat($('#delivery_charge').val()).toFixed(op_precision) : parseFloat(0).toFixed(op_precision);
+        // let delivery_charge = ($('#delivery_charge').val() != "") ? parseFloat($('#delivery_charge').val()).toFixed(op_precision) : parseFloat(0).toFixed(op_precision);
+        let delivery_charge = 0;
         let sub_total_discount_value = $('#sub_total_discount').val();
         let sub_total_discount_type = '';
         let delivery_partner = $.trim($('#delivery_partner_info').attr('data-partner-id'));
