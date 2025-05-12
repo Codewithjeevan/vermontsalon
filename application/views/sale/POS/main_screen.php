@@ -87,6 +87,76 @@ $company_short_name =  $getCompanyInfo->short_name;
     <!-- POS Screen Final Responsive CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/pos_responsive.css?var=1.6" type="text/css">
     <style>
+  /* make launcher show pointer on hover */
+  .cn-numpad-launcher:hover {
+    cursor: pointer;
+  }
+
+  /* backdrop (was .easy-numpad-frame) */
+  .cn-np-backdrop {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 999999;
+    display: flex; align-items: center; justify-content: center;
+    background-color: rgb(34 39 40 / 40%);
+  }
+
+  /* frame (was .easy-numpad-container) */
+  .cn-np-frame {
+    position: relative;
+    width: 100%; max-width: 300px;
+    box-shadow: 0px 0px 5px rgba(0,0,0,0.5);
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+  }
+
+  /* output (was .easy-numpad-output) */
+  #cn-np-output {
+    width: 100%;
+    border: 1px dashed #36405e;
+    background-color: rgba(255,255,255,0.8);
+    box-sizing: border-box;
+    margin: 0 0 10px;
+    text-align: center;
+    min-height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    border-radius: 4px;
+  }
+
+  /* keys grid (replaces table) */
+  .cn-np-keys {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 6px;
+  }
+  .cn-np-keys button {
+    padding: 6px 0;
+    background-color: #5b5d5d2b;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+  }
+  .cn-np-keys .cn-np-clear,
+  .cn-np-keys .cn-np-del {
+    color: #000; font-weight: 500;
+  }
+  .cn-np-keys .cn-np-cancel {
+    background-color: #FF503D; color: #fff; font-weight: 500;
+  }
+  .cn-np-keys .cn-np-cancel:hover {
+    box-shadow: 0 8px 25px -8px #FF503D !important;
+  }
+  .cn-np-keys .cn-np-done {
+    background-color: #36405e; color: #fff; font-weight: 500;
+  }
+  .cn-np-keys .cn-np-done:hover {
+    box-shadow: 0 8px 25px -8px #293149 !important;
+  }
+</style>
+
+    <style>
         /* for dynamic language font load, used internal css */
         /* for check change of bangla language font */
         <?php 
@@ -373,6 +443,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                             </a>
                         </li>
                         <li>
+                            <a tabindex="-1" href="javascript:void(0)" id="commission_emp_report" class="header_menu_icon commission_emp_report" data-tippy-content="<?php echo lang('commission_report');?>">
+                            <iconify-icon icon="heroicons-outline:document-report" width="22"></iconify-icon>
+                            </a>
+                        </li>
+                        <li>
                             <a tabindex="-1" href="javascript:void(0)" id="keyboard_short_cut" class="header_menu_icon " data-tippy-content="<?php echo lang('keyboard_short_cut');?>">
                             <iconify-icon icon="solar:keyboard-broken" width="22"></iconify-icon>
                             </a>
@@ -559,6 +634,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                     <div class="order_table_holder">
                         <div class="order_table_header_row">
                             <div class="single_header_column" id="single_order_item"><?php echo lang('item'); ?></div>
+                            <div class="single_header_column" id="single_order_employee"><?php echo lang('employee'); ?></div>
                             <div class="single_header_column" id="single_order_price"><?php echo lang('price'); ?></div>
                             <div class="single_header_column" id="single_order_qty"><?php echo lang('qty'); ?></div>
                             <div class="single_header_column" id="single_order_discount"><?php echo lang('discount'); ?></div>
@@ -567,19 +643,19 @@ $company_short_name =  $getCompanyInfo->short_name;
                         
                         <div class="order_holder">
                             <?php
+
                             if(!empty($sale_item_details)){
+                                
                                 $loop_iteration = 1;
                                 // pre($sale_item_details);
                                 foreach($sale_item_details as $sale_details){
                             ?>
                                 <div data-variation-parent="<?php echo escape_output($sale_details->parent_id); ?>" class="single_order" is_promo="<?php echo escape_output($sale_details->is_promo_item); ?>" data-qty_default="<?php echo escape_output($sale_details->qty); ?>" data-sale-unit="<?php echo escape_output($sale_details->unit_name); ?>"  id="order_for_item_<?php echo escape_output($sale_details->food_menu_id); ?>" data_cart_item_id="<?php echo escape_output($sale_details->food_menu_id); ?>">
+                                    
                                     <div class="first_portion">
-                                        <span id="item_seller_table<?php echo escape_output($sale_details->food_menu_id); ?>" class="d-none">
-                                            <?php echo escape_output($sale_details->item_IMEI_Serial ?? ''); ?>
-                                        </span>
-                                        <span class="item_type d-none" id="item_type_table<?php echo escape_output($sale_details->food_menu_id); ?>">
-                                            <?php echo escape_output($sale_details->type); ?>
-                                        </span>
+                                        <span id="item_seller_table<?php echo escape_output($sale_details->food_menu_id); ?>" class="d-none"><?php echo escape_output($sale_details->seller_id ?? ''); ?></span>
+                                        <span id="item_room_table<?php echo escape_output($sale_details->food_menu_id); ?>" class="d-none"><?php echo escape_output($sale_details->room_id ?? ''); ?></span>
+                                        <span class="item_type d-none" id="item_type_table<?php echo escape_output($sale_details->food_menu_id); ?>"><?php echo escape_output($sale_details->type); ?></span>
                                         <span class="item_vat d-none" id="item_vat_percentage_table<?php echo escape_output($sale_details->food_menu_id); ?>">
                                             <?php echo escape_output($sale_details->menu_taxes); ?>
                                         </span>
@@ -593,6 +669,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                                             <iconify-icon icon="solar:pen-broken" class="op_cursor_pointer edit_item" id="edit_item_<?php echo escape_output($sale_details->food_menu_id); ?>" width="22"></iconify-icon>
                                             <span id="item_name_table_<?php echo escape_output($sale_details->food_menu_id); ?>">
                                                 <?php echo escape_output($sale_details->item_name) . '(' . $sale_details->item_code . ')'; ?>
+                                            </span>
+                                        </div>
+                                        <div class="single_order_column second_column_emp">
+                                            <span id="item_price_table_<?php echo escape_output($sale_details->food_menu_id); ?>">
+                                                <?php echo escape_output($sale_details->seller_name); ?>
                                             </span>
                                         </div>
                                         <div class="single_order_column second_column">
@@ -2441,6 +2522,25 @@ $company_short_name =  $getCompanyInfo->short_name;
     </div>
     <!-- x Report Modal End -->
 
+    <!-- x Report Modal Start -->
+    <div class="cus_pos_modal modal" id="commission_emp_report_modal">
+        <h1 class="main_header">
+            <?php echo lang('commission_report');?>
+            <a href="javascript:void(0)" class="alertCloseIcon pos__modal__close">
+                <i data-feather="x"></i>
+            </a>
+        </h1>
+
+        <div class="pos__modal__body scrollbar-macosx">
+            <div class="default_inner_body" id="commission_emp_report_details_content_o">
+                <input type="hidden" class="datatable_name" data-title="<?php echo lang('register_details'); ?>" data-id_name="datatable">
+                <div class="commission_emp_report_content">
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- x Report Modal End -->
+
     <!-- Tax Modal Start -->
     <div id="tax_modal" class="modal">
         <div class="modal-content">
@@ -3742,7 +3842,7 @@ $company_short_name =  $getCompanyInfo->short_name;
     <!-- Plugin Js End -->
     <!-- Custom JS Start -->
     <script src="<?php echo base_url(); ?>frequent_changing/js/stripe.js"></script>
-    <script src="<?php echo base_url(); ?>frequent_changing/js/pos_script.js"></script>
+    <script id="posScript" src="<?php echo base_url(); ?>frequent_changing/js/pos_script.js"></script>
     <script src="<?php echo base_url(); ?>frequent_changing/js/register_details.js"></script>
     <!-- Custom JS End -->
 
@@ -3765,6 +3865,97 @@ $company_short_name =  $getCompanyInfo->short_name;
     ?>
     <script>
         window.menu_objects = [<?php echo ($menu_objects);?>];
+
+
+        function reloadPOSScript() {
+            const oldScript = document.getElementById('posScript');
+            const newScript = document.createElement('script');
+            newScript.src = oldScript.src + '?v=' + new Date().getTime(); // avoid cache
+            newScript.id = 'posScript';
+
+            oldScript.remove(); // remove old
+            document.body.appendChild(newScript); // add new
+            }
     </script>
+
+  <script>
+        ;(function($){
+        let __cnActiveInput = null;
+
+        function initCustomNumpad() {
+            // click wrapper
+            $(document).on('click', '.cn-numpad-launcher', function(e){
+            e.preventDefault();
+            openFor($(this).find('.cn-numpad-input'));
+            });
+            // focus input
+            $(document).on('focus', '.cn-numpad-input', function(){
+            openFor($(this));
+            });
+            // numpad buttons
+            $(document).on('click', '.cn-np-key',    onKeyPress);
+            $(document).on('click', '.cn-np-clear',  () => updateOutput(''));
+            $(document).on('click', '.cn-np-del',    deleteLast);
+            $(document).on('click', '.cn-np-cancel', closeNumpad);
+            $(document).on('click', '.cn-np-done',   onDone);
+        }
+
+        function openFor($input){
+            __cnActiveInput = $input;
+            let init = $input.val().replace('%','') || '';
+            openNumpad(init);
+        }
+
+        function openNumpad(initial){
+            closeNumpad();
+            const keys = [7,8,9,'C',4,5,6,'L',1,2,3,'X',0,'.','%', 'D'];
+            let btns = keys.map(k=>`<button class="${cls(k)}">${k}</button>`).join('');
+            const tpl = `
+            <div class="cn-np-backdrop">
+                <div class="cn-np-frame">
+                <div id="cn-np-output">${initial}</div>
+                <div class="cn-np-keys">${btns}</div>
+                </div>
+            </div>`;
+            $('body').append(tpl);
+        }
+
+        function cls(k){
+            if (k==='C') return 'cn-np-clear';
+            if (k==='L') return 'cn-np-del';
+            if (k==='X') return 'cn-np-cancel';
+            if (k==='D') return 'cn-np-done';
+            return 'cn-np-key';
+        }
+
+        function closeNumpad(){
+            $('.cn-np-backdrop').remove();
+        }
+        function updateOutput(txt){
+            $('#cn-np-output').text(txt);
+        }
+        function deleteLast(){
+            let t = $('#cn-np-output').text();
+            updateOutput(t.slice(0,-1));
+        }
+        function onKeyPress(e){
+            e.preventDefault();
+            $('#cn-np-output').append($(this).text());
+        }
+        function onDone(e){
+            e.preventDefault();
+            if (!__cnActiveInput) return;
+            __cnActiveInput.val($('#cn-np-output').text());
+            closeNumpad();
+            // if you need your cash‐change logic, call it here
+            // applyCashChange(__cnActiveInput, '#cn-total-due', '#cn-change-amount', '#cn-final-amount', op_precision);
+            // $('#cn-add-payment').click();
+        }
+
+        window.initCustomNumpad = initCustomNumpad;
+        $(initCustomNumpad);
+        })(jQuery);
+        </script>
+
 </body>
 </html>

@@ -182,7 +182,7 @@ select {
 }
 
 .grocery_main_part_off {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.3fr 1fr;
   gap: 10px;
 }
 

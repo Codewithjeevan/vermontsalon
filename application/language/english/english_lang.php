@@ -1064,6 +1064,7 @@ $lang['rate'] = 'Rate';
 $lang['note'] = 'Note';
 $lang['account_note'] = 'Account Note';
 $lang['commission'] = 'Commission';
+$lang['commission_report'] = 'Commission Report';
 $lang['user_commission_report'] = "User Commission Report";
 $lang['Last_Three_Purchase_AVG'] = "Last Three Purchase (Avg)";
 $lang['Last_Purchase_Price'] = "Last Purchase Price";

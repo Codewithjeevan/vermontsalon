@@ -3069,6 +3069,7 @@ $(function () {
         let modal_discount = $.trim($('#modal_discount').val() ?? 0);
         let item_total_price = $.trim($('#modal_total_price').text());
         let seller_id = $('#seller_id').val();
+        let seller_name = $('#seller_id :selected').text();
         let room_id = $('#room_id').val();
         let IMEI_Serial = $.trim($('#IMEI_Serial').val());
         let modal_item_note = $.trim($('#modal_item_note').val());
@@ -3221,7 +3222,7 @@ $(function () {
         }
         function oldItemAppentToCart(){
             $(`#item_seller_table${item_id}`).text(seller_id);
-            $(`#item_room_table${item_id}`).text(seller_id);
+            $(`#item_room_table${item_id}`).text(room_id);
             $(`#item_price_table_${item_id}`).text($.trim(modal_item_price));
             $(`#item_total_price_table_${item_id}`).text($.trim(item_total_price));
             $(`#item_quantity_table_${item_id}`).text($.trim(item_quantity_modal_input));
@@ -3342,6 +3343,9 @@ $(function () {
                     <div class="single_order_column first_column">
                         <iconify-icon icon="solar:pen-broken" class="op_cursor_pointer edit_item" width="22" id="edit_item_${item_id}"></iconify-icon>
                         <span id="item_name_table_${item_id}">${item_name}</span>
+                    </div>
+                    <div class="single_order_column second_column_emp">
+                        <span id="item_employee_table_${item_id}">${seller_name}</span>
                     </div>
                     <div class="single_order_column second_column">
                         <span id="item_price_table_${item_id}">${modal_item_price}</span>
@@ -8228,9 +8232,9 @@ $(function () {
                     <label>${card_holder_name_lan}</label>
                     <input type="text" name="card_holder_name" class="form-control" placeholder="${card_holder_name_lan}" id="card_holder_name">
                 </div>
-                <div class="form-group">
+                <div class="form-group cn-numpad-launcher">
                     <label>${card_holding_number_lan}</label>
-                    <input type="text" name="card_holding_number" class="form-control" placeholder="${card_holding_number_lan}" id="card_holding_number">
+                    <input type="text" name="card_holding_number" class="form-control cn-numpad-input" placeholder="${card_holding_number_lan}" id="card_holding_number">
                 </div>
             `);
             $('#show_account_type').addClass('show_account_type')
@@ -9115,6 +9119,7 @@ $(function () {
             request.onerror = function(event) {
                 console.log("Error opening database:", event);
             };
+            
             $("#generate_sale_hold_modal").removeClass('active');
             $('.order_holder').empty();
             $('#hold_generate_input').val(Number(0));

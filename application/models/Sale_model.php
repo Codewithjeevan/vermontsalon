@@ -103,6 +103,7 @@ class Sale_model extends CI_Model {
             SELECT 
                 seller.id AS seller_id, 
                 seller.full_name AS seller_name, 
+                seller.commission As seller_commission,
                 SUM(ts.qty) AS total_items_sold, 
                 SUM(ts.qty * ts.menu_unit_price) AS total_sales_amount 
             FROM 
@@ -119,7 +120,7 @@ class Sale_model extends CI_Model {
                 s.del_status = 'Live' 
                 AND s.outlet_id = ? 
             GROUP BY 
-                seller.id, seller.full_name 
+                seller.id, seller.full_name, seller.commission
             ORDER BY 
                 total_sales_amount DESC
           ";
@@ -1141,6 +1142,7 @@ class Sale_model extends CI_Model {
     $this->db->where("sp.added_date	>=", $date);
     $this->db->where("sp.added_date	<=", date('Y-m-d H:i:s'));
     $this->db->where("currency_type", null);
+    $this->db->where("s.del_status", 'Live');
     $data =  $this->db->get()->row();
     return (isset($data->total_amount) && $data->total_amount?$data->total_amount:0);
   }

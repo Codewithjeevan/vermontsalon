@@ -101,10 +101,11 @@ class Common_model extends CI_Model {
      * @return object
      */
     public function getSaleDetailsBySaleById($id){
-        $this->db->select('sd.*, u.unit_name, i.type, i.name as item_name, i.code as item_code, i.parent_id');
+        $this->db->select('sd.*, u.unit_name, i.type, i.name as item_name, i.code as item_code, i.parent_id, seller.full_name as seller_name, seller.id as seller_id, sd.item_room_id as room_id');
         $this->db->from('tbl_sales_details sd');
         $this->db->join('tbl_items i','sd.food_menu_id=i.id','left');
         $this->db->join('tbl_units u','u.id=i.sale_unit_id','left');
+        $this->db->join('tbl_users seller','seller.id=sd.item_seller_id','left');
         $this->db->where('sd.sales_id', $id);
         $this->db->where('sd.promo_parent_id', '0');
         $this->db->where('sd.del_status', 'Live');
