@@ -2533,6 +2533,57 @@ class Sale extends Cl_Controller {
         return $register_detail;
     }
 
+    /**
+     * commissionEmpReportDetailCalculationToShowAjax
+     * @access public
+     * @param no
+     * @return array
+     */
+    public function commissionEmpReportDetailCalculationToShow(){
+        $outlet_id = $this->session->userdata('outlet_id');
+        $date = date('Y-m-d');
+        $saledata = $this->Sale_model->getSaleListByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        $catgdata = $this->Sale_model->getCatgReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        $empdata = $this->Sale_model->getSellerReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        $expensesdata = $this->Common_model->getExpensesByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        
+        $expamount = array_sum(array_column($expensesdata, 'total_amount')) ?? 0;
+        $paidamount = 0;
+        $cashamt = 0;
+        $cardamt = 0;
+        $chequeamt = 0;
+        $cancelamt = 0;
+        $html_content = '<table  class="datatable table_register_details top_margin_15"> 
+                <thead>
+                    <tr>
+                        <th class="w-35">'.lang('employee').'</th>
+                        <th class="w-35">'.lang('total_sales').'</th>
+                        <th class="w-35">Commission</th>
+                        <th class="w-35">'.lang('total').'</th>
+                    </tr> 
+                </thead>
+                <tbody>';
+                      if(isset($empdata)){
+                                    foreach ($empdata as $key=>$value){
+                                        $commissionamt = $value->seller_commission*$value->total_sales_amount/100;
+                                        $html_content .= '<tr>
+                                <td>'.$value->seller_name.'</td>
+                                <td>'.$value->total_sales_amount.'</td>
+                                <td class="w-35">'.$value->seller_commission.'%</td>
+                                <td>'.$commissionamt.'</td>
+                            </tr>';
+                        }
+                    }
+
+                    $html_content .= '</tbody>
+                            </table>';
+
+        $register_detail = array(
+            'html_content_for_div' => $html_content,
+        );
+        return $register_detail;
+    }
+
 
     /**
      * getOpeningDetails
@@ -2562,6 +2613,11 @@ class Sale extends Cl_Controller {
 
     public function xReportDetailCalculationToShowAjax(){
         $all_register_info_values = $this->xReportDetailCalculationToShow();
+        echo json_encode($all_register_info_values);
+    }
+
+    public function commissionEmpReportDetailCalculationToShowAjax(){
+        $all_register_info_values = $this->commissionEmpReportDetailCalculationToShow();
         echo json_encode($all_register_info_values);
     }
 
