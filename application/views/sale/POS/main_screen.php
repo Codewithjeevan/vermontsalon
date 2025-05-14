@@ -2082,6 +2082,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                     </div>
                     <div class="sms-email-mobile d-flex justify-content-end my-20">
                         
+                        <label class="container op_margin_top_6 op_color_dim_grey mr-10 continue_without_due_div"> <?php echo lang('continue_without_due'); ?>
+                            <input class="continue_without_due" type="checkbox" name="continue_without_due" checked>
+                            <span class="checkmark"></span>
+                        </label>
+                        
                         <label class="container op_margin_top_6 op_color_dim_grey mr-10 send_sms_finalize"> <?php echo lang('send_invoice_via_sms'); ?>
                             <input class="sms_enable_status" type="checkbox" name="send_invoice_sms" <?php echo escape_output($getCompanyInfo->sms_enable_status) == "1" ? 'checked'  : '' ?>>
                             <span class="checkmark"></span>
@@ -2496,7 +2501,10 @@ $company_short_name =  $getCompanyInfo->short_name;
         </div>
         <footer class="pos__modal__footer">
             <div class="right_box">
-                <button type="button"  id="register_close" class="btn bg__grey"><?php echo lang('close_register'); ?></button>
+                <div>
+                    <button type="button"  id="register_close" class="btn bg__grey"><?php echo lang('close_register'); ?></button>
+                    <a href="<?php echo base_url(); ?>Register/editBalance" class="btn custom-btn bg__green" target="_blank"><?php echo lang('edit_open_balance'); ?></a>
+                </div>
                 <button type="button" class="modal_hide_register btn bg__red"><?php echo lang('cancel'); ?></button>
             </div>
         </footer>
@@ -2692,6 +2700,12 @@ $company_short_name =  $getCompanyInfo->short_name;
                     <li data-access="list-25" class="menu_assign_class" module-is-hide="Outlet-YES">
                         <a class="child-menu" href="<?php echo base_url(); ?>Outlet/outlets">
                             <?php echo lang('list_outlet'); ?>
+                        </a>
+                    </li>
+                    <li data-access="openRegister-25" class="menu_assign_class" module-is-hide="Outlet-YES">
+                        <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Register/openRegister'?>">
+                            <?php echo lang('add_edit_open_balance'); ?>
+                            <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
                         </a>
                     </li>
                 </ul>

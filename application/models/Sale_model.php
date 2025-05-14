@@ -835,7 +835,6 @@ class Sale_model extends CI_Model {
   {
     $this->db->select("opening_balance_date_time as opening_date_time");
     $this->db->from('tbl_register');
-    $this->db->where("user_id", $user_id);
     $this->db->where("outlet_id", $outlet_id);
     $this->db->where("register_status", 1);
     $this->db->order_by('id', 'DESC');
@@ -986,7 +985,7 @@ class Sale_model extends CI_Model {
     $this->db->select("sum(tbl_purchase_payments.amount) as total_amount");
     $this->db->from('tbl_purchase');
     $this->db->join('tbl_purchase_payments', 'tbl_purchase_payments.purchase_id = tbl_purchase.id', 'left');
-    $this->db->where("tbl_purchase.user_id", $user_id);
+    // $this->db->where("tbl_purchase.user_id", $user_id);
     $this->db->where("tbl_purchase.outlet_id", $outlet_id);
     $this->db->where("tbl_purchase.company_id", $company_id);
     $this->db->where("tbl_purchase.del_status", 'Live');
@@ -1017,7 +1016,7 @@ class Sale_model extends CI_Model {
     $this->db->where("added_date>=", $date);
     $this->db->where("added_date<=", date('Y-m-d H:i:s'));
     $this->db->where("outlet_id", $outlet_id);
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("company_id", $company_id);
     $this->db->where("del_status", 'Live');
     $data =  $this->db->get()->row();
@@ -1043,7 +1042,7 @@ class Sale_model extends CI_Model {
     $this->db->where("added_date<=", date('Y-m-d H:i:s'));
     $this->db->where("return_status", "taken_by_sup_money_returned");
     $this->db->where("outlet_id", $outlet_id);
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("company_id", $company_id);
     $this->db->where("del_status", 'Live');
     $data =  $this->db->get()->row();
@@ -1068,7 +1067,7 @@ class Sale_model extends CI_Model {
     $this->db->where("added_date>=", $date);
     $this->db->where("added_date<=", date('Y-m-d H:i:s'));
     $this->db->where("outlet_id", $outlet_id);
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("company_id", $company_id);
     $this->db->where("del_status", 'Live');
     $data =  $this->db->get()->row();
@@ -1093,7 +1092,7 @@ class Sale_model extends CI_Model {
     $this->db->where("added_date>=", $date);
     $this->db->where("added_date<=", date('Y-m-d H:i:s'));
     $this->db->where("outlet_id", $outlet_id);
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("company_id", $company_id);
     $this->db->where("del_status", 'Live');
     $data =  $this->db->get()->row();
@@ -1118,7 +1117,7 @@ class Sale_model extends CI_Model {
     $this->db->where("added_date	>=", $date);
     $this->db->where("added_date	<=", date('Y-m-d H:i:s'));
     $this->db->where("outlet_id", $outlet_id);
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("company_id", $company_id);
     $this->db->where("del_status", 'Live');
     $data =  $this->db->get()->row();
@@ -1136,7 +1135,7 @@ class Sale_model extends CI_Model {
     $this->db->select("sum(sp.amount) as total_amount");
     $this->db->from('tbl_sale_payments sp');
     $this->db->join('tbl_sales s', 's.id = sp.sale_id', 'left');
-    $this->db->where("sp.user_id", $user_id);
+    // $this->db->where("sp.user_id", $user_id);
     $this->db->where("sp.payment_id", $payment_id);
     $this->db->where("s.delivery_status", 'Cash Received');
     $this->db->where("sp.added_date	>=", $date);
@@ -1160,7 +1159,7 @@ class Sale_model extends CI_Model {
     $outlet_id = $this->session->userdata('outlet_id');
     $this->db->select("sum(total_return_amount) as total_amount");
     $this->db->from('tbl_sale_return');
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("added_date >=", $date);
     $this->db->where("added_date <=", date('Y-m-d H:i:s'));
     $this->db->where("payment_method_id", $payment_id);
@@ -1189,7 +1188,7 @@ class Sale_model extends CI_Model {
     $this->db->where("added_date <=", date('Y-m-d H:i:s'));
     $this->db->where("payment_method_id", $payment_id);
     $this->db->where("outlet_id", $outlet_id);
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("company_id", $company_id);
     $this->db->where("del_status", "Live");
     $data =  $this->db->get()->row();
@@ -1210,7 +1209,7 @@ class Sale_model extends CI_Model {
     $company_id = $this->session->userdata('company_id');
     $this->db->select("sum(down_payment) as total_down_payment");
     $this->db->from('tbl_installments');
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("added_date >=", $date);
     $this->db->where("added_date <=", date('Y-m-d H:i:s'));
     $this->db->where("payment_method_id", $payment_id);
@@ -1239,7 +1238,7 @@ class Sale_model extends CI_Model {
     $this->db->where("added_date <=", date('Y-m-d H:i:s'));
     $this->db->where("payment_method_id", $payment_id);
     $this->db->where("outlet_id", $outlet_id);
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("company_id", $company_id);
     $this->db->where("del_status", "Live");
     $data =  $this->db->get()->row();
@@ -1259,7 +1258,6 @@ class Sale_model extends CI_Model {
   {
     $this->db->select("opening_details");
     $this->db->from('tbl_register');
-    $this->db->where("user_id", $user_id);
     $this->db->where("outlet_id", $outlet_id);
     $this->db->where("register_status", 1);
     $this->db->order_by('id', 'DESC');
@@ -1291,7 +1289,7 @@ class Sale_model extends CI_Model {
     $this->db->select("sum(amount) as total_amount,multi_currency");
     $this->db->from('tbl_sale_payments');
     $this->db->where("payment_id", $payment_id);
-    $this->db->where("user_id", $user_id);
+    // $this->db->where("user_id", $user_id);
     $this->db->where("added_date>=", $date);
     $this->db->where("added_date<=", date('Y-m-d H:i:s'));
     $this->db->where("currency_type", 1);

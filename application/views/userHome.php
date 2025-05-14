@@ -514,6 +514,12 @@
                                             <?php echo lang('list_outlet'); ?>
                                         </a>
                                     </li>
+                                    <li data-access="openRegister-25" class="menu_assign_class" module-is-hide="Outlet-YES">
+                                        <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Register/openRegister'?>">
+                                            <?php echo lang('add_edit_open_balance'); ?>
+                                            <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="treeview parent-menu">

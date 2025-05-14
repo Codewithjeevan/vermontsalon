@@ -5455,6 +5455,9 @@ $(function () {
 
     // Code optimize by Azhar ** Need to more optimize
     $(document).on('click', '#finalize_order_button', function () {
+        if($('.continue_without_due').is(':checked')){
+            $('.set_default_quick_cach').trigger('click');
+        }
         let cThis = $(this);
         let customer_id = $("#walk_in_customer").val();
         let selected_customer_name = $('option:selected', '#walk_in_customer').attr('data-customer-name');
