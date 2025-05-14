@@ -40,6 +40,7 @@ class Sale extends Cl_Controller {
         $this->load->model('Sale_model');
         $this->load->model('Master_model');
         $this->load->model('Stock_model');
+        $this->load->model('Register_model');
         $this->load->model('Customer_due_receive_model');
         $this->load->library('excel'); //load PHPExcel library
         $this->load->library('form_validation');
@@ -90,7 +91,19 @@ class Sale extends Cl_Controller {
             $this->session->set_flashdata('exception_1',lang('no_access'));
             redirect('Authentication/userProfile');
         }
-        $register_content = json_decode($this->session->userdata('register_content'));
+
+        $outlet_id = $this->session->userdata('outlet_id');
+        $company_id = $this->session->userdata('company_id');
+        $register_data = $this->Register_model->getRegisterBalance($outlet_id, $company_id);
+        
+        $main_company = getMainCompany();
+        if(@$register_data->register_status){
+            $this->session->set_userdata('register_status', @$register_data->register_status);
+        }
+        if(@$main_company->register_content){
+            $this->session->set_userdata('register_content', @$main_company->register_content);
+        }
+        $register_content =  $this->session->userdata('register_content') ? json_decode($this->session->userdata('register_content')) : '';
         $register_status = $this->session->userdata('register_status');
         if (($register_content->register_sale != '' && $register_status == 2)  || $register_status == '' || $register_status == '2') {
             $this->session->set_flashdata('exception', lang('please_open_register'));

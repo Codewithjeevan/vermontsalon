@@ -52,6 +52,72 @@ class Register extends Cl_Controller {
         $outlet_id = $this->session->userdata('outlet_id');
         $data['payment_methods'] = $this->Common_model->getAllEnablePaymentMethod();
         $data['counters'] = $this->Common_model->getAllCounterListByOutletId($outlet_id, $company_id);
+        $data['register_balance'] = $this->Register_model->getRegisterBalance($outlet_id, $company_id);
+        if(isset($data['register_balance']->opening_details)){
+            redirect('Register/editBalance');
+        }
+
+        $data['main_content'] = $this->load->view('register/openRegister', $data, TRUE);
+        $this->load->view('userHome', $data);
+    }
+
+    /**
+     * openRegister
+     * @access public
+     * @param no
+     * @return void
+     */
+    public function editBalance(){
+        if (!$this->session->has_userdata('outlet_id')) {
+            $this->session->set_flashdata('exception_2', lang('Please_click_on_green'));
+            redirect('Outlet/outlets');
+        }
+        if (htmlspecialcharscustom($this->input->post('submit'))) {
+            $this->form_validation->set_rules('opening_balance', lang('opening_balance'), 'max_length[30]');
+            $this->form_validation->set_rules('counter_id', lang('counter_name'), 'required|max_length[11]');
+            if ($this->form_validation->run() == TRUE) {
+                
+                $register_id = $this->input->post('register_id');
+                $register_status['register_status'] = 1;
+                $this->session->set_userdata($register_status);
+                $register_info = array();
+                $register_info['opening_balance'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('opening_balance')));
+                $register_info['counter_id'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('counter_id')));
+
+                //This variable could not be escaped because this is array content
+                $payment_names = $this->input->post($this->security->xss_clean('payment_names'));
+                $payment_ids = $this->input->post($this->security->xss_clean('payment_ids'));
+                $payments = $this->input->post($this->security->xss_clean('payments'));
+                $arr = array();
+                foreach ($payment_ids as $key=>$value){
+                    $arr[] = $value."||".$payment_names[$key]."||".$payments[$key];
+                }
+                $register_info['opening_details'] = json_encode($arr);
+                $this->Common_model->updateInformationByColumn($register_info, $register_id, 'id', "tbl_register");
+
+                redirect('Dashboard/dashboard');
+            }
+        }
+
+
+        $data = array();
+        $company_id = $this->session->userdata('company_id');
+        $outlet_id = $this->session->userdata('outlet_id');
+        $data['payment_methods'] = $this->Common_model->getAllEnablePaymentMethod();
+        $data['counters'] = $this->Common_model->getAllCounterListByOutletId($outlet_id, $company_id);
+        $data['register_balance'] = $this->Register_model->getRegisterBalance($outlet_id, $company_id);        
+        if(!isset($data['register_balance']->opening_details)){
+            redirect('Register/openRegister');
+        }
+        $opening_details = $data['register_balance']->opening_details; // ["56||Card||500", "1||Cash||500"]
+        $payment_map = [];
+        foreach (json_decode($opening_details) as $detail) {
+            $parts = explode('||', $detail);
+            if (count($parts) === 3) {
+                $payment_map[$parts[0]] = $parts[2]; // e.g., [56 => 500, 1 => 500]
+            }
+        }
+        $data['payment_map'] = $payment_map;
         $data['main_content'] = $this->load->view('register/openRegister', $data, TRUE);
         $this->load->view('userHome', $data);
     }
@@ -87,6 +153,7 @@ class Register extends Cl_Controller {
     public function addBalance($encrypted_id = ""){
         $company_id = $this->session->userdata('company_id');
         $register_status = array();
+
         $id = $this->custom->encrypt_decrypt($encrypted_id, 'decrypt');
         if (htmlspecialcharscustom($this->input->post('submit'))) {
             $this->form_validation->set_rules('opening_balance', lang('opening_balance'), 'max_length[30]');

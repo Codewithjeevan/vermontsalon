@@ -44,10 +44,21 @@ class Register_model extends CI_Model {
     {
       $this->db->select("register_status as status");
       $this->db->from('tbl_register');
-      $this->db->where("user_id", $user_id);
+    //   $this->db->where("user_id", $user_id);
       $this->db->where("outlet_id", $outlet_id);
       $this->db->order_by('id', 'DESC');
       return $this->db->get()->row(); 
+    }
+
+    public function getRegisterBalance($outlet_id, $company_id) {
+        $this->db->select("*");
+        $this->db->where("register_status", 1);
+        $this->db->from('tbl_register');
+        $this->db->where("company_id", $company_id);
+        $this->db->where("outlet_id", $outlet_id);
+        $this->db->where("del_status", 'Live');
+        $this->db->order_by('id', 'DESC');
+        return $this->db->get()->row(); 
     }
 }
 

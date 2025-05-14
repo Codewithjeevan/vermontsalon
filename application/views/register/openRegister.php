@@ -31,14 +31,23 @@
         <!-- general form elements -->
         <div class="table-box">
             <!-- form start -->
-            <?php echo form_open(base_url('Register/addBalance')); ?>
-            <input type="hidden" name="opening_balance" id="opening_balance" class="opening_balance_hidden" value="0">
+            <?php if(isset($register_balance)){
+                echo form_open(base_url('Register/editBalance'), array('method' => 'post'));
+            }
+            else {
+                echo form_open(base_url('Register/addBalance')); 
+            }
+            ?>
+            <input type="hidden" name="opening_balance" id="opening_balance" class="opening_balance_hidden" value="<?php echo escape_output(@$register_balance->opening_balance); ?>">
+            <input type="hidden" name="register_id" value="<?php echo escape_output(@$register_balance->id); ?>">
             <div>
                 <div class="row">
                     <?php 
+                    $totalopenbalance = 0;
                     foreach ($payment_methods as $value):
                         if($value->account_type != 'Loyalty Point'):
-                    
+                            $amount = isset($payment_map[$value->id]) ? $payment_map[$value->id] : 0;
+                            $totalopenbalance += $amount;
                     ?>
 
                     <div class="col-lg-4 col-md-6">
@@ -48,7 +57,7 @@
                             <input type="hidden" value="<?php echo escape_output($value->id); ?>" name="payment_ids[]">
                             <input  onfocus="select();" type="text" name="payments[]" class="form-control cal_row"
                                 placeholder="<?php echo lang('opening_balance'); ?>"
-                                value="0">
+                                value="<?php echo escape_output($amount); ?>">
                         </div>
                         <?php if (form_error('opening_balance')) { ?>
                         <div class="callout callout-danger my-2">
@@ -67,7 +76,7 @@
                             <select name="counter_id" id="counter_id" class="select2 form-control">
                                 <option value=""><?php echo lang('select_counter') ?></option>
                                 <?php foreach($counters as $counter){ ?>
-                                <option value="<?php echo escape_output($counter->id) ?>"><?php echo escape_output($counter->name) ?></option>
+                                <option value="<?php echo escape_output($counter->id) ?>" <?= @$register_balance->counter_id == $counter->id ? 'selected' : '' ?>><?php echo escape_output($counter->name) ?></option>
                                 <?php } ?>
                             </select>
                             <?php if (form_error('counter_id')) { ?>
@@ -81,7 +90,7 @@
             </div>
             <!-- /.box-body -->
             <p>&nbsp;</p>
-            <a><?php echo lang('total_opening_balance'); ?>: <?php echo escape_output($this->session->userdata('currency')); ?><span class="total_opening_balance"><?php echo getAmt(0)?></span></a>
+            <a><?php echo lang('total_opening_balance'); ?>: <?php echo escape_output($this->session->userdata('currency')); ?><span class="total_opening_balance"><?php echo getAmt($totalopenbalance)?></span></a>
             <p>&nbsp;</p>
             <div class="box-footer">
                 <button type="submit" name="submit" value="submit" class="btn bg-blue-btn">
