@@ -5045,7 +5045,7 @@ $(function () {
             sale_vat_objects: sale_vat_objects,
             items: []
         };
-          
+
         if ($('.order_holder .single_order').length > 0) {
             $('.order_holder .single_order').each(function (i, obj) {
             
@@ -7823,6 +7823,11 @@ $(function () {
         let tax_type = Number($("#tax_type").val());
         if (total_vat_amount == "NaN" || tax_type==2) {
             total_vat_amount = 0;
+        }
+        if(tax_type==2){
+            let aftervatsubtotal = parseFloat(sub_total_sum)-parseFloat(total_tax_custom);
+            $('#sub_total').html(aftervatsubtotal);
+            $('#sub_total_show').html(parseFloat(aftervatsubtotal).toFixed(op_precision));
         }
         let total_payable = (parseFloat(discounted_sub_total_amount) + parseFloat(total_vat_amount) + parseFloat(delivery_charge_amount)).toFixed(op_precision);
         //set total payable amount to view and set rounding value.
