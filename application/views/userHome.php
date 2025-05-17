@@ -908,6 +908,12 @@
                                             <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
                                         </a>
                                     </li>
+                                    <li data-access="tip_report-249" class="menu_assign_class " module-is-hide="Tip Report-YES">
+                                        <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/tipReport'?>">
+                                            <?php echo lang('tip_report'); ?>
+                                            <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
+                                        </a>
+                                    </li>
                                     <li data-access="customer_receive_report-249" class="menu_assign_class" module-is-hide="Customer Receive Report-YES">
                                         <a class="child-menu " href="<?php echo base_url(); ?>Report/customerDueReceiveReport">
                                             <?php echo lang('customer_due_receive_report'); ?>

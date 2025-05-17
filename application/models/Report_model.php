@@ -843,31 +843,94 @@ class Report_model extends CI_Model {
      * @param int
      * @return object
      */
-    public function saleReport($startMonth = '', $endMonth = '', $outlet_id='') {
+    // public function saleReport($startMonth = '', $endMonth = '', $outlet_id='') {
+    //     $company_id = $this->session->userdata('company_id');
+    //     $this->db->select('s.date_time,s.id,s.sale_no,s.sub_total,s.vat,s.delivery_charge,s.total_payable,s.paid_amount, s.due_amount,s.total_discount_amount, s.grand_total, c.name as customer_name');
+    //     $this->db->from('tbl_sales s');
+    //     $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
+    //     if ($startMonth != '' && $endMonth != '') {
+    //         $this->db->where('s.sale_date >=', $startMonth);
+    //         $this->db->where('s.sale_date <=', $endMonth);
+    //     }
+    //     if ($startMonth != '' && $endMonth == '') {
+    //         $this->db->where('s.sale_date', $startMonth);
+    //     }
+    //     if ($startMonth == '' && $endMonth != '') {
+    //         $this->db->where('s.sale_date', $endMonth);
+    //     } 
+    //     if($outlet_id != ''){
+    //         $this->db->where('s.outlet_id', $outlet_id);
+    //     }
+    //     $this->db->where('s.delivery_status', 'Cash Received');
+    //     $this->db->where('s.company_id', $company_id);
+    //     $this->db->where('s.del_status', 'Live');
+    //     $query_result = $this->db->get();
+    //     $result = $query_result->result();
+    //     return $result;
+    // }
+
+    public function saleReport($startMonth = '', $endMonth = '', $outlet_id = '', $tipamount = '')
+    {
         $company_id = $this->session->userdata('company_id');
-        $this->db->select('s.date_time,s.id,s.sale_no,s.sub_total,s.vat,s.delivery_charge,s.total_payable,s.paid_amount, s.due_amount,s.total_discount_amount, s.grand_total, c.name as customer_name');
-        $this->db->from('tbl_sales s');
-        $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
-        if ($startMonth != '' && $endMonth != '') {
+
+        $this->db->select([
+            's.date_time',
+            's.id',
+            's.sale_no',
+            's.sub_total',
+            's.vat',
+            's.delivery_charge',
+            's.total_payable',
+            's.paid_amount',
+            's.due_amount',
+            's.total_discount_amount',
+            's.given_amount',
+            's.change_amount',
+            's.grand_total',
+            'c.name   AS customer_name',
+            "GROUP_CONCAT(DISTINCT seller.full_name     SEPARATOR ', ') AS seller_names",
+            "GROUP_CONCAT(DISTINCT pm.name             SEPARATOR ', ') AS payment_methods"
+        ], false);
+
+        $this->db->from('tbl_sales AS s');
+        $this->db->join('tbl_customers    AS c',    'c.id          = s.customer_id',    'left');
+        $this->db->join('tbl_sales_details AS sd',   'sd.sales_id   = s.id',             'left');
+        $this->db->join('tbl_users         AS seller','sd.item_seller_id = seller.id',   'left');
+        $this->db->join('tbl_sale_payments AS sp',   'sp.sale_id    = s.id',             'left');
+        $this->db->join('tbl_payment_methods AS pm', 'pm.id         = sp.payment_id',    'left');
+
+        // date filters
+        if ($startMonth !== '' && $endMonth !== '') {
             $this->db->where('s.sale_date >=', $startMonth);
             $this->db->where('s.sale_date <=', $endMonth);
-        }
-        if ($startMonth != '' && $endMonth == '') {
+        } elseif ($startMonth !== '') {
             $this->db->where('s.sale_date', $startMonth);
-        }
-        if ($startMonth == '' && $endMonth != '') {
+        } elseif ($endMonth !== '') {
             $this->db->where('s.sale_date', $endMonth);
-        } 
-        if($outlet_id != ''){
+        }
+
+        // optional filters
+        if ($outlet_id !== '') {
             $this->db->where('s.outlet_id', $outlet_id);
         }
+        if ($tipamount !== '') {
+            // assuming tipamount flag is boolean stored as 1/0
+            $this->db->where('s.tip_amount', 1);
+        }
+
+        // fixed conditions
         $this->db->where('s.delivery_status', 'Cash Received');
-        $this->db->where('s.company_id', $company_id);
-        $this->db->where('s.del_status', 'Live');
-        $query_result = $this->db->get();
-        $result = $query_result->result();
-        return $result;
+        $this->db->where('s.company_id',       $company_id);
+        $this->db->where('s.del_status',       'Live');
+
+        // ← crucial: collapse the joined rows back into one row per sale
+        $this->db->group_by('s.id');
+
+        $query = $this->db->get();
+        return $query->result();
     }
+
+
     /**
      * dueSaleReport
      * @access public

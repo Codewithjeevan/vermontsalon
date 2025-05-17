@@ -4875,6 +4875,7 @@ $(function () {
     $(document).on('click', '#place_order_operation', function () {
         $('.pos__modal__overlay').fadeIn();
         $('.finalize_modal_is_mul_currency').hide();
+        $(".change_amount_div").hide();
 
         if(sms_enable_status == '1' && is_offline_system == '1'){
             $('.sms_enable_status').prop('checked', true);
@@ -5486,8 +5487,8 @@ $(function () {
         let old_sale_id = $("#offline_edit_sale").val();
         let offline_edit_sale_no = $("#offline_edit_sale_no").val();
         let due_date = $("#due_date").val();
+        let tip_amount = $('.tip_amount_div').is(':visible') && $("#tip_amount").is(':checked') ? 1 : 0;
         let status = true;
-
 
         if (account_type == "Stripe") {
             if (stripePayementStatus == true) {
@@ -5647,6 +5648,7 @@ $(function () {
                                 due_amount: finalize_total_due,
                                 given_amount: given_amount,
                                 change_amount: change_amount_div_,
+                                tip_amount: tip_amount,
                                 sale_date: sale_date,
                                 sale_time: sale_time,
                                 
@@ -5814,6 +5816,7 @@ $(function () {
                                 due_amount: finalize_total_due,
                                 given_amount: given_amount,
                                 change_amount: change_amount_div_,
+                                tip_amount: tip_amount,
                                 sale_date: sale_date,
                                 sale_time: sale_time,
                             },
@@ -8749,7 +8752,7 @@ $(function () {
                             if($(this).hasClass('active')){
                                 let payment_id_action = Number($(this).attr('data-id'));
                                 let name = $(this).text();
-                                if(name=="Cash"){
+                                // if(name=="Cash"){
                                     $("#hidden_given_amount").val($("#finalize_given_amount_input").val());
                                     $("#hidden_change_amount").val($("#finalize_change_amount_input").val());
                                     let finalize_given_amount_input = Number($("#finalize_given_amount_input").val());
@@ -8770,7 +8773,7 @@ $(function () {
                                     }
                                     $("#finalize_given_amount_input").val('');
                                     $("#finalize_change_amount_input").val('');
-                                }
+                                // }
                             }
                         });
                         
@@ -11695,7 +11698,6 @@ $(function () {
             $(".set_payment").each(function (i, obj) {
                 let id = ($(this).text());
                 if($(this).hasClass('active')){
-                    if(id=="Cash"){
                         let finalize_total_payable = Number($("#finalize_total_due").text());
                         let finalize_given_amount_input = Number($("#finalize_given_amount_input").val());
                         let change_amount = (finalize_given_amount_input - finalize_total_payable);
@@ -11705,7 +11707,6 @@ $(function () {
                             let amount = Number($("#finalize_total_due").text());
                             $("#finalize_amount_input").val(amount.toFixed(op_precision));
                         }
-                    }
                 }
             });
             $("#add_payment").click();

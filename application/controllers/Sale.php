@@ -318,6 +318,7 @@ class Sale extends Cl_Controller {
         $change_amount = htmlspecialcharscustom($this->input->post($this->security->xss_clean('change_amount')));
         $sale_no = htmlspecialcharscustom($this->input->post($this->security->xss_clean('sale_no')));
         $due_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('due_date')));
+        $tip_amount = htmlspecialcharscustom($this->input->post($this->security->xss_clean('tip_amount')));
         if($account_type == 'Cash' && $account_type != ''){
             $p_note = htmlspecialcharscustom($this->input->post($this->security->xss_clean('p_note')));
             if($p_note != ''){
@@ -421,6 +422,7 @@ class Sale extends Cl_Controller {
         $data['paid_amount'] = $paid_amount;
         $data['due_amount'] = $due_amount;
         $data['change_amount'] = $change_amount;
+        $data['tip_amount'] = $tip_amount;
         $data['given_amount'] = $given_amount;
         $data['account_note'] = $account_note;
         $data['close_time'] = date('H:i:s');
@@ -895,7 +897,7 @@ class Sale extends Cl_Controller {
         }
         foreach ($sales as $value){
             $payements = $this->Sale_model->getPaymentsBySaleId($value->id);
-            $paymentmethod = implode(',', array_column($payements, 'payment_name'));
+            $paymentmethod = implode(',', array: array_column($payements, 'payment_name'));
             $html = '';
             if ($this->session->userdata('role') == '1'||checkAccess(138,'delete')){ 
                 $html .= '<a class="delete btn btn-danger" href="'.base_url().'Sale/deleteSale/'. $this->custom->encrypt_decrypt($value->id, 'encrypt') .'" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="'.lang('delete').'">
