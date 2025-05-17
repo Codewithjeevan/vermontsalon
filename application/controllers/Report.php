@@ -63,7 +63,9 @@ class Report extends Cl_Controller {
         }elseif($segment_1=="Report" && $segment_2 == "employeeSaleReport"){
             $function = "employee_sale_report";
         }elseif($segment_1=="Report" && $segment_2 == "commissionReport"){
-            $function = "employee_sale_report";
+            $function = "commission_sale_report";
+        }elseif($segment_1=="Report" && $segment_2 == "tipReport"){
+            $function = "tip_sale_report";
         }elseif($segment_1=="Report" && $segment_2 == "productSaleReport"){
             $function = "product_sale_report";
         }elseif($segment_1=="Report" && $segment_2 == "detailedSaleReport"){
@@ -365,7 +367,7 @@ class Report extends Cl_Controller {
     }
 
     /**
-     * employeeSaleReport
+     * commissionReport
      * @access public
      * @param no
      * @return void
@@ -397,6 +399,28 @@ class Report extends Cl_Controller {
         // pre($data['employeeSaleReport']);
         $data['users'] = $this->Common_model->getAllUsersNameMobileForReportDropdown();
         $data['main_content'] = $this->load->view('report/commissionSaleReport', $data, TRUE);
+        $this->load->view('userHome', $data);
+    }
+
+    /**
+     * tipReport
+     * @access public
+     * @param no
+     * @return void
+     */
+    public function tipReport() {
+        $data = array();
+        $outlet_id  = isset($_POST['outlet_id']) && $_POST['outlet_id']?$_POST['outlet_id']:'';
+        $data['outlet_id'] = $outlet_id;
+        if (htmlspecialcharscustom($this->input->post('submit'))) {
+            $data['report_generate_time'] = generatedOnCurrentDateTime();
+            $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
+            $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
+            $data['start_date'] = $start_date;
+            $data['end_date'] = $end_date;
+            $data['saleReport'] = $this->Report_model->saleReport($start_date, $end_date, $outlet_id, 1);
+        }
+        $data['main_content'] = $this->load->view('report/tipReport', $data, TRUE);
         $this->load->view('userHome', $data);
     }
 

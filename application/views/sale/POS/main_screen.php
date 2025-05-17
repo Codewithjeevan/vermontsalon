@@ -2082,6 +2082,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                     </div>
                     <div class="sms-email-mobile d-flex justify-content-end my-20">
                         
+                        <label class="container op_margin_top_6 op_color_dim_grey mr-10 change_amount_div display_none tip_amount_div"> <?php echo lang('change_amt_consider_as_tip'); ?>
+                            <input class="tip_amount" type="checkbox" name="tip_amount" id="tip_amount"  value="1" checked>
+                            <span class="checkmark"></span>
+                        </label>
+                        
                         <label class="container op_margin_top_6 op_color_dim_grey mr-10 continue_without_due_div"> <?php echo lang('continue_without_due'); ?>
                             <input class="continue_without_due" type="checkbox" name="continue_without_due" checked>
                             <span class="checkmark"></span>
@@ -3078,6 +3083,12 @@ $company_short_name =  $getCompanyInfo->short_name;
                     <li data-access="commission_report-249" class="menu_assign_class " module-is-hide="Commission Report-YES">
                         <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/commissionReport'?>">
                             <?php echo lang('commission')." ".lang('report'); ?>
+                            <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
+                        </a>
+                    </li>
+                    <li data-access="tip_report-249" class="menu_assign_class " module-is-hide="Tip Report-YES">
+                        <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/tipReport'?>">
+                            <?php echo lang('tip_report'); ?>
                             <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
                         </a>
                     </li>
