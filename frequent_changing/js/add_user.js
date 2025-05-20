@@ -187,5 +187,4 @@ $(function () {
         $("#show_image").modal('show');
     });
 
-
 });

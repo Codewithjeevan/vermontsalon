@@ -160,6 +160,9 @@ class User extends Cl_Controller {
                     $outlet_list = implode(',', $outlet_id); 
                     $user_info['outlet_id'] = $outlet_list;
                 }
+                $commission_item_type = $this->input->post($this->security->xss_clean('commission_item_type'));
+                $commission_item_type = $commission_item_type ? implode(',', $commission_item_type) : NULL; 
+                $user_info['commission_item_type'] = $commission_item_type;
                 $user_info['will_login'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('will_login')));
                 if($this->input->post($this->security->xss_clean('will_login'))=='Yes' && !empty($this->input->post($this->security->xss_clean('password')))){
                     $user_info['password'] = md5($this->input->post($this->security->xss_clean('password')));

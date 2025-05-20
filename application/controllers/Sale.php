@@ -453,6 +453,8 @@ class Sale extends Cl_Controller {
         if($sales_id > 0 && count($order_details->items) > 0){
             $promo_parnt_id = '';
             foreach($order_details->items as $item){
+                $commission = $this->Common_model->getCommissionByItemType($item->item_seller_id, $item->item_type)->commission ?? 0;
+
                 if($item->is_promo_item == "Yes"){
                     $p_price = 0;
                 }else{
@@ -463,6 +465,7 @@ class Sale extends Cl_Controller {
                 $item_data['menu_price_without_discount'] = trim_checker($item->item_price_without_discount);
                 $item_data['menu_price_with_discount'] = trim_checker($item->item_price_with_discount);
                 $item_data['item_seller_id'] = trim_checker($item->item_seller_id);
+                $item_data['commission_percent'] = $commission;
                 $item_data['item_room_id'] = trim_checker($item->item_room_id);
                 $item_data['expiry_imei_serial'] = trim_checker($item->expiry_imei_serial);
                 $item_data['item_type'] = trim_checker($item->item_type);
