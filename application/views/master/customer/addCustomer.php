@@ -144,7 +144,30 @@
                             </div>
                         </div>
                     </div>
-                    <div class="clearfix"></div>
+
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group">
+                            <label><?php echo lang('price'); ?></label>
+                            <input  name="price" class="form-control" placeholder="<?php echo lang('price'); ?>" value="<?php echo set_value('price'); ?>">
+                        </div>
+                        <?php if (form_error('price')) { ?>
+                            <div class="callout callout-danger my-2">
+                                <?php echo form_error('price'); ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group">
+                            <label><?php echo lang('nationality'); ?></label>
+                            <input  name="nationality" class="form-control" placeholder="<?php echo lang('nationality'); ?>" value="<?php echo set_value('nationality'); ?>">
+                        </div>
+                        <?php if (form_error('nationality')) { ?>
+                            <div class="callout callout-danger my-2">
+                                <?php echo form_error('nationality'); ?>
+                            </div>
+                        <?php } ?>
+                    </div>
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
                             <label><?php echo lang('address'); ?></label>

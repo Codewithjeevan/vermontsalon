@@ -427,7 +427,7 @@ class Common_model extends CI_Model {
     public function getAllCustomersWithOpeningBalance(){
         $company_id = $this->session->userdata('company_id');
         $query = "SELECT 
-        c.id, c.name, c.phone, c.email, c.address, c.opening_balance, c.opening_balance_type,
+        c.id, c.name, c.phone, c.email, c.price as customer_price, c.address, c.opening_balance, c.opening_balance_type,
         c.credit_limit, c.gst_number, c.customer_type, c.discount, c.price_type,
         c.same_or_diff_state, c.del_status, c.added_date, u.full_name AS added_by,
         CASE 

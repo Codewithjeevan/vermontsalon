@@ -1411,6 +1411,8 @@ class Sale extends Cl_Controller {
             $data['nid'] = trim_checker(htmlspecialcharscustom(escapeQuot($this->input->post($this->security->xss_clean('nid')))));
             $data['email'] = trim_checker($this->input->post($this->security->xss_clean('customer_email')));
             $data['opening_balance'] = trim_checker($this->input->post($this->security->xss_clean('opening_balance')));
+            $data['price'] = trim_checker($this->input->post($this->security->xss_clean('customer_price')));
+            $data['nationality'] = trim_checker($this->input->post($this->security->xss_clean('customer_nationality')));
             $data['opening_balance_type'] = trim_checker($this->input->post($this->security->xss_clean('opening_balance_type')));
             $data['credit_limit'] = trim_checker($this->input->post($this->security->xss_clean('credit_limit')));
             $data['group_id'] = trim_checker($this->input->post($this->security->xss_clean('group_id')));

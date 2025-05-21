@@ -7233,7 +7233,7 @@ $(function () {
                 let option_customers = '';
                 option_customers += `<option value="">${select} ${customer}</option>`;
                 $.each(response.data, function (i, v) { 
-                    option_customers += `<option id="cid_${v.id}" data-same_or_diff_state="${v.same_or_diff_state}" discount="${v.discount}" price_type="${v.price_type}" data-previous_due="${v.opening_balance}" data-phone_number="${v.phone}"  value="${v.id}" data-customer-name="${v.name}" ${v.id == edit_sale_customer ? 'selected' : ''} > ${v.name} ${v.phone != null ? '(' + v.phone + ')' : ''}</option>`;
+                    option_customers += `<option id="cid_${v.id}" data-same_or_diff_state="${v.same_or_diff_state}" discount="${v.discount}" price_type="${v.price_type}" data-previous_due="${v.opening_balance}" data-phone_number="${v.phone}"  value="${v.id}" data-customer-name="${v.name}" ${v.id == edit_sale_customer ? 'selected' : ''} > ${v.name} ${v.phone != null ? '(' + v.phone + ')' : ''} ${v.customer_price != null && v.customer_price != "" ? '(' + v.customer_price + ')' : ''}</option>`;
                 });
                 $('#walk_in_customer').html(option_customers);
                 if(edit_sale_customer){ 
@@ -7303,6 +7303,8 @@ $(function () {
                     let customer_gst_number = $('#customer_gst_number_modal').val();
                     let customer_discount_modal = $('#customer_discount_modal').val();
                     let customer_price_type = $('#customer_price_type').val();
+                    let customer_price = $('#customer_price_modal').val();
+                    let customer_nationality = $('#customer_nationality_modal').val();
                     let error = 0;
                     if (customer_name == "") {
                         $("#name_err_msg").text('The Name field is require');
@@ -7355,6 +7357,8 @@ $(function () {
                                 group_id: customer_group_id,
                                 customer_discount: customer_discount_modal,
                                 customer_price_type: customer_price_type,
+                                customer_price: customer_price,
+                                customer_nationality: customer_nationality,
                                 csrf_offpos: csrf_value_
                             },
                             success: function (response) {
@@ -9951,6 +9955,8 @@ $(function () {
                 $('#customer_previous_due_modal').val(response.opening_balance);
                 $('#opening_balance_type').val(response.opening_balance_type);
                 $('#customer_credit_limit_modal').val(response.credit_limit);
+                $('#customer_price_modal').val(response.price);
+                $('#customer_nationality_modal').val(response.nationality);
                 $('#customer_delivery_address_modal').val(response.address);
                 if(response.group_id != 0){
                     $('#customer_group_id_modal').val(response.group_id).change();

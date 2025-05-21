@@ -672,6 +672,7 @@ $lang['position'] = 'Position';
 $lang['edit_table'] = 'Edit Table';
 $lang['general_settings'] = 'General Settings';
 $lang['date_format'] = 'Date Format';
+$lang['nationality'] = 'Nationality';
 $lang['country_time_zone'] = 'Country Time Zone';
 $lang['short_message_service'] = 'Short Message Service';
 $lang['users'] = 'Users';
