@@ -95,6 +95,8 @@ class Customer extends Cl_Controller {
                 $customer_info = array();
                 $customer_info['name'] = getPlanText(htmlspecialcharscustom(escapeQuot($this->input->post($this->security->xss_clean('name')))));
                 $customer_info['phone'] = escapeQuot($this->input->post($this->security->xss_clean('phone')));
+                $customer_info['price'] = escapeQuot($this->input->post($this->security->xss_clean('price')));
+                $customer_info['nationality'] = escapeQuot($this->input->post($this->security->xss_clean('nationality')));
                 $customer_info['email'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('email')));
                 $customer_info['date_of_birth'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('date_of_birth')));
                 $customer_info['date_of_anniversary'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('date_of_anniversary')));
@@ -312,15 +314,17 @@ class Customer extends Cl_Controller {
                             for ($i = 4; $i <= $totalrows; $i++) {
                                 $name = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(0, $i)->getValue()));
                                 $phone = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(1, $i)->getValue()));
-                                $email = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(2, $i)->getValue()));
-                                $opening_balance = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(3, $i)->getValue()));
-                                $opening_balance_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(4, $i)->getValue()));
-                                $credit_limit = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(5, $i)->getValue()));
-                                $discount = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(6, $i)->getValue()));
-                                $price_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(7, $i)->getValue()));
-                                $address = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue()));
-                                $dob = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(9, $i)->getValue()));
-                                $doa = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue()));
+                                $price = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(2, $i)->getValue()));
+                                $email = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(3, $i)->getValue()));
+                                $opening_balance = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(4, $i)->getValue()));
+                                $opening_balance_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(5, $i)->getValue()));
+                                $credit_limit = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(6, $i)->getValue()));
+                                $discount = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(7, $i)->getValue()));
+                                $price_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue()));
+                                $address = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(9, $i)->getValue()));
+                                $dob = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue()));
+                                $doa = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(11, $i)->getValue()));
+                                $natinonality = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(12, $i)->getValue()));
 
                                 if ($name == '') {
                                     continue;
@@ -334,6 +338,7 @@ class Customer extends Cl_Controller {
                                 $customer_info = array();
                                 $customer_info['name'] = $name;
                                 $customer_info['phone'] = $phone;
+                                $customer_info['price'] = $price;
                                 $customer_info['email'] = $email;
                                 $customer_info['opening_balance'] = $opening_balance;
                                 $customer_info['opening_balance_type'] = $opening_balance_type;
@@ -343,6 +348,7 @@ class Customer extends Cl_Controller {
                                 $customer_info['address'] = $address;
                                 $customer_info['date_of_birth'] = $dob ? excelDateConverter($dob) : NULL;
                                 $customer_info['date_of_anniversary'] = $doa ? excelDateConverter($doa) : NULL;
+                                $customer_info['nationality'] = $natinonality;
                                 $customer_info['added_date'] = date('Y-m-d H:i:s');
                                 $customer_info['user_id'] = $this->session->userdata('user_id');
                                 $customer_info['company_id'] = $this->session->userdata('company_id');
