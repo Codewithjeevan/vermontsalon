@@ -1150,14 +1150,33 @@ class Sale extends Cl_Controller {
      * @param no
      * @return json
      */
-    function getAllCustomers(){
-        $result = $this->Common_model->getAllCustomersWithOpeningBalance();
+    // function getAllCustomers(){
+    //     $result = $this->Common_model->getAllCustomersWithOpeningBalance();
+    //     $response = [
+    //         'status' => 'success',
+    //         'data' => $result,
+    //     ];
+    //     $this->output->set_content_type('application/json')->set_output(json_encode($response));
+    // }
+
+    public function getCustomersAjax() {
+        $search = $this->input->get('search');
+        $page = (int) $this->input->get('page');
+        $perPage = 100;
+        $offset = ($page - 1) * $perPage;
+
+        $result = $this->Common_model->getCustomersPaginated($search, $perPage, $offset);
+        $totalCount = $this->Common_model->getCustomersCount($search);
+
         $response = [
-            'status' => 'success',
             'data' => $result,
+            'more' => ($offset + $perPage) < $totalCount
         ];
-        $this->output->set_content_type('application/json')->set_output(json_encode($response));
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
     }
+
 
     /**
      * findCustomerCreditLimit

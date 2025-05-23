@@ -614,7 +614,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                     </select>
                                 </div>
                                 <div class="customer_pannel">
-                                    <select id="walk_in_customer"  class="select2" tabindex="2">
+                                    <select id="walk_in_customer"  class="" tabindex="2">
                                     </select>
                                     <input type="hidden" name="old_sale_id" id="old_sale_id" value="<?php echo isset($sale_id) && $sale_id ? $sale_id : ''; ?>">
                                 </div>

@@ -456,6 +456,44 @@ class Common_model extends CI_Model {
         return $result;  
     }
 
+    public function getCustomersPaginated($search = '', $limit = 100, $offset = 0) {
+        $company_id = $this->session->userdata('company_id');
+
+        $this->db->select("c.id, c.name, c.phone, c.price as customer_price");
+        $this->db->from("tbl_customers c");
+        $this->db->where("c.company_id", $company_id);
+        $this->db->where("c.del_status", "Live");
+
+        if ($search) {
+            $this->db->group_start();
+            $this->db->like("c.name", $search);
+            $this->db->or_like("c.phone", $search);
+            $this->db->group_end();
+        }
+
+        $this->db->order_by("c.id", "DESC");
+        $this->db->limit($limit, $offset);
+        return $this->db->get()->result();
+    }
+
+    public function getCustomersCount($search = '') {
+        $company_id = $this->session->userdata('company_id');
+
+        $this->db->from("tbl_customers c");
+        $this->db->where("c.company_id", $company_id);
+        $this->db->where("c.del_status", "Live");
+
+        if ($search) {
+            $this->db->group_start();
+            $this->db->like("c.name", $search);
+            $this->db->or_like("c.phone", $search);
+            $this->db->group_end();
+        }
+
+        return $this->db->count_all_results();
+    }
+
+
     /**
      * getAllDebitCustomers
      * @access public
