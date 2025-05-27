@@ -874,6 +874,7 @@ class Report_model extends CI_Model {
         $company_id = $this->session->userdata('company_id');
 
         $this->db->select([
+            's.sale_date',
             's.date_time',
             's.id',
             's.sale_no',
@@ -929,6 +930,60 @@ class Report_model extends CI_Model {
         $query = $this->db->get();
         return $query->result();
     }
+
+
+
+    public function summarySaleReport($startMonth, $endMonth, $outlet_id = '')
+    {
+        $company_id = $this->session->userdata('company_id');
+
+        // Step 1: Get all payment methods
+        $payment_methods = $this->Common_model->getAllPaymentMethods();
+        $dynamicSelect = [];
+
+        foreach ($payment_methods as $method) {
+            $methodName = $method->name;
+            $alias = strtolower(str_replace(' ', '_', $methodName));
+            $alias = preg_replace('/[^a-z0-9_]/', '', $alias); // Remove special chars
+            $dynamicSelect[] = "SUM(CASE WHEN sp.payment_name = '{$methodName}' THEN sp.amount ELSE 0 END) AS total_{$alias}_amount";
+        }
+
+        $this->db->select([
+            's.sale_date',
+            's.date_time',
+            's.id',
+            's.sale_no',
+            's.total_payable',
+            's.total_discount_amount',
+            's.vat',
+            ...$dynamicSelect // add dynamically created payment columns
+        ], false);
+
+        $this->db->from('tbl_sales AS s');
+        $this->db->join('tbl_sale_payments AS sp', 'sp.sale_id = s.id', 'left');
+        $this->db->join('tbl_payment_methods AS pm', 'pm.id = sp.payment_id', 'left');
+
+        if ($startMonth !== '' && $endMonth !== '') {
+            $this->db->where('s.sale_date >=', $startMonth);
+            $this->db->where('s.sale_date <=', $endMonth);
+        } elseif ($startMonth !== '') {
+            $this->db->where('s.sale_date', $startMonth);
+        } elseif ($endMonth !== '') {
+            $this->db->where('s.sale_date', $endMonth);
+        }
+
+        if ($outlet_id !== '') {
+            $this->db->where('s.outlet_id', $outlet_id);
+        }
+
+        $this->db->where('s.delivery_status', 'Cash Received');
+        $this->db->where('s.company_id', $company_id);
+        $this->db->where('s.del_status', 'Live');
+
+        $this->db->group_by('s.id');
+        return $this->db->get()->result();
+    }
+
 
 
     /**
@@ -3159,6 +3214,7 @@ class Report_model extends CI_Model {
         $result = $query_result->result();
         return $result;
     }
+
 
      /**
      * getAllOtherSalePaymentZReport
