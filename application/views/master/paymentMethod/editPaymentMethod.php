@@ -83,6 +83,7 @@
                             <select <?php echo $payment_method_information->is_deletable == "No" ? 'disabled' : '' ?> name="account_type" id="account_type" class="form-control select2">
                                 <option><?php echo lang('select');?></option>
                                 <option value="Cash" <?php echo escape_output($payment_method_information->account_type == 'Cash' ? 'selected' : ''); ?>><?php echo lang('Cash');?></option>
+                                <option value="Groupon" <?php echo escape_output($payment_method_information->account_type == 'Groupon' ? 'selected' : ''); ?>><?php echo lang('Groupon');?></option>
                                 <option value="Bank_Account" <?php echo escape_output($payment_method_information->account_type == 'Bank_Account' ? 'selected' : ''); ?>><?php echo lang('Bank_Account');?></option>
                                 <option value="Card" <?php echo escape_output($payment_method_information->account_type == 'Card' ? 'selected' : ''); ?>><?php echo lang('Card');?></option>
                                 <option value="Mobile_Banking" <?php echo escape_output($payment_method_information->account_type == 'Mobile_Banking' ? 'selected' : ''); ?>><?php echo lang('Mobile_Banking');?></option>

@@ -863,6 +863,11 @@
                                             <?php echo lang('daily_summary_report'); ?>
                                         </a>
                                     </li>
+                                    <li data-access="summary_sales_report-249" class="menu_assign_class " module-is-hide="Summary Sales Report-YES">
+                                        <a class="child-menu " href="<?php echo base_url(); ?>Report/summarySalesReport">
+                                            <?php echo lang('summary_sales_report'); ?>
+                                        </a>
+                                    </li>
                                     <li data-access="sale_report-249" class="menu_assign_class" module-is-hide="Sale Report-YES">
                                         <a class="child-menu " href="<?php echo base_url(); ?>Report/saleReport">
                                             <?php echo lang('sale_report'); ?>

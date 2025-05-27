@@ -4800,10 +4800,10 @@ $(function () {
     });
 
     // Code optimize by Azhar ** Final **
-    $("#walk_in_customer").select2({
-        dropdownCssClass: 'bigdrop',
-        dropdownAutoWidth: true,
-    });
+    // $("#walk_in_customer").select2({
+    //     dropdownCssClass: 'bigdrop',
+    //     dropdownAutoWidth: true,
+    // });
 
 
     // Code optimize by Azhar ** Final **
@@ -5448,6 +5448,7 @@ $(function () {
                             ('0' + (date.getMonth() + 1)).slice(-2) + '-' + 
                             ('0' + date.getDate()).slice(-2);
         $(this).attr('data-get-date', formattedDate);
+        $('#invoice_date_show').text(formattedDate);
     });
     
 
@@ -7225,35 +7226,88 @@ $(function () {
     });
 
     // Code optimize by Azhar ** Final **
-    function getAllCustomers(customer_id='',customer_previous_due_modal='',if_ignore){
-        $.ajax({
-            url: base_url + "Sale/getAllCustomers",
-            method: "GET",
-            success: function (response) {
-                let option_customers = '';
-                option_customers += `<option value="">${select} ${customer}</option>`;
-                $.each(response.data, function (i, v) { 
-                    option_customers += `<option id="cid_${v.id}" data-same_or_diff_state="${v.same_or_diff_state}" discount="${v.discount}" price_type="${v.price_type}" data-previous_due="${v.opening_balance}" data-phone_number="${v.phone}"  value="${v.id}" data-customer-name="${v.name}" ${v.id == edit_sale_customer ? 'selected' : ''} > ${v.name} ${v.phone != null ? '(' + v.phone + ')' : ''}</option>`;
-                });
-                $('#walk_in_customer').html(option_customers);
-                if(edit_sale_customer){ 
-                    if(customer_id && (customer_id == edit_sale_customer)){
-                        $('#walk_in_customer').val(edit_sale_customer).change();
-                    }else{
-                        $('#walk_in_customer').val(customer_id).change();
+   function getAllCustomers(customer_id = '', customer_previous_due_modal = '', if_ignore) {
+        // If a customer_id is passed, fetch and preselect that customer
+        if (customer_id) {
+            $.ajax({
+                url: base_url + "Sale/getCustomersAjax",
+                method: "GET",
+                data: {
+                    search: '',
+                    page: 1
+                },
+
+                success: function (response) {
+                    const matchedCustomer = response.data.find(c => c.id == customer_id);
+                    if (matchedCustomer) {
+                        let option = new Option(
+                            `${matchedCustomer.name} ${matchedCustomer.phone ? '(' + matchedCustomer.phone + ')' : ''} ${matchedCustomer.customer_price ? '(' + matchedCustomer.customer_price + ')' : ''}`,
+                            matchedCustomer.id,
+                            true,
+                            true
+                        );
+                        $('#walk_in_customer').append(option).trigger('change');
                     }
-                }else{
-                    $('#walk_in_customer').val(customer_id).change();
+                    $('.loader1').slideUp('500');
+
+                    if (!if_ignore) {
+                        $("#add_customer_modal").removeClass("active");
+                        $('.pos__modal__overlay').fadeOut(300);
+                    }
+
+                    resetAddCustomerModalAfterAddOrClose();
                 }
-                $('.loader1').slideUp('500');
-                if(!if_ignore){
-                    $("#add_customer_modal").removeClass("active");
-                    $('.pos__modal__overlay').fadeOut(300);
-                }
-                resetAddCustomerModalAfterAddOrClose();
+            });
+        }
+    }
+
+
+    $(document).ready(function () {
+        $('#walk_in_customer').select2({
+                ajax: {
+                    url: base_url + "Sale/getCustomersAjax",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term || '', // If no input, send empty
+                            page: params.page || 1
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+
+                        return {
+                            results: data.data.map(function (v) {
+                                return {
+                                    id: v.id,
+                                    text: `${v.name} ${v.phone ? '(' + v.phone + ')' : ''} ${v.customer_price ? '(' + v.customer_price + ')' : ''}`,
+                                    ...v
+                                };
+                            }),
+                            pagination: {
+                                more: data.more
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                placeholder: "Select customer",
+                minimumInputLength: 0 // 🟢 Allow blank search
+            });
+
+        // 🔄 Force default fetch on dropdown open
+        $('#walk_in_customer').on('select2:open', function () {
+            let searchField = $('.select2-container--open .select2-search__field');
+            if (searchField.val() === '') {
+                searchField.trigger('input'); // 🟢 Trigger search manually for empty input
             }
         });
-    }
+    
+    });
+
+
+
     if(edit_mode == ''){
         getAllCustomers(default_customer, 0, '');
     }else{
@@ -7303,6 +7357,8 @@ $(function () {
                     let customer_gst_number = $('#customer_gst_number_modal').val();
                     let customer_discount_modal = $('#customer_discount_modal').val();
                     let customer_price_type = $('#customer_price_type').val();
+                    let customer_price = $('#customer_price_modal').val();
+                    let customer_nationality = $('#customer_nationality_modal').val();
                     let error = 0;
                     if (customer_name == "") {
                         $("#name_err_msg").text('The Name field is require');
@@ -7355,6 +7411,8 @@ $(function () {
                                 group_id: customer_group_id,
                                 customer_discount: customer_discount_modal,
                                 customer_price_type: customer_price_type,
+                                customer_price: customer_price,
+                                customer_nationality: customer_nationality,
                                 csrf_offpos: csrf_value_
                             },
                             success: function (response) {
@@ -7988,7 +8046,6 @@ $(function () {
         $('#delivery_partner_info').text('');
         $('#rounding').text('');
         localStorage['cart_html'] = '';
-        $('#open_date_picker').attr('data-get-date', '');
     }
 
     // Code optimize by Azhar ** Final **
@@ -9951,6 +10008,8 @@ $(function () {
                 $('#customer_previous_due_modal').val(response.opening_balance);
                 $('#opening_balance_type').val(response.opening_balance_type);
                 $('#customer_credit_limit_modal').val(response.credit_limit);
+                $('#customer_price_modal').val(response.price);
+                $('#customer_nationality_modal').val(response.nationality);
                 $('#customer_delivery_address_modal').val(response.address);
                 if(response.group_id != 0){
                     $('#customer_group_id_modal').val(response.group_id).change();

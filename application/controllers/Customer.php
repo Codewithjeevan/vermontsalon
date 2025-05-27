@@ -28,6 +28,7 @@ class Customer extends Cl_Controller {
         parent::__construct();
         $this->load->model('Authentication_model');
         $this->load->model('Common_model');
+        $this->load->model('Customer_model');
         $this->load->library('form_validation');
         $this->load->library('excel'); //load PHPExcel library
         $this->Common_model->setDefaultTimezone();
@@ -47,7 +48,7 @@ class Customer extends Cl_Controller {
             $function = "view";
         }elseif($segment_2=="deleteCustomer"){
             $function = "delete";
-        }elseif($segment_2=="customers" || $segment_2 == "creditCustomers" || $segment_2 == "debitCustomers" || $segment_2 == "sendSMSToDueCustomer" || $segment_2 == "sendSMSForAllDueCustomer"){
+        }elseif($segment_2=="customers" || $segment_2 == "creditCustomers" || $segment_2 == "debitCustomers" || $segment_2 == "sendSMSToDueCustomer" || $segment_2 == "sendSMSForAllDueCustomer" || $segment_2 == "getAjaxData"){
             $function = "list";
         }elseif($segment_2=="uploadCustomer" || $segment_2=="ExcelDataAddCustomers" ){
             $function = "bulk_upload";
@@ -95,6 +96,8 @@ class Customer extends Cl_Controller {
                 $customer_info = array();
                 $customer_info['name'] = getPlanText(htmlspecialcharscustom(escapeQuot($this->input->post($this->security->xss_clean('name')))));
                 $customer_info['phone'] = escapeQuot($this->input->post($this->security->xss_clean('phone')));
+                $customer_info['price'] = escapeQuot($this->input->post($this->security->xss_clean('price')));
+                $customer_info['nationality'] = escapeQuot($this->input->post($this->security->xss_clean('nationality')));
                 $customer_info['email'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('email')));
                 $customer_info['date_of_birth'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('date_of_birth')));
                 $customer_info['date_of_anniversary'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('date_of_anniversary')));
@@ -161,6 +164,71 @@ class Customer extends Cl_Controller {
 
     
     /**
+     * getAjaxData
+     * @access public
+     * @param no
+     * @return json
+     */
+    public function getAjaxData() {
+        $outlet_id = $this->session->userdata('outlet_id');
+        $list = $this->Customer_model->make_datatables($outlet_id);
+        $draw = intval($this->Customer_model->getDrawData());
+        $totalrecord = $this->Customer_model->get_all_data($outlet_id);
+
+        $data = array();
+        if ($list && !empty($list)) {
+            $i = $totalrecord;
+        }
+        $length = count($list);        
+
+        foreach ($list as $key => $cust){
+            $serial_number = ($draw - 1) * $length + ($key + 1);
+            $html = '';
+            if ($cust->name != "Walk-in Customer") {
+                $html .= '<div class="btn_group_wrap">
+                    <a class="btn btn-cyan" href="' . base_url() . 'Customer/customerDetails/' . $this->custom->encrypt_decrypt($cust->id, 'encrypt') . '" data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-original-title="' . lang('details') . '">
+                    <i class="far fa-eye"></i>
+                    </a>
+                    <a class="btn btn-warning" href="' . base_url() . 'Customer/addEditCustomer/' . $this->custom->encrypt_decrypt($cust->id, 'encrypt') . '" data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-original-title="' . lang('edit') . '">
+                    <i class="far fa-edit"></i>
+                    </a>
+                    <a class="delete btn btn-danger" href="' . base_url() . 'Customer/deleteCustomer/' . $this->custom->encrypt_decrypt($cust->id, 'encrypt') . '" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="' . lang('delete') . '">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </a>
+                </div>';
+            }
+
+            $sub_array =  array();
+            $sub_array[] = $cust->id;
+            $sub_array[] = $cust->name;
+            $sub_array[] = $cust->phone;
+            $sub_array[] = $cust->email;
+            if($cust->opening_balance == 0){
+                $sub_array[] = getAmtCustom(0);
+            }else if($cust->opening_balance > 0){
+                $sub_array[] = getAmtCustom($cust->opening_balance).' (Debit)';
+            }else{
+                $sub_array[] = getAmtCustom(absCustom($cust->opening_balance)).' (Credit)';
+            }
+            $sub_array[] = $cust->added_by;
+            $sub_array[] = $cust->added_date;
+            // $sub_array[] = dateFormat($value->added_date);
+            $sub_array[] =  $html;
+            $data[] = $sub_array;
+        }
+        $output = array(
+            "draw" => $draw,
+            "recordsTotal" => $totalrecord,
+            "recordsFiltered" => $this->Customer_model->get_filtered_data($outlet_id),
+            "data" => $data
+        );
+        echo json_encode($output);
+    }
+
+    
+    /**
      * customerDetails
      * @access public
      * @param int
@@ -169,6 +237,7 @@ class Customer extends Cl_Controller {
     public function customerDetails($id) {
         $id = $this->custom->encrypt_decrypt($id, 'decrypt');
         $data['customer_details'] = $this->Common_model->getDataById($id, "tbl_customers");
+        $data['customer_history'] = $this->Common_model->getSaleInvoiceByCustomerId($id);
         $data['main_content'] = $this->load->view('master/customer/customerDetails', $data, TRUE);
         $this->load->view('userHome', $data);
     }
@@ -195,8 +264,8 @@ class Customer extends Cl_Controller {
      */
     public function customers() {
         $data = array();
-        $data['customers'] = $this->Common_model->getAllCustomersWithOpeningBalance();
-        $data['main_content'] = $this->load->view('master/customer/customers', $data, TRUE);
+        $outlet_id = $this->session->userdata('outlet_id');
+        $data['main_content'] = $this->load->view('master/customer/customers', $data,TRUE);
         $this->load->view('userHome', $data);
     }
 
@@ -312,15 +381,17 @@ class Customer extends Cl_Controller {
                             for ($i = 4; $i <= $totalrows; $i++) {
                                 $name = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(0, $i)->getValue()));
                                 $phone = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(1, $i)->getValue()));
-                                $email = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(2, $i)->getValue()));
-                                $opening_balance = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(3, $i)->getValue()));
-                                $opening_balance_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(4, $i)->getValue()));
-                                $credit_limit = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(5, $i)->getValue()));
-                                $discount = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(6, $i)->getValue()));
-                                $price_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(7, $i)->getValue()));
-                                $address = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue()));
-                                $dob = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(9, $i)->getValue()));
-                                $doa = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue()));
+                                $price = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(2, $i)->getValue()));
+                                $email = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(3, $i)->getValue()));
+                                $opening_balance = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(4, $i)->getValue()));
+                                $opening_balance_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(5, $i)->getValue()));
+                                $credit_limit = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(6, $i)->getValue()));
+                                $discount = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(7, $i)->getValue()));
+                                $price_type = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(8, $i)->getValue()));
+                                $address = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(9, $i)->getValue()));
+                                $dob = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(10, $i)->getValue()));
+                                $doa = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(11, $i)->getValue()));
+                                $natinonality = htmlspecialcharscustom(trim_checker($objWorksheet->getCellByColumnAndRow(12, $i)->getValue()));
 
                                 if ($name == '') {
                                     continue;
@@ -334,6 +405,7 @@ class Customer extends Cl_Controller {
                                 $customer_info = array();
                                 $customer_info['name'] = $name;
                                 $customer_info['phone'] = $phone;
+                                $customer_info['price'] = $price;
                                 $customer_info['email'] = $email;
                                 $customer_info['opening_balance'] = $opening_balance;
                                 $customer_info['opening_balance_type'] = $opening_balance_type;
@@ -343,6 +415,7 @@ class Customer extends Cl_Controller {
                                 $customer_info['address'] = $address;
                                 $customer_info['date_of_birth'] = $dob ? excelDateConverter($dob) : NULL;
                                 $customer_info['date_of_anniversary'] = $doa ? excelDateConverter($doa) : NULL;
+                                $customer_info['nationality'] = $natinonality;
                                 $customer_info['added_date'] = date('Y-m-d H:i:s');
                                 $customer_info['user_id'] = $this->session->userdata('user_id');
                                 $customer_info['company_id'] = $this->session->userdata('company_id');
