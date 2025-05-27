@@ -5448,6 +5448,7 @@ $(function () {
                             ('0' + (date.getMonth() + 1)).slice(-2) + '-' + 
                             ('0' + date.getDate()).slice(-2);
         $(this).attr('data-get-date', formattedDate);
+        $('#invoice_date_show').text(formattedDate);
     });
     
 
@@ -8045,7 +8046,6 @@ $(function () {
         $('#delivery_partner_info').text('');
         $('#rounding').text('');
         localStorage['cart_html'] = '';
-        $('#open_date_picker').attr('data-get-date', '');
     }
 
     // Code optimize by Azhar ** Final **

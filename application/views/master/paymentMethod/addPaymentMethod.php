@@ -81,6 +81,7 @@
                             <select name="account_type" id="account_type" class="form-control select2">
                                 <option><?php echo lang('select');?></option>
                                 <option <?php echo set_select('account_type', 'Cash'); ?> value="Cash"><?php echo lang('Cash');?></option>
+                                <option <?php echo set_select('account_type', 'Groupon'); ?> value="Groupon"><?php echo lang('Groupon');?></option>
                                 <option <?php echo set_select('account_type', 'Bank_Account'); ?> value="Bank_Account"><?php echo lang('Bank_Account');?></option>
                                 <option <?php echo set_select('account_type', 'Card'); ?> value="Card"><?php echo lang('Card');?></option>
                                 <option <?php echo set_select('account_type', 'Mobile_Banking'); ?> value="Mobile_Banking"><?php echo lang('Mobile_Banking');?></option>

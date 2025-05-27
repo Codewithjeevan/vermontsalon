@@ -801,14 +801,17 @@ $company_short_name =  $getCompanyInfo->short_name;
                                 <span class="mr-10">
                                     <iconify-icon data-tippy-content="Note" id="open_note_modal" icon="solar:notebook-linear" class="op_cursor_pointer bottom-iconify-color" width="22"></iconify-icon>
                                 </span>
-                                <span class="mr-10">
-                                    <iconify-icon data-get-date="" data-tippy-content="Invoice Date" id="open_date_picker" icon="solar:calendar-broken" class="icon_pick_date input-group date op_cursor_pointer datepicker_custom bottom-iconify-color" width="22"></iconify-icon>
-                                </span>
                                 <?php if(!moduleIsHideCheck('Promotion-YES')){ ?>
                                 <span class="mr-10">
                                     <iconify-icon data-tippy-content="Coupon Discount" icon="gridicons:coupon" class="op_cursor_pointer bottom-iconify-color" id="coupon_discount_modal" width="22"></iconify-icon>
                                 </span>
                                 <?php } ?>
+                                <span class="align-items-center d-flex mr-10">
+                                    <span class="mr-5">
+                                    <iconify-icon data-get-date="" data-tippy-content="Invoice Date" id="open_date_picker" icon="solar:calendar-broken" class="icon_pick_date input-group date op_cursor_pointer datepicker_custom bottom-iconify-color" width="22"></iconify-icon>
+                                    </span>
+                                    <span class="p-l-3" id="invoice_date_show"><?php echo date('Y-m-d'); ?></span>
+                                </span>
                             </div>
                             <div class="item">
                                 <span class="cart-footer-title"><?php echo lang('total'); ?>: </span>
@@ -3048,6 +3051,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                     <li data-access="daily_summary_report-249" class="menu_assign_class " module-is-hide="Daily Summary Report-YES">
                         <a class="child-menu " href="<?php echo base_url(); ?>Report/dailySummaryReport">
                             <?php echo lang('daily_summary_report'); ?>
+                        </a>
+                    </li>
+                    <li data-access="summary_sales_report-249" class="menu_assign_class">
+                        <a href="<?php echo base_url(); ?>Report/summarySalesReport">
+                            <?php echo lang('summary_sales_report'); ?>
                         </a>
                     </li>
                     <li data-access="sale_report-249" class="menu_assign_class" module-is-hide="Sale Report-YES">

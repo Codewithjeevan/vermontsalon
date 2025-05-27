@@ -2019,6 +2019,18 @@ class Common_model extends CI_Model {
           ORDER BY sort_id")->result();
         return $result;
     }
+
+    
+    public function getAllPaymentMethods(){
+        $company_id = $this->session->userdata('company_id');
+        $this->db->select('*');
+        $this->db->from('tbl_payment_methods');
+        $this->db->where("status", 'Enable');
+        $this->db->where("company_id", $company_id);
+        $this->db->where("del_status", 'Live');
+        $this->db->order_by("sort_id");
+        return $this->db->get()->result();
+    }
     
     /**
      * updateInformation
@@ -2561,16 +2573,31 @@ class Common_model extends CI_Model {
      * @param int
      * @return object
      */
-    public function getSaleInvoiceByCustomerId($customer_id){
+    public function getSaleInvoiceByCustomerId($customer_id) {
         $company_id = $this->session->userdata('company_id');
-        $this->db->select('id,sale_no,total_payable, sale_date, total_items');
-        $this->db->from('tbl_sales');
-        $this->db->where('customer_id', $customer_id);
-        $this->db->where('company_id', $company_id);
-		$this->db->where('del_status','Live');
+
+        $this->db->select("
+            s.id,
+            s.sale_no,
+            s.total_payable,
+            s.sale_date,
+            s.total_items,
+            GROUP_CONCAT(DISTINCT i.name ORDER BY i.name SEPARATOR ', ') AS service_names,
+            GROUP_CONCAT(DISTINCT u.full_name ORDER BY u.full_name SEPARATOR ', ') AS seller_names
+        ");
+        $this->db->from('tbl_sales s');
+        $this->db->join('tbl_sales_details sd', 'sd.sales_id = s.id', 'left');
+        $this->db->join('tbl_items i', 'i.id = sd.food_menu_id', 'left');
+        $this->db->join('tbl_users u', 'u.id = sd.item_seller_id', 'left');
+        $this->db->where('s.customer_id', $customer_id);
+        $this->db->where('s.company_id', $company_id);
+        $this->db->where('s.del_status', 'Live');
+        $this->db->group_by('s.id'); // Group by sales id to aggregate properly
+
         $result = $this->db->get()->result();
         return $result;
     }
+
 
 
     /**
