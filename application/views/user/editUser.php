@@ -140,6 +140,14 @@
                                 <span class="error_paragraph"><?php echo form_error('commission'); ?></span>
                             </div>
                         <?php } ?>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="applyinall" name="applyinall">
+                            <label class="form-check-label" for="applyinall">
+                                Apply in all previous sales items
+                            </label>
+                        </div>
+                        
                     </div>
 
                     <?php 

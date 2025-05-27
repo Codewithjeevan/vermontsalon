@@ -149,18 +149,27 @@ class User extends Cl_Controller {
                 if($id != '1' && $this->input->post($this->security->xss_clean('designation')) != '' && $this->input->post($this->security->xss_clean('designation')) != "Select"){
                     $user_info['role'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('designation')));
                 }
-                $user_info['commission'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('commission')));
+                $user_info['commission'] = $commission = htmlspecialcharscustom($this->input->post($this->security->xss_clean('commission')));
                 $user_info['discount_permission_code'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('discount_permission_code')));
                 $user_info['sale_price_modify'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('sale_price_modify')));
                 $user_info['discount_amt'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('discount_amt')));
                 $user_info['start_date'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('start_date')));
                 $user_info['end_date'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('end_date')));
                 $outlet_id = $this->input->post($this->security->xss_clean('outlet_id'));
+                $applyinall = $this->input->post($this->security->xss_clean('applyinall'));
                 if($outlet_id){
                     $outlet_list = implode(',', $outlet_id); 
                     $user_info['outlet_id'] = $outlet_list;
                 }
+                
                 $commission_item_type = $this->input->post($this->security->xss_clean('commission_item_type'));
+                
+                if($applyinall == '1'){
+                    $this->db->where('item_seller_id',$id);
+                    $this->db->where_in('item_type', $commission_item_type);
+                    $this->db->update('tbl_sales_details', array('commission_percent' => $commission ? $commission : 0));
+                }
+                
                 $commission_item_type = $commission_item_type ? implode(',', $commission_item_type) : NULL; 
                 $user_info['commission_item_type'] = $commission_item_type;
                 $user_info['will_login'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('will_login')));
