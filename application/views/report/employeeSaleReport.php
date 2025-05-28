@@ -103,28 +103,15 @@
                                     <th><?php echo lang('items'); ?></th>
                                     <th class="text-center"><?php echo lang('subtotal'); ?></th>
                                 <?php }?>
-                                <th class="text-center"><?php echo lang('commission_percentage'); ?></th>
-                                <th><?php echo lang('commission_amount'); ?></th>
+                                <!-- <th class="text-center"><php echo lang('commission_percentage'); ?></th> -->
+                                <!-- <th><php echo lang('commission_amount'); ?></th> -->
                             </tr>
                         </thead>
                         <tbody>
                             <?php
                             $pGrandTotal = 0;
-                            $commissionTotal = 0;
-                            $commission = 0;
                             if (isset($employeeSaleReport)):
                                 foreach ($employeeSaleReport as $key => $value) {
-
-
-                                    $key++;
-                                    if($product_invoice == 'Product_Wise'){
-                                        $commission = ($value->total_payable * $value->commission) / 100;
-                                    }else if($product_invoice == 'Invoice_Wise'){
-                                        $commission = ($value->sub_total * $value->commission) / 100;
-                                    }else{
-                                        $commission = ($value->total_payable * $value->commission) / 100;
-                                    }
-                                    $commissionTotal += $commission;
                                     ?>
                                     <tr>
                                         <td><?php echo $key; ?></td>
@@ -161,23 +148,11 @@
                                         <?php } else{?>
                                             <td class="text-center"><?php echo getAmtCustom($value->total_payable) ?></td>
                                         <?php } ?>
-                                        <td class="text-center"><?php echo escape_output($value->commission ? $value->commission . '%' : '') ?></td>
-                                        <td><?php echo getAmtCustom($commission) ?></td>
                                     </tr>
                                     <?php
                                 }
                             endif;
                             ?>
-                            <tr>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
-                                <th class="text-center"><?php echo lang('total_commisssion');?></th>
-                                <th><?php echo getAmtCustom($commissionTotal);?></th>
-                            </tr>
                         </tbody>
                     </table>
                 </div>

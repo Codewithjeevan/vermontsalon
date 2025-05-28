@@ -93,6 +93,35 @@
                             </div>
                         <?php } ?>
                     </div>
+
+                    <!-- Added commission item wise -->
+                        
+                        <div class="col-md-6 col-lg-4 mb-3 multiple_select_placeholder">
+                            <div class="form-group">
+                                <label>
+                                    <?php echo lang('commission_item_type'); ?>
+                                </label>
+                                <select name="commission_item_type[]" id="item_type" class="form-control select2" multiple data-placeholder="<?php echo lang('select'); ?>">
+                                    <option><?php echo lang('select');?></option>
+                                    <option value="General_Product" <?= (isset($user_details->commission_item_type) && in_array("General_Product", explode(",", $user_details->commission_item_type)) ? 'selected' : ''); ?> ><?php echo lang('general_product'); ?></option>
+                                    <option value="Variation_Product" <?= (isset($user_details->commission_item_type) && in_array("Variation_Product", explode(",", $user_details->commission_item_type)) ? 'selected' : ''); ?> ><?php echo lang('variation_product'); ?></option>
+                                    <option value="IMEI_Product" <?= (isset($user_details->commission_item_type) && in_array("IMEI_Product", explode(",", $user_details->commission_item_type)) ? 'selected' : ''); ?> ><?php echo lang('imei_product'); ?></option>
+                                    <option value="Serial_Product" <?= (isset($user_details->commission_item_type) && in_array("Serial_Product", explode(",", $user_details->commission_item_type)) ? 'selected' : ''); ?> ><?php echo lang('serial_product'); ?></option>
+                                    <option value="Medicine_Product" <?= (isset($user_details->commission_item_type) && in_array("Medicine_Product", explode(",", $user_details->commission_item_type)) ? 'selected' : ''); ?> ><?php echo lang('Medicine_Product'); ?></option>
+                                    <option value="Installment_Product" <?= (isset($user_details->commission_item_type) && in_array("Installment_Product", explode(",", $user_details->commission_item_type)) ? 'selected' : ''); ?> ><?php echo lang('installment_product'); ?></option>
+                                    <option value="Service_Product" <?= (isset($user_details->commission_item_type) && in_array("Service_Product", explode(",", $user_details->commission_item_type)) ? 'selected' : ''); ?> ><?php echo lang('service_product'); ?></option>
+                                    <option value="Combo_Product" <?= (isset($user_details->commission_item_type) && in_array("Combo_Product", explode(",", $user_details->commission_item_type)) ? 'selected' : ''); ?> ><?php echo lang('Combo_Product'); ?></option>
+                                </select>
+                            </div>
+                            <?php if (form_error('commission_item_type')) { ?>
+                                <div class="callout callout-danger my-2">
+                                    <span class="error_paragraph"><?php echo form_error('commission_item_type'); ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+
+                        <!-- End of commission item type -->
+
                     <div class="col-md-6 col-lg-4 mb-3">
                         <div class="form-group">
                             <div class="d-flex justify-content-between align-items-center">
@@ -111,6 +140,14 @@
                                 <span class="error_paragraph"><?php echo form_error('commission'); ?></span>
                             </div>
                         <?php } ?>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="applyinall" name="applyinall">
+                            <label class="form-check-label" for="applyinall">
+                                Apply in all previous sales items
+                            </label>
+                        </div>
+                        
                     </div>
 
                     <?php 

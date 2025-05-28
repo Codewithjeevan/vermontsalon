@@ -2130,6 +2130,27 @@ class Common_model extends CI_Model {
         $this->db->where("del_status", 'Live');
         return $this->db->get()->result();
     }
+
+    /**
+     * getCommissionByItemType
+     * @access public
+     * @param no
+     * @return object
+     * Added By Azhar
+     */
+   public function getCommissionByItemType($userid, $item_type) {
+        $company_id = $this->session->userdata('company_id');
+        
+        $this->db->select('*');
+        $this->db->from("tbl_users");
+        $this->db->where("id", $userid);
+        $this->db->where("company_id", $company_id);
+        $this->db->where("del_status", 'Live');
+        $this->db->where("FIND_IN_SET('{$item_type}', commission_item_type) >", 0, false);
+
+        return $this->db->get()->row();
+    }
+
     /**
      * change_status_notification
      * @access public

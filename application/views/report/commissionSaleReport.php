@@ -119,7 +119,7 @@
                                     $key++;
                                     $totalPayable += $value->total_payable;
                                     if($product_invoice == 'Product_Wise'){
-                                        $commission = ($value->total_payable * $value->commission) / 100;
+                                        $commission = ($value->total_payable * $value->commission_percent) / 100;
                                     }else if($product_invoice == 'Invoice_Wise'){
                                         $commission = ($value->sub_total * $value->commission) / 100;
                                     }else{
@@ -162,7 +162,7 @@
                                         <?php } else{?>
                                             <td class="text-center"><?php echo getAmtCustom($value->total_payable) ?></td>
                                         <?php } ?>
-                                        <td class="text-center"><?php echo escape_output($value->commission ? $value->commission . '%' : '') ?></td>
+                                        <td class="text-center"><?php echo escape_output($value->commission_percent ? $value->commission_percent . '%' : '') ?></td>
                                         <td><?php echo getAmtCustom($commission) ?></td>
                                     </tr>
                                     <?php
@@ -244,7 +244,7 @@
                     <select  class="form-control select2 op_width_100_p" id="product_invoice" name="product_invoice">
                         <!-- <option <?php echo escape_output($product_invoice) == 'Invoice_Wise' ? 'selected' : ''  ?> value="Invoice_Wise"><?php echo lang('invoice_wise'); ?></option> -->
                         <option <?php echo escape_output($product_invoice) == 'Product_Wise' ? 'selected' : ''  ?> value="Product_Wise"><?php echo lang('product_wise'); ?></option>
-                        <option <?php echo escape_output($product_invoice) == 'Combo_Product_Wise' ? 'selected' : ''  ?> value="Combo_Product_Wise"><?php echo lang('Combo_Product_Wise'); ?></option>
+                        <!-- <option <?php echo escape_output($product_invoice) == 'Combo_Product_Wise' ? 'selected' : ''  ?> value="Combo_Product_Wise"><?php echo lang('Combo_Product_Wise'); ?></option> -->
                     </select>
                 </div>
             </div>
@@ -268,6 +268,21 @@
                             <?php
                         endforeach;
                         ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 mb-2">
+                <div class="form-group">
+                    <select  class="form-control select2 ir_w_100" id="item_type" name="item_type">
+                        <option value="" <?php echo escape_output(@$item_type) == '' ? 'selected' : ''  ?> ><?php echo lang('all'); ?></option>
+                        <option value="General_Product" <?php echo escape_output(@$item_type) == 'General_Product' ? 'selected' : ''  ?> ><?php echo lang('general_product'); ?></option>
+                        <option value="Variation_Product" <?php echo escape_output(@$item_type) == 'Variation_Product' ? 'selected' : ''  ?> ><?php echo lang('variation_product'); ?></option>
+                        <option value="IMEI_Product" <?php echo escape_output(@$item_type) == 'IMEI_Product' ? 'selected' : ''  ?> ><?php echo lang('imei_product'); ?></option>
+                        <option value="Serial_Product" <?php echo escape_output(@$item_type) == 'Serial_Product' ? 'selected' : ''  ?> ><?php echo lang('serial_product'); ?></option>
+                        <option value="Medicine_Product" <?php echo escape_output(@$item_type) == 'Medicine_Product' ? 'selected' : ''  ?> ><?php echo lang('Medicine_Product'); ?></option>
+                        <option value="Installment_Product" <?php echo escape_output(@$item_type) == 'Installment_Product' ? 'selected' : ''  ?> ><?php echo lang('installment_product'); ?></option>
+                        <option value="Service_Product" <?php echo escape_output(@$item_type) == 'Service_Product' ? 'selected' : ''  ?> ><?php echo lang('service_product'); ?></option>
+                        <option value="Combo_Product" <?php echo escape_output(@$item_type) == 'Combo_Product' ? 'selected' : ''  ?> ><?php echo lang('Combo_Product'); ?></option>
                     </select>
                 </div>
             </div>

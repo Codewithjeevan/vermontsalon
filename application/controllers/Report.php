@@ -381,7 +381,7 @@ class Report extends Cl_Controller {
             }else if($product_invoice == 'Invoice_Wise'){
                 $data['employeeSaleReport'] = $this->Report_model->saleWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id, $product_invoice);
             }else{
-                $data['employeeSaleReport'] = $this->Report_model->productWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id, $product_invoice);
+                $data['employeeSaleReport'] = $this->Report_model->productWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id);
             }
             $data['userInfo'] = getUserName($user_id);
         }
@@ -408,16 +408,18 @@ class Report extends Cl_Controller {
             $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
             $user_id = htmlspecialcharscustom($this->input->post($this->security->xss_clean('user_id')));
             $product_invoice = htmlspecialcharscustom($this->input->post($this->security->xss_clean('product_invoice')));
+            $item_type = htmlspecialcharscustom($this->input->post($this->security->xss_clean('item_type')));
             $data['user_id'] = $user_id;
             $data['start_date'] = $start_date;
             $data['end_date'] = $end_date;
             $data['product_invoice'] = $product_invoice;
+            $data['item_type'] = @$item_type;
             if($product_invoice == 'Combo_Product_Wise'){
                 $data['employeeSaleReport'] = $this->Report_model->commboWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id, $product_invoice);
             }else if($product_invoice == 'Invoice_Wise'){
                 $data['employeeSaleReport'] = $this->Report_model->saleWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id, $product_invoice);
             }else{
-                $data['employeeSaleReport'] = $this->Report_model->productWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id, $product_invoice);
+                $data['employeeSaleReport'] = $this->Report_model->productWiseEmployeeReport($start_date, $end_date, $outlet_id, $user_id, $item_type);
             }
             $data['userInfo'] = getUserName($user_id);
         }

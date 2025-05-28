@@ -1368,9 +1368,9 @@ class Report_model extends CI_Model {
      * @param int
      * @return object
      */
-    public function productWiseEmployeeReport($startMonth = '', $endMonth = '', $outlet_id='', $user_id = '') {
+    public function productWiseEmployeeReport($startMonth = '', $endMonth = '', $outlet_id='', $user_id = '', $item_type = '') {
         $company_id = $this->session->userdata('company_id');
-        $this->db->select('s.date_time,s.sale_no,u.commission,u.full_name as emp_name, c.name as customer_name, c.phone as customer_phone, i.name as item_name, i.code,sd.qty,sd.menu_unit_price,sd.menu_price_with_discount as total_payable, ut.unit_name');
+        $this->db->select('s.date_time,s.sale_no,u.commission,u.full_name as emp_name, c.name as customer_name, c.phone as customer_phone, i.name as item_name, i.code,sd.qty,sd.menu_unit_price,sd.menu_price_with_discount as total_payable, ut.unit_name, sd.commission_percent');
         $this->db->from('tbl_sales_details sd');
         $this->db->join('tbl_sales s', 's.id = sd.sales_id', 'left');
         $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
@@ -1386,6 +1386,9 @@ class Report_model extends CI_Model {
         }
         if ($startMonth == '' && $endMonth != '') {
             $this->db->where('s.sale_date', $endMonth);
+        }
+        if($item_type != ''){
+            $this->db->where('sd.item_type', $item_type);
         }
         if($user_id != ''){
             $this->db->where('sd.item_seller_id', $user_id);

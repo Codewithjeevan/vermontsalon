@@ -678,6 +678,7 @@ $lang['tip_amount'] = 'Tip Amount';
 $lang['position'] = 'Position';
 $lang['edit_table'] = 'Edit Table';
 $lang['general_settings'] = 'General Settings';
+$lang['commission_item_type'] = 'Commission Item Type';
 $lang['date_format'] = 'Date Format';
 $lang['nationality'] = 'Nationality';
 $lang['id'] = 'Id';
