@@ -179,7 +179,7 @@
     <!-- This file coming from  this path : applications/views/updater/ -->
         <?php $this->view('updater/hidden-input')?>
 
-        <div class="main-preloader">
+        <div class="main-preloader"  style="display:none;">
             <div class="loadingio-spinner-spin-nq4q5u6dq7r"><div class="ldio-x2uulkbinbj">
             <div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div>
             </div></div>

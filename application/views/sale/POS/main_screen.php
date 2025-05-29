@@ -211,7 +211,7 @@ $company_short_name =  $getCompanyInfo->short_name;
 
     <input type="hidden" id="fccpath" value="<?php echo $s_status?>">
     <!-- Preloader HTML -->
-    <div class="main-preloader">
+    <div class="main-preloader"  style="display:none;">
         <div class="loadingio-spinner-spin-nq4q5u6dq7r"><div class="ldio-x2uulkbinbj">
         <div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div></div></div>
     </div>
