@@ -933,7 +933,7 @@ class Report_model extends CI_Model {
 
 
 
-    public function summarySaleReport($startMonth, $endMonth, $outlet_id = '')
+   public function summarySaleReport($startMonth, $endMonth, $outlet_id = '')
     {
         $company_id = $this->session->userdata('company_id');
 
@@ -948,16 +948,12 @@ class Report_model extends CI_Model {
             $dynamicSelect[] = "SUM(CASE WHEN sp.payment_name = '{$methodName}' THEN sp.amount ELSE 0 END) AS total_{$alias}_amount";
         }
 
-        $this->db->select([
+        $this->db->select(array_merge([
             's.sale_date',
-            's.date_time',
-            's.id',
-            's.sale_no',
-            's.total_payable',
-            's.total_discount_amount',
-            's.vat',
-            ...$dynamicSelect // add dynamically created payment columns
-        ], false);
+            'SUM(s.total_payable) AS total_payable',
+            'SUM(s.total_discount_amount) AS total_discount_amount',
+            'SUM(s.vat) AS total_vat'
+        ], $dynamicSelect), false);
 
         $this->db->from('tbl_sales AS s');
         $this->db->join('tbl_sale_payments AS sp', 'sp.sale_id = s.id', 'left');
@@ -979,11 +975,11 @@ class Report_model extends CI_Model {
         $this->db->where('s.delivery_status', 'Cash Received');
         $this->db->where('s.company_id', $company_id);
         $this->db->where('s.del_status', 'Live');
+        $this->db->group_by('s.sale_date');
+        $this->db->order_by('s.sale_date', 'asc');
 
-        $this->db->group_by('s.id');
         return $this->db->get()->result();
     }
-
 
 
     /**

@@ -316,9 +316,7 @@ class Sale_model extends CI_Model {
     $this->db->from('tbl_sales');
     $this->db->join('tbl_customers', 'tbl_customers.id = tbl_sales.customer_id', 'left');
     $this->db->where("tbl_sales.outlet_id", $outlet_id);
-    if($this->session->userdata('role') != '1'){
-      $this->db->where("tbl_sales.user_id", $user_id);
-    }
+
     if($date_c!=''){
       $this->db->where("tbl_sales.sale_date", $date_c);
     }
