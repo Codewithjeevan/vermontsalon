@@ -103,7 +103,7 @@
                             foreach ($saleReport as $value):
                                 $totalPayable += $value->total_payable;
                                 $disAmount += $value->total_discount_amount;
-                                $totalTax += $value->vat;
+                                $totalTax += @$value->total_vat;
                         ?>
                             <tr>
                                 <td><?= date('d-m-Y', strtotime($value->sale_date)) ?></td>
@@ -120,7 +120,7 @@
                                     <td class="text-center"><?= getAmtCustom($amt) ?></td>
                                 <?php endforeach; ?>
 
-                                <td class="text-center"><?= getAmtCustom($value->vat) ?></td>
+                                <td class="text-center"><?= getAmtCustom($value->total_vat) ?></td>
                             </tr>
                         <?php 
                             endforeach;
