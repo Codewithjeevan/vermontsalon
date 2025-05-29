@@ -15,7 +15,9 @@
     $site_link = '';
     $site_logo = '';
     $site_favicon = '';
-    if($wl){
+    if(isset($page_title)){
+        $site_name = $page_title;
+    }else if($wl){
         if($wl->site_name){
             $site_name = $wl->site_name;
         }

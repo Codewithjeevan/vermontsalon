@@ -98,6 +98,7 @@ class Customer_model extends CI_Model
     public function make_query()
     {
         $company_id = $this->session->userdata('company_id');
+        $search_value = $_POST["search"]["value"];
 
         $this->db->select("
         c.id, 
@@ -158,6 +159,13 @@ class Customer_model extends CI_Model
         );
 
         $this->db->join("tbl_users u", "u.id = c.user_id", "left");
+        if ($search_value != "") {
+            $this->db->group_start();
+            $this->db->like("c.name", $search_value);
+            $this->db->or_like("c.phone", $search_value);
+            $this->db->or_like("c.email", $search_value);
+            $this->db->group_end();
+        }
 
         $this->db->where("c.company_id", $company_id);
         $this->db->where("c.del_status", "Live");
