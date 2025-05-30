@@ -2793,7 +2793,6 @@ class Sale extends Cl_Controller {
             'register_status' => 2
         );
         $this->db->where('outlet_id', $outlet_id);
-        $this->db->where('user_id', $user_id);
         $this->db->where('company_id', $company_id);
         $this->db->where('opening_balance_date_time', $opening_date_time);
         $this->db->where('register_status', 1);

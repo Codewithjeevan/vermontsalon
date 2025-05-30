@@ -870,6 +870,11 @@
                                             <?php echo lang('summary_sales_report'); ?>
                                         </a>
                                     </li>
+                                    <li data-access="therapist_report-249" class="menu_assign_class " module-is-hide="Therapist Report-YES">
+                                        <a class="child-menu " href="<?php echo base_url(); ?>Report/therapistReport">
+                                            <?php echo lang('therapist_report'); ?>
+                                        </a>
+                                    </li>
                                     <li data-access="sale_report-249" class="menu_assign_class" module-is-hide="Sale Report-YES">
                                         <a class="child-menu " href="<?php echo base_url(); ?>Report/saleReport">
                                             <?php echo lang('sale_report'); ?>
