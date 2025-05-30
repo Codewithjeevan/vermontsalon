@@ -128,7 +128,7 @@ function getDateRangeText() {
     var to = endDateElement.length ? endDateElement.val() : '';
 
     if (from && to) {
-        return 'Report From Date: <span style="color: green;">' + formatDate(from) + '</span>&nbps; To Date: <span style="color: green;">' + formatDate(to) + '</span>';
+        return 'Report From Date: <span style="color: green;">' + formatDate(from) + '</span>&nbsp; To Date: <span style="color: green;">' + formatDate(to) + '</span>';
     } else {
         return '';
     }
