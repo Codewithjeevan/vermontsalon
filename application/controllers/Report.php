@@ -272,14 +272,18 @@ class Report extends Cl_Controller {
         $data = array();
         $outlet_id  = isset($_POST['outlet_id']) && $_POST['outlet_id']?$_POST['outlet_id']:'';
         $data['outlet_id'] = $outlet_id;
+        $userid = '';
         if (htmlspecialcharscustom($this->input->post('submit'))) {
             $data['report_generate_time'] = generatedOnCurrentDateTime();
             $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
             $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
+            $userid = htmlspecialcharscustom($this->input->post($this->security->xss_clean('user_id')));
             $data['start_date'] = $start_date;
             $data['end_date'] = $end_date;
-            $data['saleReport'] = $this->Report_model->saleReport($start_date, $end_date, $outlet_id);
+            $data['saleReport'] = $this->Report_model->therapistReport($start_date, $end_date, $outlet_id, $userid);
         }
+        $data['users'] = $this->Common_model->getAllUsersNameMobileForReportDropdown();
+        $data['userdata'] = $userid ? $this->Common_model->getAllByCustomRowId($userid,'id','tbl_users') : array();
         $data['main_content'] = $this->load->view('report/therapistReport', $data, TRUE);
         $data['page_title'] = "Therapist Report";
         $this->load->view('userHome', $data);
