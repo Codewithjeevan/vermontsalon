@@ -44,6 +44,11 @@
                     <strong><?php echo lang('phone'); ?>: </strong> <?= escape_output($outlet_info->phone); ?>
                 <?php } ?>
             </h5>
+            <h5 class="outlet_info" >
+                <?php if(isset($userdata)  && $userdata){ ?>
+                    <strong><?php echo lang('therapist'); ?>: </strong> <span id="therapist_name"><?= escape_output($userdata->full_name); ?></span>
+                <?php } ?>
+            </h5>
             <?php if(isset($start_date) && $start_date != '' && $start_date != '1970-01-01' || isset($end_date) && $end_date != '' && $end_date != '1970-01-01'){ ?>
             <h5 class="outlet_info">
                 <strong><?php echo lang('date');?>:</strong>
@@ -177,6 +182,22 @@
             <?php
                 endif;
             ?> 
+            <div class="col-sm-12 col-md-6 mb-2">
+                <div class="form-group">
+                    <select  class="form-control select2 op_width_100_p" id="user_id" name="user_id">
+                        <option value="">Select Therapist</option>
+                        <?php
+                        foreach ($users as $value) {
+                            ?>
+                            <option value="<?php echo escape_output($value->id) ?>" <?php echo set_select('user_id', $value->id); ?>><?php echo escape_output($value->full_name) ?> <?= $value->phone ? '('. $value->phone .')' : '' ?></option>
+                        <?php } ?>
+                    </select>
+                    <div class="alert alert-error error-msg user_id_err_msg_contnr ">
+                        <p id="user_id_err_msg"></p>
+                    </div>
+                </div>
+            </div>
+
             <div class="clear-fix"></div>
             <div class="col-12 mb-2">
                 <button type="submit" name="submit" value="submit" class="new-btn saleReport">

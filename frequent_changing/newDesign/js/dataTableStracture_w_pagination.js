@@ -24,6 +24,10 @@ jqry(function () {
             extend: "print",
             messageTop: function () {
                 var dateText = getDateRangeText();
+                var therapistName = gettherapist();
+                if (therapistName) {
+                    dateText += '<div>Therapist: <span style="color: green;">' + therapistName + '</span></div>';
+                }
                 return dateText
                     ? '<div style="text-align:center; font-weight:bold;">' + dateText + '</div>'
                     : '';
@@ -92,7 +96,17 @@ jqry(function () {
                 text: '<span style="display: flex; align-items-center; gap: 8px;"><iconify-icon icon="teenyicons:pdf-outline" width="16"></iconify-icon> ' + pdf_db + '</span>',
                 titleAttr: "PDF",
                 customize: function (doc) {
-                    var dateText = getDateRangeText();
+                    var dateText = getDateRangeText(1);
+                    var therapistName = gettherapist();
+                    if (therapistName) {
+                        doc.content.splice(0, 0, {
+                            text: 'Therapist: ' + therapistName,
+                            alignment: 'center',
+                            margin: [0, 0, 0, 12],
+                            fontSize: 12,
+                            bold: true
+                        });
+                    }
                     if (dateText) {
                         doc.content.splice(0, 0, {
                             text: dateText,
@@ -121,15 +135,29 @@ function formatDate(dateStr) {
     return parts[2] + '/' + parts[1] + '/' + parts[0].slice(2); // dd/mm/yy
 }
 
-function getDateRangeText() {
+function getDateRangeText(type = 0) { // type 1 = only text, 0 with style
     var startDateElement = $('#startDate');
     var from = startDateElement.length ? startDateElement.val() : '';
     var endDateElement = $('#endDate');
     var to = endDateElement.length ? endDateElement.val() : '';
 
     if (from && to) {
-        return 'Report From Date: <span style="color: green;">' + formatDate(from) + '</span>&nbsp; To Date: <span style="color: green;">' + formatDate(to) + '</span>';
+        if (type === 1) {
+            return 'Report From Date: ' + formatDate(from) + ' To Date: ' + formatDate(to);
+        }else{
+            return 'Report From Date: <span style="color: green;">' + formatDate(from) + '</span>&nbsp; To Date: <span style="color: green;">' + formatDate(to) + '</span>';
+        }
     } else {
         return '';
     }
+}
+
+function gettherapist() {
+    var therapistname = $('#therapist_name');
+    if (therapistname.length) {
+        therapistname = therapistname.text();
+    } else {
+        therapistname = '';
+    }
+    return therapistname ? therapistname : '';
 }
