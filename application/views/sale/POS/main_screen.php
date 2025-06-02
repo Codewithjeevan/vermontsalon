@@ -2295,10 +2295,9 @@ $company_short_name =  $getCompanyInfo->short_name;
                         <p class="discount_err_message"></p>
                     </div>
                 </div>
-                <div class="easy-get discount_field">
+                <div class="cn-numpad-launcher">
                     <label><?php echo lang('discount_in_parcentage');?></label>
-                    <input type="text" onfocus="select()" class="form-control total_disc easy-put" placeholder="<?php echo lang('10_p_or_10'); ?>"
-                        id="sub_total_discount">
+                    <input type="text" onfocus="select()" class="form-control total_disc cn-numpad-input" placeholder="<?php echo lang('10_p_or_10'); ?>" id="sub_total_discount" readonly>
                     <span class="ir_display_none" id="sub_total_discount_amount"></span>
                 </div>
             </div>

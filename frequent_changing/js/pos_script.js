@@ -4923,6 +4923,8 @@ $(function () {
         let is_hold_sale_id = $('#is_hold_sale_id').text();
         let customer_id = $('#walk_in_customer').val();
         let customer_name = $('#walk_in_customer').find(':selected').attr('data-customer-name');
+        let selectedOption = $('#walk_in_customer').find('option:selected');
+        let customer_option_detail = selectedOption.attr('data-customer-name') || selectedOption.text();
         let customer_phone_number = $('#walk_in_customer').find(':selected').attr('data-phone_number');
         let previous_due = $('#walk_in_customer').find(':selected').attr('data-previous_due');
         let select_employee_id = $('#select_employee_id').val();
@@ -4946,7 +4948,7 @@ $(function () {
 
         $("#finalize_previous_due").html(parseFloat(previous_due).toFixed(op_precision));
         $('.set_value_for').html(Number(customer_previous_due));
-        $('.finalize-customer-name').text(`Customr: ${customer_name}`);
+        $('.finalize-customer-name').text(`Customer: ${customer_option_detail}`);
         $('.finalize_mobile_customer').text(`${customer_name}`);
         if(previous_due > 0){
             $('#previous_due_show').html('');
@@ -10274,71 +10276,10 @@ $(function () {
                 toastr['error'](('Finalize Discount already given'), '');
             }else{
                 let varified_status = $('.discount_permission_code').attr('varified-status');
-                if(session_uer_id == '1' && role == '1'){
                     $('.discount_field').show();
                     $('.discunt_check_modal').hide();
-                    $.ajax({
-                        url: base_url + "Master/checkAccess",
-                        method: "GET",
-                        async: false,
-                        dataType: 'json',
-                        data: { controller: "287", function: "discountPermission" },
-                        success: function (response) {
-                            if (response == false) {
-                                Swal.fire({
-                                    title: warning+" !",
-                                    text: no_permission_for_this_module,
-                                    showDenyButton: false,
-                                    showCancelButton: false,
-                                    confirmButtonText: ok,
-                                });
-                            } else {
-                                let discount = $('#walk_in_customer option:selected').attr('discount');
-                                if(discount == 0 || discount == ''){
-                                    $("#discount_modal").addClass("active");
-                                    $(".pos__modal__overlay").fadeIn(300);
-                                }else{
-                                    toastr['error'](('This customer has already default discount!'), '');
-                                }
-                            }
-                        }
-                    });
-    
-                }else{
-                    if(varified_status == 'Yes'){
-                        $('.discount_field').show();
-                        $('.discunt_check_modal').hide();
-                    }else{
-                        $('.discount_field').hide();
-                        $('.discount_err_message').parent().hide();
-                    }
-                    $.ajax({
-                        url: base_url + "Master/checkAccess",
-                        method: "GET",
-                        async: false,
-                        dataType: 'json',
-                        data: { controller: "287", function: "discountPermission" },
-                        success: function (response) {
-                            if (response == false) {
-                                Swal.fire({
-                                    title: warning+" !",
-                                    text: no_permission_for_this_module,
-                                    showDenyButton: false,
-                                    showCancelButton: false,
-                                    confirmButtonText: ok,
-                                });
-                            } else {
-                                let discount = $('#walk_in_customer option:selected').attr('discount');
-                                if(discount == 0 || discount == ''){
-                                    $("#discount_modal").addClass("active");
-                                    $(".pos__modal__overlay").fadeIn(300);
-                                }else{
-                                    toastr['error'](('This customer has already default discount!'), '');
-                                }
-                            }
-                        }
-                    });
-                }
+                    $("#discount_modal").addClass("active");
+                    $(".pos__modal__overlay").fadeIn(300);
             }
         }else{
             toastr["warning"]("You are offline, this option will not work at the moment.", "Warning");
@@ -10350,73 +10291,26 @@ $(function () {
         let user_id = $('#session_uer_id').val();
         let discount_permission_code = $('.discount_permission_code').val();
         let error = false;
-        if(user_id != '1' && discount_permission_code == ''){
-            error = true;
-            $('.discount_err_message').parent().show();
-            $('.discount_err_message').text(The_discount_code_field_required)
-            return false
-        }else{
-            $.ajax({
-                method: "POST",
-                url: base_url+"Sale/checUserDiscountPermission",
-                data: {
-                    user_id: user_id,
-                    discount_permission_code: discount_permission_code,
-                },
-                success: function (response) {
-                    if(response.status == 'success'){
-                        $('.discount_err_message').parent().hide();
-                        if(cartItemLength > 0){
-                            $('.discount_field').show();
-                            let discountOriginal = $('#sub_total_discount').val();
-                            let plainDiscount = discountOriginal.replace('%', '')
-                            if(Number(plainDiscount) > 0){
-                                let userAssignDiscount = response.data;
-                                let userAssignDiscountPlain = userAssignDiscount.replace('%', '');
-                                if(user_id == '1' && role == '1'){
-                                    $('.discount_permission_code').attr('varified-status', 'Yes');
-                                    $('#show_discount_amount').text(Number(discountOriginal).toFixed(op_precision));
-                                    $("#discount_modal").removeClass("active");
-                                    $(".pos__modal__overlay").fadeOut(300);
-                                    cartItemCalculationInPOS();
-                                    if(edit_mode == ''){
-                                        storageCartDataInLocal();
-                                    }
-                                }else{
-                                    if( Number(plainDiscount) <= Number(userAssignDiscountPlain)){
-                                        $('.discount_permission_code').attr('varified-status', 'Yes');
-                                        $('#show_discount_amount').text(Number(discountOriginal).toFixed(op_precision));
-                                        $("#discount_modal").removeClass("active");
-                                        $(".pos__modal__overlay").fadeOut(300);
-                                        cartItemCalculationInPOS();
-                                        if(edit_mode == ''){
-                                            storageCartDataInLocal();
-                                        }
-                                    }else{
-                                        Swal.fire({
-                                            title: warning+" !",
-                                            text: `This cashier cannot give more than ${response.data} discount`,
-                                            showDenyButton: false,
-                                            showCancelButton: false,
-                                            confirmButtonText: ok,
-                                        });
-                                    }
-                                }
-                            }
-                        }else{
-                            Swal.fire({
-                                title: warning+" !",
-                                text: `The cart is empty!`,
-                                showDenyButton: false,
-                                showCancelButton: false,
-                                confirmButtonText: ok,
-                            });
-                        }
-                    }else{
-                        $('.discount_err_message').text(response.message)
-                        $('.discount_err_message').parent().show();
-                    }
+        $('.discount_err_message').parent().hide();
+        if(cartItemLength > 0){
+            $('.discount_field').show();
+            let discountOriginal = $('#sub_total_discount').val();
+            let plainDiscount = discountOriginal.replace('%', '')
+            // if(Number(plainDiscount) > 0){
+                $(".pos__modal__overlay").fadeOut(300);
+                cartItemCalculationInPOS();
+                if(edit_mode == ''){
+                    storageCartDataInLocal();
                 }
+                $("#discount_modal").removeClass("active");
+            // }
+        }else{
+            Swal.fire({
+                title: warning+" !",
+                text: `The cart is empty!`,
+                showDenyButton: false,
+                showCancelButton: false,
+                confirmButtonText: ok,
             });
         }
     });
