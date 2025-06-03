@@ -1,5 +1,13 @@
 <input type="hidden" value="<?php echo lang('The_date_field_is_required');?>" id="The_date_field_is_required">
 <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/report.css">
+<style>
+    .dataTable thead tr th:last-child{
+        text-align: center !important;
+    }
+    .dataTable tbody tr td:last-child{
+        text-align: center !important;
+    }
+</style>
 <div class="main-content-wrapper">
 
     <section class="content-header">
@@ -79,8 +87,8 @@
                 <table id="datatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th><?php echo lang('date'); ?></th>
-                            <th><?php echo lang('invoice_no'); ?></th>
+                            <th class="text-center"><?php echo lang('date'); ?></th>
+                            <th class="text-center" style="text-align: center !important;"><?php echo lang('invoice_no'); ?></th>
                             <th class="text-center"><?php echo lang('bill_amt'); ?></th>
                         </tr>
                     </thead>
@@ -105,8 +113,8 @@
                                 $chargeTotal += $value->delivery_charge;
                                 ?>
                                 <tr>
-                                    <td><?php echo date('d/m/Y',strtotime($value->date_time)); ?></td>
-                                    <td><?php echo escape_output($value->sale_no); ?></td>
+                                    <td class="text-center"><?php echo date('d/m/Y',strtotime($value->date_time)); ?></td>
+                                    <td class="text-center" style="text-align: center !important;"><?php echo escape_output($value->sale_no); ?></td>
                                     <td class="text-center"><?php echo getAmtCustom($value->total_payable); ?></td>
                                 </tr>
                                 <?php
@@ -114,11 +122,12 @@
                         endif;
                         ?>
                         <tr>
-                            <th></th>
-                            <th ><?php echo lang('total'); ?></th>
-                            <th><?php echo getAmtCustom($totalPayable); ?></th>
-                        </tr> 
+                            <th class="text-center" style="border-right: 0px;font-weight: bold"><?php echo lang('total'); ?></th>
+                            <th style="border-left: 0px;"></th>
+                            <th class="text-center"><?php echo getAmtCustom($totalPayable); ?></th>
+                        </tr>
                     </tbody>
+                    
                 </table>
             </div>
             <!-- /.box-body -->

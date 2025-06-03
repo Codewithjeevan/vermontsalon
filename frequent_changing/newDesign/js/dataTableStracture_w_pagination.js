@@ -26,7 +26,7 @@ jqry(function () {
                 var dateText = getDateRangeText();
                 var therapistName = gettherapist();
                 if (therapistName) {
-                    dateText += '<div>Therapist: <span style="color: green;">' + therapistName + '</span></div>';
+                    dateText += '<div style="text-align:left;">Therapist: <span style="color: green;">' + therapistName + '</span></div>';
                 }
                 return dateText
                     ? '<div style="text-align:center; font-weight:bold;">' + dateText + '</div>'
@@ -36,7 +36,9 @@ jqry(function () {
             titleAttr: "Print",
             customize: function (win) {
                 var css = 'table { border-collapse: collapse; width: 100%; } ' +
-                        'th, td { border: 1px solid #dddddd; padding: 8px; text-align: left; }';
+                        'th, td { border: 1px solid #dddddd; padding: 8px; text-align: center; }'+ 
+                        'tr:last-child td { font-weight: bold;color: #000; }' 
+                        ;
                 var head = win.document.head || win.document.getElementsByTagName('head')[0];
                 var style = win.document.createElement('style');
 
@@ -143,9 +145,9 @@ function getDateRangeText(type = 0) { // type 1 = only text, 0 with style
 
     if (from && to) {
         if (type === 1) {
-            return 'Report From Date: ' + formatDate(from) + ' To Date: ' + formatDate(to);
+            return 'From Date: ' + formatDate(from) + ' To Date: ' + formatDate(to);
         }else{
-            return 'Report From Date: <span style="color: green;">' + formatDate(from) + '</span>&nbsp; To Date: <span style="color: green;">' + formatDate(to) + '</span>';
+            return 'From Date: <span style="color: green;">' + formatDate(from) + '</span>&nbsp; To Date: <span style="color: green;">' + formatDate(to) + '</span>';
         }
     } else {
         return '';
