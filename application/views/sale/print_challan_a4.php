@@ -135,6 +135,7 @@ $inv_config = json_decode($invoice_configuration);
                             }?>
                         </span> 
                         <?php echo date($this->session->userdata('date_format'), strtotime($sale_object->sale_date ?? '')) ?>
+                        <?php echo $sale_object->order_time ? date('h:i A', strtotime($sale_object->order_time)) : '' ?>
                     </p>
                 </div>
             </div>
