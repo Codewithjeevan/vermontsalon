@@ -114,6 +114,7 @@ $inv_config = json_decode($invoice_configuration);
                                         }?>
                                     </span> 
                                     <?php echo date($this->session->userdata('date_format'), strtotime($sale_object->sale_date ?? '')) ?>
+                                    <?php echo $sale_object->order_time ? date('h:i A', strtotime($sale_object->order_time)) : '' ?>
                                 </p>
 
                                 <?php if($inv_config->invoice_show_due_date == 'Yes' && $sale_object->due_date){?>
