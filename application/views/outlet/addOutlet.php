@@ -98,7 +98,6 @@
                             </div>
                         <?php } ?>
                     </div>
-                    <div class="clearfix"></div>
                     <div class="col-md-6 col-lg-4 mb-3">
                         <div class="form-group">
                             <label><?php echo lang('address'); ?> <span class="required_star">*</span></label>
@@ -109,7 +108,12 @@
                                 <span class="error_paragraph"><?php echo form_error('address'); ?></span>
                             </div>
                         <?php } ?>
-
+                    </div>
+                    <div class="col-md-6 col-lg-6 mb-3">
+                        <div class="form-group">
+                            <label><?php echo lang('additional_information'); ?> </label>
+                            <textarea  autocomplete="off" name="additional_information" rows="3" class="form-control ckeditor" placeholder="<?php echo lang('additional_information'); ?>"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>

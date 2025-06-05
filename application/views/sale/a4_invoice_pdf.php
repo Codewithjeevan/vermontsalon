@@ -57,6 +57,11 @@ $inv_config = json_decode($invoice_configuration);
                             <?php echo $this->session->userdata('tax_registration_no'); ?>
                         </p>
                     <?php } ?>
+                    <?php if($outlet_info->additional_information){?>
+                        <p class="f-w-500 color-71 font-size-13">
+                            <?php echo html_entity_decode(escape_output($outlet_info->additional_information)); ?>
+                        </p>
+                    <?php } ?>
 
 
                 </td>
@@ -270,6 +275,11 @@ $inv_config = json_decode($invoice_configuration);
                         <tr>
                             <td><?php echo $i++; ?></td>
                             <td>
+                                
+                                <?php if($inv_config->show_product_imei_serial_number == 'Yes'){?>
+                                <?php if(($row->item_type == 'IMEI_Product' || $row->item_type == 'Serial_Product' || $row->item_type == 'Medicine_Product') && $row->expiry_imei_serial){ ?>
+                                    <p class="short_note"><?php echo checkItemShortType($row->item_type)  ?>: <?php echo trim($row->expiry_imei_serial); ?></p>
+                                <?php }} ?>
                                 <?php
                                     echo getItemAndParntName($row->food_menu_id); echo escape_output($row->alternative_name) ? ' (' . $row->alternative_name . ')' : '';
                                 ?>
@@ -279,10 +289,6 @@ $inv_config = json_decode($invoice_configuration);
                                 </div>
                                 <?php } ?>
 
-                                <?php if($inv_config->show_product_imei_serial_number == 'Yes'){?>
-                                <?php if(($row->item_type == 'IMEI_Product' || $row->item_type == 'Serial_Product' || $row->item_type == 'Medicine_Product') && $row->expiry_imei_serial){ ?>
-                                    <p class="short_note"><?php echo checkItemShortType($row->item_type)  ?>: <?php echo trim($row->expiry_imei_serial); ?></p>
-                                <?php }} ?>
                                 
 
                                 <?php 
@@ -834,13 +840,13 @@ $inv_config = json_decode($invoice_configuration);
             <tr>
                 <td>
                 <?php if($inv_config->show_total_in_words == 'Yes'){ ?>
-                <div class="text-right pt-5">
+                <div class="text-right">
                     <p class="f-w-600 text-capitalize">
                         <?php 
                         if($s_status == 'Bangladesh'){
-                            echo numberToWords($sale_object->total_payable);
+                            echo numberToWords($sale_object->total_payable). ' ' . $this->session->userdata('currency') . ' ' . lang('only');
                         }else{
-                            echo numberToWords($sale_object->total_payable);
+                            echo numberToWords($sale_object->total_payable). ' ' . $this->session->userdata('currency') . ' ' . lang('only');
                         }?>
                     </p>
                 </div>
