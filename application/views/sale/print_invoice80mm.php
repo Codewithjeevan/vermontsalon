@@ -141,6 +141,9 @@ $inv_config = json_decode($invoice_configuration);
                         <span class="f-w-600"><?php echo $inv_config->customer_tax_number_label;?>:</span> <?php echo escape_output($customer_info->gst_number) ?>
                     </p>
                     <?php } ?>
+                     <p class="f-w-500 color-71 font-size-13">
+                        <span class="f-w-600"><?= lang("room_number") ?>:</span> <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
+                    </p>
                 </div>
                 <div class="text-rigth">
                     <p class="f-w-500 color-71 font-size-13">
@@ -456,7 +459,7 @@ $inv_config = json_decode($invoice_configuration);
                 ?>
                 <div class="d-flex justify-content-between border-bottom-dotted-gray <?php echo escape_output($i) == 1 ? 'border-top-dotted-gray' : '' ?>">
                     <p class="f-w-600 font-size-13"><?php echo escape_output($t->tax_field_type) ?></p>
-                    <p class="font-size-13"><?php echo (getAmtCustom($t->tax_field_amount));?></p>
+                    <p class="font-size-13"><?php echo (getAmtCustom($t->tax_field_amount)) ? getAmtCustom($t->tax_field_amount) : getAmtCustom(0);?></p>
                 </div>
                 <?php } } } ?>
 
@@ -693,21 +696,18 @@ $inv_config = json_decode($invoice_configuration);
                 <?php } ?>
 
                 <?php if($inv_config->show_total_in_words == 'Yes'){ ?>
-                <div class="d-flex justify-content-end">
-                    <p class="f-w-600 font-size-13 text-capitalize">
-                        <?php 
-                        if($s_status == 'Bangladesh'){
-                        echo numberToWords($sale_object->total_payable). ' ' . $this->session->userdata('currency') . ' ' . lang('only');
-                        }else{
-                        echo numberToWords($sale_object->total_payable). ' ' . $this->session->userdata('currency') . ' ' . lang('only');
-                        }?>
-                    </p>
-                </div>
+                    <div class="d-flex justify-content-between">
+                        <p class="f-w-600 font-size-13">
+                             <?= lang('amount_in_words'); ?>
+                        </p>
+                        <p class="font-size-13"><?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dhiram') : $this->session->userdata('currency')) . ' ' . lang('only'); ?></p>
+                    </div>
                 <?php } ?>
-                <?php
+
+                 <?php
                     if($sale_object->given_amount && $sale_object->change_amount) {
                 ?>
-                <div class="d-flex justify-content-center">
+                 <div class="d-flex justify-content-between">
                     <p class="f-w-600 font-size-13">
                         <?php 
                         if($s_status == 'Bangladesh'){
@@ -715,16 +715,16 @@ $inv_config = json_decode($invoice_configuration);
                         }else{
                             echo $inv_config->given_amount_label . "<br>";
                             echo $inv_config->given_amount_label_arabic;
-                        }?>: 
-                        <?php echo getAmtCustom($ln_text=="bangla" ? banglaNumber($sale_object->given_amount) : $sale_object->given_amount) ?>
+                        }?>
                     </p>
+                    <p class="font-size-13"><?php echo getAmtCustom($ln_text=="bangla" ? banglaNumber($sale_object->given_amount) : $sale_object->given_amount) ?></p>
                 </div>
                 <?php }  ?>
 
                 <?php
                     if($sale_object->change_amount) {
                 ?>
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-between">
                     <p class="f-w-600 font-size-13">
                         <?php 
                         if($s_status == 'Bangladesh'){
@@ -732,10 +732,24 @@ $inv_config = json_decode($invoice_configuration);
                         }else{
                             echo $inv_config->change_amount_label . "<br>";
                             echo $inv_config->change_amount_label_arabic;
-                        }?>: <?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->change_amount):$sale_object->change_amount) ?>
+                        }?>
+                    </p>
+                    <p class="font-size-13">
+                        <?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->change_amount):$sale_object->change_amount) ?>
                     </p>
                 </div>
                 <?php }  ?>
+
+                 <div class="d-flex justify-content-between" style="margin-top: 20px">
+                    <div>
+                        <p class="f-w-600 font-size-13"><?= lang('attended_by') ?></p>
+                        <p class="font-size-13"><?= implode(', ', array_column($sale_object->items, 'seller_name')) ?></p>
+                    </div>
+                    <div>
+                       <p class="f-w-600 font-size-13"><?= lang('processed_by') ?></p>
+                        <p class="font-size-13"><?= $sale_object->user_name ?></p>
+                    </div>
+                </div>
 
 
             </div>

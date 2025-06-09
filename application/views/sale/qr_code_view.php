@@ -137,6 +137,9 @@ $inv_config = json_decode($invoice_configuration);
                         <span class="f-w-600"><?php echo $inv_config->customer_tax_number_label;?>:</span> <?php echo escape_output($customer_info->gst_number) ?>
                     </p>
                     <?php } ?>
+                     <p class="f-w-500 color-71 font-size-13">
+                        <span class="f-w-600"><?= lang("room_number") ?>:</span> <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
+                    </p>
                 </div>
 
                 
@@ -477,7 +480,7 @@ $inv_config = json_decode($invoice_configuration);
                 ?>
                 <div class="d-flex justify-content-between border-bottom-dotted-gray <?php echo escape_output($i) == 1 ? 'border-top-dotted-gray' : '' ?>">
                     <p class="f-w-600 font-size-13"><?php echo escape_output($t->tax_field_type) ?></p>
-                    <p class="font-size-13"><?php echo (getAmtCustom($t->tax_field_amount));?></p>
+                    <p class="font-size-13"> <p class="font-size-13"><?php echo (getAmtCustom($t->tax_field_amount)) ? getAmtCustom($t->tax_field_amount) : getAmtCustom(0);?></p></p>
                 </div>
                 <?php } } } } ?>
 
@@ -749,12 +752,7 @@ $inv_config = json_decode($invoice_configuration);
         <?php if($inv_config->show_total_in_words == 'Yes'){ ?>
         <div class="d-flex justify-content-end">
             <p class="f-w-600 font-size-13 text-capitalize">
-                <?php 
-                if($s_status == 'Bangladesh'){
-                    echo numberToWords($sale_object->total_payable). ' ' . $this->session->userdata('currency') . ' ' . lang('only');
-                }else{
-                    echo numberToWords($sale_object->total_payable). ' ' . $this->session->userdata('currency') . ' ' . lang('only');
-                }?>
+                <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dhiram') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
             </p>
         </div>
         <?php } ?>
