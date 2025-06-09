@@ -601,6 +601,7 @@ $lang['sale_unit'] = 'Sale Unit';
 $lang['conversion_rate'] = 'Conversion Rate';
 $lang['purchase_price'] = 'Purchase Price';
 $lang['sale_price'] = 'Sale Price';
+$lang['additional_information'] = 'Additional Information';
 $lang['purchase_rate'] = 'Purchase Rate';
 $lang['sale_rate'] = 'Sale Rate';
 $lang['default_qty_amt'] = 'Usual Sale Qty/Amt';

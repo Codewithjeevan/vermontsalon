@@ -76,6 +76,7 @@
 
         <!-- Toastr -->
         <script src="<?php echo base_url(); ?>assets/notify/toastr.js"></script>
+        <script src="<?php echo base_url(); ?>assets/ck-editor/ckeditor.js"></script>
         <link rel="stylesheet" href="<?php echo base_url(); ?>assets/notify/toastr.css?var=1.6" type="text/css">
         <!-- Theme style -->
         <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/AdminLTE.css?var=1.6">
@@ -2098,6 +2099,13 @@
         <script src="<?php echo base_url(); ?>assets/plugins/tippy/popper.min.js"></script>
         <script src="<?php echo base_url(); ?>assets/plugins/tippy/tippy-bundle.umd.min.js"></script>
         <!-- ################ Script End ################ -->
+
+        <script>
+            $(document).ready(function () {
+                $('.ckeditor').ckeditor();
+            });
+        </script>
+
     </body>
 </html>
 

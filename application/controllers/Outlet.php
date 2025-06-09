@@ -98,6 +98,7 @@ class Outlet extends Cl_Controller {
                 $outlet_info['address'] = preg_replace("/[\n\r]/"," ",$c_address); #remove new line from address
                 $outlet_info['phone'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('phone')));
                 $outlet_info['email'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('email')));
+                $outlet_info['additional_information'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('additional_information')));
                 $outlet_info['active_status'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('active_status')));
                 if ($id == "") {
                     $outlet_info['user_id'] = $this->session->userdata('user_id');
