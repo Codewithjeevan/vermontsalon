@@ -438,6 +438,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                             </a>
                         </li>
                         <li>
+                            <a tabindex="-1" href="<?php echo base_url();?>Report/zReport" id="zReport-249" class="header_menu_icon zReport-249" data-tippy-content="<?php echo lang('z_report');?>">
+                            <iconify-icon icon="solar:notes-broken" width="22"></iconify-icon>
+                            </a>
+                        </li>
+                        <li>
                             <a tabindex="-1" href="javascript:void(0)" id="x_report" class="header_menu_icon x_report" data-tippy-content="<?php echo lang('x_report');?>">
                             <iconify-icon icon="solar:document-broken" width="22"></iconify-icon>
                             </a>
