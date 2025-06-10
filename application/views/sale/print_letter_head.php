@@ -12,7 +12,7 @@ $letter_footer_gap = $this->session->userdata('letter_footer_gap');
 $head =  str_replace("px","", $letter_head_gap);
 $foot =  str_replace("px","", $letter_footer_gap);
 $slice_number = 842 - ((int)$head + (int)$foot);
-$head_slice_sum = $head + $slice_number;
+$head_slice_sum = (int)$head + $slice_number;
 $rounding_type = $this->session->userdata('pos_total_payable_type');
 $invoice_configuration = $this->session->userdata('invoice_configuration');
 $inv_logo_is_show = $this->session->userdata('inv_logo_is_show');
@@ -682,12 +682,25 @@ $inv_config = json_decode($invoice_configuration);
                         <?php } ?>
 
                         <?php if($inv_config->show_total_in_words == 'Yes'){ ?>
-                        <div class="d-flex justify-content-end">
+                        <div class="d-flex justify-content-between">
+                            <p class="f-w-600"><?= lang("amount_in_words") ?></p>
                             <p class="f-w-600 text-capitalize">
                                 <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dhiram') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
                             </p>
                         </div>
                         <?php } ?>
+
+                         <div class="d-flex justify-content-between" style="margin-top: 20px">
+                            <div>
+                                <p class="f-w-600 "><?= lang('attended_by') ?></p>
+                                <p class=""><?= implode(', ', array_column($sale_object->items, 'seller_name')) ?></p>
+                            </div>
+                            <div>
+                            <p class="f-w-600 "><?= lang('processed_by') ?></p>
+                                <p class=""><?= $sale_object->user_name ?></p>
+                            </div>
+                        </div>
+                        
 
                     </div>
                     <div class="d-flex justify-content-center pt-30">
