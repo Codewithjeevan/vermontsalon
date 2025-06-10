@@ -752,7 +752,7 @@ $inv_config = json_decode($invoice_configuration);
         <?php if($inv_config->show_total_in_words == 'Yes'){ ?>
         <div class="d-flex justify-content-end">
             <p class="f-w-600 font-size-13 text-capitalize">
-                <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dhiram') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
+                <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dirham') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
             </p>
         </div>
         <?php } ?>

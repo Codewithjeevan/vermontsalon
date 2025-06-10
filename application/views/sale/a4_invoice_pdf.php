@@ -845,7 +845,7 @@ $inv_config = json_decode($invoice_configuration);
                 <?php if($inv_config->show_total_in_words == 'Yes'){ ?>
                 <div class="text-right">
                     <p class="text-capitalize">
-                        <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dhiram') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
+                        <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dirham') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
                     </p>
                 </div>
                 <?php } ?>
@@ -868,7 +868,7 @@ $inv_config = json_decode($invoice_configuration);
         </table>
 
 
-        <table class="mt-50">
+        <!-- <table class="mt-50">
             <tr>
                 <td class="w-50">
                 </td>
@@ -876,7 +876,7 @@ $inv_config = json_decode($invoice_configuration);
                     <p class="rgb-71 d-inline border-top-e4e5ea pt-10"><?php echo lang('authorized_signature');?></p>
                 </td>
             </tr>
-        </table>
+        </table> -->
     </div>
 </body>
 </html>

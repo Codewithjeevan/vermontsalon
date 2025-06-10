@@ -774,7 +774,7 @@ $inv_config = json_decode($invoice_configuration);
                 <?= lang('amount_in_words'); ?>
             </p>
             <p class="text-capitalize">
-               <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dhiram') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
+               <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dirham') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
             </p>
         </div>
         <?php } ?>
@@ -793,11 +793,11 @@ $inv_config = json_decode($invoice_configuration);
 
         
 
-        <div class="d-flex justify-content-end mt-80">
+        <!-- <div class="d-flex justify-content-end mt-80">
             <div>
                 <p class="color-71 d-inline b-t-1p-e4e5ea pt-10"><?php echo lang('authorized_signature');?></p>
             </div>
-        </div>
+        </div> -->
         
         <div class="mt-80">
             <p><?php echo $this->session->userdata('term_conditions'); ?></p>
