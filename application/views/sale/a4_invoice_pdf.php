@@ -844,7 +844,7 @@ $inv_config = json_decode($invoice_configuration);
                 <td>
                 <?php if($inv_config->show_total_in_words == 'Yes'){ ?>
                 <div class="text-right">
-                    <p class="f-w-600 text-capitalize">
+                    <p class="text-capitalize">
                         <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dhiram') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
                     </p>
                 </div>
