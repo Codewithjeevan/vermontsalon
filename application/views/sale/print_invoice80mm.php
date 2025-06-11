@@ -700,7 +700,7 @@ $inv_config = json_decode($invoice_configuration);
                         <p class="f-w-600 font-size-13">
                              <?= lang('amount_in_words'); ?>
                         </p>
-                        <p class="font-size-13"><?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dhiram') : $this->session->userdata('currency')) . ' ' . lang('only'); ?></p>
+                        <p class="font-size-13"><?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dirham') : $this->session->userdata('currency')) . ' ' . lang('only'); ?></p>
                     </div>
                 <?php } ?>
 

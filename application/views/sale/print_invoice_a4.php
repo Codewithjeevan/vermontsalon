@@ -479,7 +479,7 @@ $inv_config = json_decode($invoice_configuration);
                 <?php if($tax) {
                     $i = 0;
                     foreach($tax as $t){ 
-                        if($t->tax_field_amount > 0){  
+                        
                             $i++;
                             $taxSum += $t->tax_field_amount;
                 ?>
@@ -487,7 +487,7 @@ $inv_config = json_decode($invoice_configuration);
                     <p class="f-w-600"><?php echo escape_output($t->tax_field_type) ?></p>
                     <p><?php echo (getAmtCustom($t->tax_field_amount)) ? getAmtCustom($t->tax_field_amount) : getAmtCustom(0);?></p>
                 </div>
-                <?php } } } ?>
+                <?php  } } ?>
 
 
                 <?php 
