@@ -340,11 +340,12 @@ class Sale_model extends CI_Model {
    * @return object
    */
   public function getAllItemsFromSalesDetailBySalesId($sales_id){
-    $this->db->select("s.sale_date,sd.*,sd.id as sales_details_id,i.code as code,i.warranty,i.warranty_date,i.guarantee,i.guarantee_date,b.name as brand_name, i.name as item_name, i.alternative_name, i.code, i.type as item_type, i.photo");
+    $this->db->select("s.sale_date,sd.*,sd.id as sales_details_id,i.code as code,i.warranty,i.warranty_date,i.guarantee,i.guarantee_date,b.name as brand_name, i.name as item_name, i.alternative_name, i.code, i.type as item_type, i.photo, seller.full_name as seller_name");
     $this->db->from('tbl_sales_details sd');
     $this->db->join('tbl_sales s', 's.id = sd.sales_id', 'left');
     $this->db->join('tbl_items i', 'i.id = sd.food_menu_id', 'left');
     $this->db->join('tbl_brands b', 'b.id = i.brand_id', 'left');
+    $this->db->join('tbl_users seller', 'seller.id = sd.item_seller_id', 'left');
     $this->db->where("sd.sales_id", $sales_id);
     $this->db->order_by('sd.id', 'ASC');
     return $this->db->get()->result();

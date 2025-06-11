@@ -104,6 +104,9 @@ $inv_config = json_decode($invoice_configuration);
                         <?php echo $inv_config->customer_tax_number_label .': '; ?>
                         <?php echo escape_output($customer_info->gst_number) ?></p>
                     <?php } ?>
+                      <p class="pb-7 f-w-500 color-71">
+                        <?= lang("room_number") ?>: <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
+                    </p>
                     
 
 
@@ -314,11 +317,11 @@ $inv_config = json_decode($invoice_configuration);
                 </tbody>
             </table>
         </div>
-        <div class="d-flex justify-content-end mt-100">
+        <!-- <div class="d-flex justify-content-end mt-100">
             <div>
                 <p class="color-71 d-inline b-t-1p-e4e5ea pt-10"><?php echo lang('authorized_signature');?></p>
             </div>
-        </div>
+        </div> -->
         <div class="d-flex justify-content-center pt-30">
             <button onclick="window.print();" type="button" class="print-btn"><?php echo lang('print');?></button>
         </div>

@@ -147,6 +147,9 @@ $inv_config = json_decode($invoice_configuration);
                         <span class="f-w-600"><?php echo $inv_config->customer_tax_number_label;?>:</span> <?php echo escape_output($customer_info->gst_number) ?>
                     </p>
                     <?php } ?>
+                     <p class="pb-3 color-71">
+                        <span class="f-w-600"><?= lang("room_number") ?>:</span> <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
+                    </p>
                 </div>
                 <div class="text-rigth">
                     <p class="pb-3">
@@ -487,7 +490,7 @@ $inv_config = json_decode($invoice_configuration);
                 
                     <p class="f-w-600"><?php echo escape_output($t->tax_field_type) ?>: &nbsp;</p>
                     <p>
-                        <?php echo (getAmtCustom($t->tax_field_amount));?> 
+                        <?php echo (getAmtCustom($t->tax_field_amount)) ? getAmtCustom($t->tax_field_amount) : getAmtCustom(0); ?>
                         <?php if($total == $key+1){
                             echo '';
                         }else{
@@ -743,7 +746,7 @@ $inv_config = json_decode($invoice_configuration);
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-center pt-5">
+                <div class="d-flex justify-content-center">
                     <?php 
                         $currency = $this->session->userdata('currency');
                         $description = '';
@@ -765,26 +768,33 @@ $inv_config = json_decode($invoice_configuration);
             
         </div>
         <?php if($inv_config->show_total_in_words == 'Yes'){ ?>
-                <div class="d-flex justify-content-end">
-                    <p class="f-w-600 text-capitalize">
-                        <?php 
-                        if($s_status == 'Bangladesh'){
-                            echo numberToWords($sale_object->total_payable). ' ' . $this->session->userdata('currency') . ' ' . lang('only');
-                        }else{
-                            echo numberToWords($sale_object->total_payable). ' ' . $this->session->userdata('currency') . ' ' . lang('only');
-                        }?>
+                <div class="d-flex justify-content-between">
+                    <p class="f-w-600">
+                        <?= lang('amount_in_words'); ?>
+                    </p>
+                    <p class="text-capitalize">
+                        <?php echo ucwords(numberToWords($sale_object->total_payable)). ' ' . ($this->session->userdata('currency') == "AED" ? ' ' . lang('dirham') : $this->session->userdata('currency')) . ' ' . lang('only'); ?>
                     </p>
                 </div>
                 <?php } ?>
  
-        
+        <div class="d-flex justify-content-between" style="margin-top: 20px">
+                    <div>
+                        <p class="f-w-600 "><?= lang('attended_by') ?></p>
+                        <p class=""><?= implode(', ', array_column($sale_object->items, 'seller_name')) ?></p>
+                    </div>
+                    <div>
+                       <p class="f-w-600 "><?= lang('processed_by') ?></p>
+                        <p class=""><?= $sale_object->user_name ?></p>
+                    </div>
+                </div>
 
 
-        <div class="d-flex justify-content-end mt-15">
+        <!-- <div class="d-flex justify-content-end mt-15">
             <div>
                 <p class="color-71 d-inline b-t-1p-e4e5ea"><?php echo lang('authorized_signature');?></p>
             </div>
-        </div>
+        </div> -->
         <div class="d-flex justify-content-center pt-10">
             <div>
                 <p class="font-size-15"><?php echo ($this->session->userdata('invoice_footer')); ?></p>
