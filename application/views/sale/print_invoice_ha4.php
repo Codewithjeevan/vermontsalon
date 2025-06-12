@@ -163,6 +163,12 @@ $inv_config = json_decode($invoice_configuration);
                         <span class="f-w-600"><?= lang("room_number") ?>:</span>
                         <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
                     </p>
+                    <?php if($sale_object->voucher != null) { ?>
+                                    <p class="pb-3 color-71">
+                                        <span class="f-w-600"><?= lang("voucher") ?>:</span>
+                                        <?= @$sale_object->voucher ? $sale_object->voucher : 0 ?>
+                                    </p>
+                                    <?php  } ?>
                 </div>
                 <div class="text-rigth">
                     <p class="pb-3">

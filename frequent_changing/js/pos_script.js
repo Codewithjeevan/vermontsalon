@@ -5464,6 +5464,7 @@ $(function () {
         }
         let cThis = $(this);
         let customer_id = $("#walk_in_customer").val();
+        let voucher = $("#voucher").val();
         let selected_customer_name = $('option:selected', '#walk_in_customer').attr('data-customer-name');
         let customer_phone_number = $('option:selected', '#walk_in_customer').attr('data-phone_number');
         let charge_type = $("#charge_type").val();
@@ -5648,6 +5649,7 @@ $(function () {
                                 finalize_previous_due: finalize_previous_due,
                                 payment_method_type: payment_method_type,
                                 paid_amount: paid_amount,
+                                voucher:voucher,
                                 due_amount: finalize_total_due,
                                 given_amount: given_amount,
                                 change_amount: change_amount_div_,
@@ -5805,6 +5807,7 @@ $(function () {
                                 send_invoice_whatsapp : send_invoice_whatsapp,
                                 note : note,
                                 charge_type : charge_type,
+                                voucher : voucher,
                                 sub_total_discount_finalize : sub_total_discount_finalize,
                                 paymentAccountDetails: paymentAccountDetails,
                                 is_multi_currency: is_multi_currency,
@@ -8388,6 +8391,13 @@ $(function () {
         let amount_txt = $("#amount_txt").val();
         let loyalty_point_txt = $("#loyalty_point_txt").val();
         let loyalty_rate = Number($("#loyalty_rate").val());
+
+        $('.voucher_select').css('display', 'none');
+        if(acc_type == 'Groupon')
+        {
+            $('.voucher_select').css('display', 'block');
+        }
+
         if(acc_type != 'Loyalty Point'){
             $(".previous_due_div").show();
             $(".loyalty_point_div").hide();
@@ -10790,7 +10800,7 @@ $(function () {
                 }
             }
             if (e.key === 'ArrowDown') {
-                let current = $('#finalize_payment_method .active_m');
+                let current = $('#finalize-p-active .active_m');
                 let next = current.next('.payment_element');
                 if (next.length) {
                     current.removeClass('active_m');

@@ -140,6 +140,12 @@ $inv_config = json_decode($invoice_configuration);
                     <p class="pb-7 f-w-900 rgb-71">
                         <?= lang("room_number") ?>: <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
                     </p>
+                    <?php if($sale_object->voucher != null) { ?>
+                                    <p class="pb-3 color-71">
+                                        <?= lang("voucher") ?>:
+                                        <?= @$sale_object->voucher ? $sale_object->voucher : 0 ?>
+                                    </p>
+                                    <?php  } ?>
                 </td>
                 <td class="w-50 text-right">
                     <p class="pb-7">

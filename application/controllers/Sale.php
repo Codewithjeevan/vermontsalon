@@ -317,6 +317,7 @@ class Sale extends Cl_Controller {
         $given_amount = htmlspecialcharscustom($this->input->post($this->security->xss_clean('given_amount')));
         $change_amount = htmlspecialcharscustom($this->input->post($this->security->xss_clean('change_amount')));
         $sale_no = htmlspecialcharscustom($this->input->post($this->security->xss_clean('sale_no')));
+        $voucher = htmlspecialcharscustom($this->input->post($this->security->xss_clean('voucher')));
         $due_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('due_date')));
         $tip_amount = htmlspecialcharscustom($this->input->post($this->security->xss_clean('tip_amount')));
         if($account_type == 'Cash' && $account_type != ''){
@@ -425,6 +426,7 @@ class Sale extends Cl_Controller {
         $data['tip_amount'] = $tip_amount;
         $data['given_amount'] = $given_amount;
         $data['account_note'] = $account_note;
+        $data['voucher'] = $voucher;
         $data['close_time'] = date('H:i:s');
         $this->db->trans_begin();
         if($sale_old_id > 0){
