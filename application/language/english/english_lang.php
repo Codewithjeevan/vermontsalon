@@ -2203,6 +2203,7 @@ $lang['servicing_invoice_of'] = 'Servicing Invoice of ';
 $lang['loyalty_point'] = 'Loyalty Point';
 $lang['minimum_point_to_redeem'] = 'Minimum Loyalty Point to Redeem';
 $lang['loyalty_rate'] = 'Loyalty Rate';
+$lang['voucher'] = 'Voucher';
 $lang['disable'] = 'Disable';
 $lang['enable'] = 'Enable';
 $lang['loyalty_point_not_applicable_for_walk_in_customer'] = 'Loyalty point not applicable for Walk in Customer!';

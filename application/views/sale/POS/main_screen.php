@@ -2011,13 +2011,24 @@ $company_short_name =  $getCompanyInfo->short_name;
                     </div>
                     <div id="show_account_type" class="show_account_type">
                     </div>
-
+                    
                     <!-- Due Date -->
+                    <div class="d-flex" style="gap: 10px">
                     <div class="due_date_select margin-top-10">
                         <div class="form-group">
                             <label for="due_date"><?php echo lang('Due_Date');?></label>
                             <input  autocomplete="off" type="text" id="due_date" name="due_date" readonly class="form-control datepicker_custom due_date_field" placeholder="<?php echo lang('Due_Date');?>">
                         </div>
+                    </div>
+                    <!-- End Top Payment AddPart -->
+
+                    <!--  -->
+                    <div class="voucher_select margin-top-10" style="display: none">
+                        <div class="form-group">
+                            <label for="voucher"><?php echo lang('voucher');?></label>
+                            <input  autocomplete="off" type="text" id="voucher" name="voucher" class="form-control voucher_field" placeholder="<?php echo lang('voucher');?>">
+                        </div>
+                    </div>
                     </div>
                     <!-- End Top Payment AddPart -->
 
