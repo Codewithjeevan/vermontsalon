@@ -83,9 +83,7 @@ class PaymentMethod extends Cl_Controller {
                         $fmc_info['account_type'] = 'Loyalty Point';
                     }
                 }else{
-                    if($id == ''){
-                        $fmc_info['account_type'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('account_type')));
-                    }
+                    $fmc_info['account_type'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('account_type')));
                 }
                 $fmc_info['user_id'] = $this->session->userdata('user_id');
                 $fmc_info['company_id'] = $this->session->userdata('company_id');
