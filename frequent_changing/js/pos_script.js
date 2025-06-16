@@ -7966,7 +7966,11 @@ $(function () {
                         for(let k in tax_information){
                             totalpercentage += parseFloat(tax_information[k].tax_field_percentage, 10);
                         };
-                        netamount = ((item_total_price)/(100+totalpercentage)*100).toFixed(op_precision);
+                        if(tax_type == 1){
+                            netamount = item_total_price;
+                        }else{
+                            netamount = ((item_total_price)/(100+totalpercentage)*100);
+                        }
                         
                         for(let k in tax_information){
                             if(tax_name.includes(tax_information[k].tax_field_name) && checkTaxApply(tax_information[k].tax_field_name)){
@@ -7975,7 +7979,8 @@ $(function () {
                                 if(tax_type == 1){
                                     current_value = parseFloat((parseFloat(parseFloat(tax_information[k].tax_field_percentage)*parseFloat(netamount))/parseFloat(100)));
                                 }else{
-                                    current_value = (parseFloat(netamount) - (parseFloat(netamount)/(1+(tax_information[k].tax_field_percentage/100)))).toFixed(op_precision);
+                                    // current_value = (parseFloat(netamount) - (parseFloat(netamount)/(1+(tax_information[k].tax_field_percentage/100)))).toFixed(op_precision);
+                                    current_value = (parseFloat(tax_information[k].tax_field_percentage)*parseFloat(netamount))/100;
                                 }
                                 tax_object["" + tax_information[k].tax_field_name] = (parseFloat(previous_value)+ Number(current_value)).toFixed(op_precision);
                             }else{
@@ -7985,7 +7990,8 @@ $(function () {
                                     if(tax_type == 1){
                                         current_value = parseFloat((parseFloat(parseFloat(tax_information[k].tax_field_percentage)*parseFloat(netamount))/parseFloat(100)));
                                     }else{
-                                        current_value = (parseFloat(netamount) - parseFloat(netamount)/(1+(tax_information[k].tax_field_percentage/100))).toFixed(op_precision);
+                                        // current_value = (parseFloat(netamount) - (parseFloat(netamount)/(1+(tax_information[k].tax_field_percentage/100)))).toFixed(op_precision);
+                                        current_value = (parseFloat(tax_information[k].tax_field_percentage)*parseFloat(netamount))/100;
                                     }
                                     tax_object["" + tax_information[k].tax_field_name] = (Number(current_value)).toFixed(op_precision);
                                 }

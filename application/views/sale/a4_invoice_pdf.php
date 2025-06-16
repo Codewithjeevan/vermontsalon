@@ -11,6 +11,12 @@ $rounding_type = $this->session->userdata('pos_total_payable_type');
 $invoice_configuration = $this->session->userdata('invoice_configuration');
 $inv_logo_is_show = $this->session->userdata('inv_logo_is_show');
 $inv_config = json_decode($invoice_configuration);
+
+$subtotal = $sale_object->sub_total;
+if($tax) {
+    $vatAmount = $tax ? array_reduce($tax, fn($carry, $t) => strtolower($t->tax_field_type) === 'vat' ? $carry + $t->tax_field_amount : $carry, 0) : 0;
+    $subtotal = $sale_object->total_payable - $vatAmount;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -392,7 +398,7 @@ $inv_config = json_decode($invoice_configuration);
                     </th>
                     <th><?=($ln_text=="bangla"?banglaNumber($totalItems):$totalItems)?> (<?=($ln_text=="bangla"?banglaNumber($qty_sum):$qty_sum)?>)</th>
                     <th><?php echo (getAmtCustom($total_discount_amount)); ?></th>
-                    <th class="text-right pr-10"><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->sub_total):$sale_object->sub_total)?></th>
+                    <th class="text-right pr-10"><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($subtotal):$subtotal)?></th>
                 </tr>
             </tfoot>
         </table>
@@ -474,7 +480,7 @@ $inv_config = json_decode($invoice_configuration);
                     <?php } ?>
 
                     <?php 
-                        if($sale_object->sub_total){
+                        if($subtotal){
                     ?>
                     <table>
                         <tr>
@@ -490,7 +496,7 @@ $inv_config = json_decode($invoice_configuration);
                                 </p>
                             </td>
                             <td class="w-50 text-right">
-                                <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->sub_total):$sale_object->sub_total)?></p>
+                                <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($subtotal):$subtotal)?></p>
                             </td>
                         </tr>
                     </table>
@@ -499,6 +505,7 @@ $inv_config = json_decode($invoice_configuration);
                     <?php if($tax) {
                         $i = 0;
                         foreach($tax as $t){ 
+                            if(strtolower($t->tax_field_type) == 'vat'){
                             if($t->tax_field_amount > 0){  
                                 $i++;
                                 $taxSum += $t->tax_field_amount;
@@ -513,7 +520,7 @@ $inv_config = json_decode($invoice_configuration);
                             </td>
                         </tr>
                     </table>
-                    <?php } } } ?>
+                    <?php } } } } ?>
 
 
                     <?php 

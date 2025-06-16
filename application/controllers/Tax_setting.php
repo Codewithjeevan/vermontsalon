@@ -60,12 +60,12 @@ class Tax_setting extends Cl_Controller {
      */
     public function tax($id = '') {
         if (htmlspecialcharscustom($this->input->post('submit'))) {
-            $this->form_validation->set_rules('collect_tax', 'Collect Tax', 'required|max_length[10]');
+            $this->form_validation->set_rules('collect_tax', 'Collect Tax', 'required|max_length[50]');
             if ($this->input->post('collect_tax') == "Yes") {
                 $this->form_validation->set_rules('tax_title', 'Tax Title', 'required|max_length[50]');
                 $this->form_validation->set_rules('tax_registration_no', 'Tax Registration No', 'required|max_length[50]');
                 $this->form_validation->set_rules('tax_is_gst', 'Tax is GST', 'required|max_length[50]');
-                $this->form_validation->set_rules('taxes[]', 'Taxes', 'required|max_length[10]');
+                $this->form_validation->set_rules('taxes[]', 'Taxes', 'required|max_length[50]');
             }
             if ($this->form_validation->run() == TRUE) {
                 $outlet_info = array();

@@ -12,6 +12,11 @@ $invoice_configuration = $this->session->userdata('invoice_configuration');
 $inv_logo_is_show = $this->session->userdata('inv_logo_is_show');
 $inv_config = json_decode($invoice_configuration);
 
+$subtotal = $sale_object->sub_total;
+if($tax) {
+    $vatAmount = $tax ? array_reduce($tax, fn($carry, $t) => strtolower($t->tax_field_type) === 'vat' ? $carry + $t->tax_field_amount : $carry, 0) : 0;
+    $subtotal = $sale_object->total_payable - $vatAmount;
+}
 ?>
 
 <!DOCTYPE html>
@@ -433,7 +438,7 @@ $inv_config = json_decode($invoice_configuration);
                             (<?= ($ln_text == "bangla" ? banglaNumber($qty_sum) : $qty_sum) ?>)</th>
                         <th><?php echo (getAmtCustom($total_discount_amount)); ?></th>
                         <th class="text-right pr-10">
-                            <?php echo getAmtCustom($ln_text == "bangla" ? banglaNumber($sale_object->sub_total) : $sale_object->sub_total) ?>
+                            <?php echo getAmtCustom($ln_text == "bangla" ? banglaNumber($subtotal) : $subtotal) ?>
                         </th>
                     </tr>
                 </tfoot>
@@ -495,7 +500,7 @@ $inv_config = json_decode($invoice_configuration);
 
 
             <?php
-            if ($sale_object->sub_total) {
+            if ($subtotal) {
                 ?>
                 <div class="d-flex justify-content-between pt-2 pb-3 mt-2 mb-2 border-bottom-dotted-gray">
                     <p class="f-w-600">
@@ -507,7 +512,7 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->subtotal_label_arabic;
                         } ?>
                     </p>
-                    <p><?php echo getAmtCustom($ln_text == "bangla" ? banglaNumber($sale_object->sub_total) : $sale_object->sub_total) ?>
+                    <p><?php echo getAmtCustom($ln_text == "bangla" ? banglaNumber($subtotal) : $subtotal) ?>
                     </p>
                 </div>
                 <?php
@@ -527,7 +532,8 @@ $inv_config = json_decode($invoice_configuration);
                 <p class="d-flex">
                     <?php if ($tax) {
                         $total = count($tax);
-                        foreach ($tax as $key => $t) {
+                        foreach($tax as $key => $t){ 
+                            if(strtolower($t->tax_field_type) == 'vat'){
                                 $taxSum += $t->tax_field_amount;
                                 ?>
 
@@ -540,7 +546,7 @@ $inv_config = json_decode($invoice_configuration);
                                     echo getAmtCustom(0);
                                 } ?>
                             </span>
-                        <?php }
+                        <?php } }
                     } ?>
                 </p>
             </div>
