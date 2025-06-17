@@ -246,19 +246,33 @@ class Report extends Cl_Controller {
      * @param no
      * @return void
      */
-    public function saleReport() {
-        $data = array();
-        $outlet_id  = isset($_POST['outlet_id']) && $_POST['outlet_id']?$_POST['outlet_id']:'';
+     public function saleReport() {
+        $data = [];
+        $outlet_id = $this->input->post('outlet_id') ?: '';
         $data['outlet_id'] = $outlet_id;
+
         if (htmlspecialcharscustom($this->input->post('submit'))) {
             $data['report_generate_time'] = generatedOnCurrentDateTime();
-            $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
-            $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
-            $data['start_date'] = $start_date;
-            $data['end_date'] = $end_date;
-            $data['saleReport'] = $this->Report_model->saleReport($start_date, $end_date, $outlet_id);
+            $data['start_date'] = htmlspecialcharscustom(
+                $this->input->post($this->security->xss_clean('startDate'))
+            );
+            $data['end_date'] = htmlspecialcharscustom(
+                $this->input->post($this->security->xss_clean('endDate'))
+            );
+
+            $data['saleReport'] = $this->Report_model
+                ->saleReport(
+                    $data['start_date'],
+                    $data['end_date'],
+                    $outlet_id
+                );
         }
-        $data['main_content'] = $this->load->view('report/saleReport', $data, TRUE);
+
+        // **new**: pull in your company’s tax_setting JSON
+        $data['tax_settings'] = $this->Common_model->getCompanyTaxSettings();
+
+        $data['main_content'] = $this->load
+            ->view('report/saleReport', $data, TRUE);
         $this->load->view('userHome', $data);
     }
 
@@ -295,25 +309,33 @@ class Report extends Cl_Controller {
      * @param no
      * @return void
      */
-    public function summarySalesReport() {
-        $data = array();
-        $outlet_id  = isset($_POST['outlet_id']) && $_POST['outlet_id']?$_POST['outlet_id']:'';
-        $data['outlet_id'] = $outlet_id;
-        $company_id = $this->session->userdata('company_id');
-        if (htmlspecialcharscustom($this->input->post('submit'))) {
+    public function summarySalesReport()
+    {
+        $data = [];
+        $outlet_id = $this->input->post('outlet_id') ?: '';
+        $data['saleReport'] = array();
+        if ($this->input->post('submit')) {
             $data['report_generate_time'] = generatedOnCurrentDateTime();
-            $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
-            $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
-            $data['start_date'] = $start_date;
-            $data['end_date'] = $end_date;
-            $data['saleReport'] = $this->Report_model->summarySaleReport($start_date, $end_date, $outlet_id);
+            $data['start_date']           = $this->input->post('startDate');
+            $data['end_date']             = $this->input->post('endDate');
+            $data['saleReport']           = $this->Report_model
+                                                ->summarySaleReport(
+                                                $data['start_date'],
+                                                $data['end_date'],
+                                                $outlet_id
+                                                );
         }
-        
+
+        // payments + dynamic taxes
         $data['payment_methods'] = $this->Common_model->getAllPaymentMethods();
-        $data['main_content'] = $this->load->view('report/summarySalesReport', $data, TRUE);
-        $data['page_title'] = "Summary Sales Report";
+        $data['tax_settings']    = $this->Common_model->getCompanyTaxSettings();
+
+        $data['main_content'] = $this->load->view('report/summarySalesReport',$data,TRUE);
+        $data['page_title']   = "Summary Sales Report";
         $this->load->view('userHome', $data);
     }
+
+
 
     /**
      * dueSaleReport

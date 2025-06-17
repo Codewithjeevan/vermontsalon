@@ -2031,6 +2031,22 @@ class Common_model extends CI_Model {
         $this->db->order_by("sort_id");
         return $this->db->get()->result();
     }
+
+
+    public function getCompanyTaxSettings()
+    {
+        $company_id = $this->session->userdata('company_id');
+        $row = $this->db
+            ->select('tax_setting')
+            ->from('tbl_companies')
+            ->where('id', $company_id)
+            ->get()
+            ->row();
+
+        return $row
+            ? json_decode($row->tax_setting, true)
+            : [];
+    }
     
     /**
      * updateInformation
@@ -3205,6 +3221,7 @@ class Common_model extends CI_Model {
         $this->db->order_by("id", 'DESC');
         return $this->db->get()->result();
     }
+
 
 
     /**
