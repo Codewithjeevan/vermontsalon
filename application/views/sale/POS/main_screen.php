@@ -2022,16 +2022,33 @@ $company_short_name =  $getCompanyInfo->short_name;
                     </div>
                     <!-- End Top Payment AddPart -->
 
-                    <!--  -->
-                    <div class="voucher_select margin-top-10" style="display: none">
-                        <div class="form-group">
-                            <label for="voucher"><?php echo lang('voucher');?></label>
-                            <input  autocomplete="off" type="text" id="voucher" name="voucher" class="form-control voucher_field" placeholder="<?php echo lang('voucher');?>">
-                        </div>
-                    </div>
-                    </div>
-                    <!-- End Top Payment AddPart -->
+                      <?php foreach ($payment_methods as $value):
+                            $selected = "";
+                            $is_cash = "";
+                            $selected2 = '';
+                            $default_payment = $getCompanyInfo->default_payment;
+                            $is_loyalty_enable = $getCompanyInfo->is_loyalty_enable;
+                            if($value->id==$default_payment){
+                                $selected = "active";
+                                $selected2 = "active_m";
+                            }
+                            if($value->name != 'Cash'){
+                                $is_cash = "set_no_access";
+                            }
+                            if($is_loyalty_enable!='enable'):
+                            ?>
+                            <!-- Voucher -->
+                            <div class="voucher_select margin-top-10" id="voucher_select_<?= $value->id ?>" style="display: none">
+                                <div class="form-group">
+                                    <label for="voucher"><?php echo lang('voucher');?></label>
+                                    <input  autocomplete="off" type="text" id="voucher_<?= $value->id ?>" name="voucher[]" class="form-control voucher_field" placeholder="<?php echo lang('voucher');?>">
+                                </div>
+                            </div>
 
+                    <?php endif;?>
+                            <?php endforeach;?>
+                    <!-- End Top Voucher AddPart -->
+                    </div>
                     <div>
                         <ul class="finalize_modal_is_mul_currency">
                             <li class="w-48 pe-3">

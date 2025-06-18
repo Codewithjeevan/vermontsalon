@@ -568,6 +568,7 @@ class Sale extends Cl_Controller {
                     $data['payment_id'] = $value->payment_id;
                     $data['payment_name'] = $value->payment_name;
                     $data['amount'] = $value->amount;
+                    $data['voucher'] = $value->voucher;
                     $data['date'] = date('Y-m-d');
                     $data['added_date'] = date('Y-m-d H:i:s');
                     $data['sale_id'] = $sales_id;

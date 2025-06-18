@@ -747,6 +747,12 @@ $inv_config = json_decode($invoice_configuration);
                             <span class="font-size-10"><?php echo $details != '' ? ($key === array_key_last($payment_details) ? $details : $details . ',' ) : '';?>
                             </span>
                         <?php } }?>
+
+                        <?php 
+                            if($p_name->voucher != null){
+                            echo "(Voucher- ".@$p_name->voucher.")";
+                            }
+                        ?>
                     </p>
                     <?php if($p_name->multi_currency){?>
                         <p><?php echo getAmtCustom($sale_object->paid_amount); ?></p>

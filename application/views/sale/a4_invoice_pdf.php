@@ -828,6 +828,12 @@ $inv_config = json_decode($invoice_configuration);
                                         <span class="font-10"><?php echo $details != '' ? ($key === array_key_last($payment_details) ? $details : $details . ',' ) : '';?>
                                         </span>
                                     <?php } }?>
+
+                                    <?php 
+                                        if($p_name->voucher != null){
+                                        echo "(Voucher- ".@$p_name->voucher.")";
+                                        }
+                                    ?>
                                 </p>
                             </td>
                             <td class="w-50 text-right">
