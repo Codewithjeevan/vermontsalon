@@ -869,66 +869,62 @@ class Report_model extends CI_Model {
     //     return $result;
     // }
 
-    public function saleReport($startMonth = '', $endMonth = '', $outlet_id = '', $tipamount = '')
-    {
+    public function saleReport($startMonth = '', $endMonth = '', $outlet_id = '') {
         $company_id = $this->session->userdata('company_id');
 
         $this->db->select([
-            's.sale_date',
-            's.date_time',
             's.id',
             's.sale_no',
+            's.sale_date',
+            's.date_time',
+            'c.name              AS customer_name',
+            // capture the JSON array for taxes
+            "COALESCE(MAX(s.sale_vat_objects), '[]') AS sale_vat_objects",
+            // basic amounts
             's.sub_total',
-            's.vat',
             's.delivery_charge',
+            's.total_discount_amount',
             's.total_payable',
             's.paid_amount',
             's.due_amount',
-            's.total_discount_amount',
-            's.given_amount',
-            's.change_amount',
-            's.grand_total',
-            'c.name   AS customer_name',
-            "GROUP_CONCAT(DISTINCT seller.full_name     SEPARATOR ', ') AS seller_names",
-            "GROUP_CONCAT(DISTINCT pm.name             SEPARATOR ', ') AS payment_methods"
-        ], false);
-
-        $this->db->from('tbl_sales AS s');
-        $this->db->join('tbl_customers    AS c',    'c.id          = s.customer_id',    'left');
-        $this->db->join('tbl_sales_details AS sd',   'sd.sales_id   = s.id',             'left');
-        $this->db->join('tbl_users         AS seller','sd.item_seller_id = seller.id',   'left');
-        $this->db->join('tbl_sale_payments AS sp',   'sp.sale_id    = s.id',             'left');
-        $this->db->join('tbl_payment_methods AS pm', 'pm.id         = sp.payment_id',    'left');
+            // items→sellers→concat (optional)
+            "GROUP_CONCAT(DISTINCT seller.full_name SEPARATOR ', ') AS seller_names",
+            // payments per sale as comma-sep
+            "GROUP_CONCAT(DISTINCT pm.name SEPARATOR ', ')    AS payment_methods"
+        ], FALSE)
+        ->from('tbl_sales AS s')
+        ->join('tbl_customers     AS c',  'c.id        = s.customer_id',    'left')
+        ->join('tbl_sales_details AS sd', 'sd.sales_id = s.id',             'left')
+        ->join('tbl_users         AS seller',
+               'sd.item_seller_id = seller.id',                       'left')
+        ->join('tbl_sale_payments AS sp', 'sp.sale_id    = s.id',            'left')
+        ->join('tbl_payment_methods AS pm',
+               'pm.id = sp.payment_id',                                 'left')
+        ->where('s.company_id',       $company_id)
+        ->where('s.delivery_status', 'Cash Received')
+        ->where('s.del_status',      'Live');
 
         // date filters
-        if ($startMonth !== '' && $endMonth !== '') {
-            $this->db->where('s.sale_date >=', $startMonth);
-            $this->db->where('s.sale_date <=', $endMonth);
-        } elseif ($startMonth !== '') {
+        if ($startMonth && $endMonth) {
+            $this->db
+                ->where('s.sale_date >=', $startMonth)
+                ->where('s.sale_date <=', $endMonth);
+        } elseif ($startMonth) {
             $this->db->where('s.sale_date', $startMonth);
-        } elseif ($endMonth !== '') {
+        } elseif ($endMonth) {
             $this->db->where('s.sale_date', $endMonth);
         }
 
-        // optional filters
-        if ($outlet_id !== '') {
+        // optional outlet filter
+        if ($outlet_id) {
             $this->db->where('s.outlet_id', $outlet_id);
         }
-        if ($tipamount !== '') {
-            // assuming tipamount flag is boolean stored as 1/0
-            $this->db->where('s.tip_amount', 1);
-        }
 
-        // fixed conditions
-        $this->db->where('s.delivery_status', 'Cash Received');
-        $this->db->where('s.company_id',       $company_id);
-        $this->db->where('s.del_status',       'Live');
-
-        // ← crucial: collapse the joined rows back into one row per sale
+        // one row per sale
         $this->db->group_by('s.id');
+        $this->db->order_by('s.date_time','ASC');
 
-        $query = $this->db->get();
-        return $query->result();
+        return $this->db->get()->result();
     }
 
     public function therapistReport($startMonth = '', $endMonth = '', $outlet_id = '', $user_id = '')
@@ -995,50 +991,61 @@ class Report_model extends CI_Model {
 
 
 
-   public function summarySaleReport($startMonth, $endMonth, $outlet_id = '')
-    {
-        $company_id = $this->session->userdata('company_id');
-
-        // Step 1: Get all payment methods
+     public function summarySaleReport($startDate, $endDate, $outlet_id = '') {
+        $company_id      = $this->session->userdata('company_id');
         $payment_methods = $this->Common_model->getAllPaymentMethods();
-        $dynamicSelect = [];
+        $dynamicSelect   = [];
 
+        // Build SUM(CASE…) for each payment method
         foreach ($payment_methods as $method) {
-            $methodName = $method->name;
-            $alias = strtolower(str_replace(' ', '_', $methodName));
-            $alias = preg_replace('/[^a-z0-9_]/', '', $alias); // Remove special chars
-            $dynamicSelect[] = "SUM(CASE WHEN sp.payment_name = '{$methodName}' THEN sp.amount ELSE 0 END) AS total_{$alias}_amount";
+            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
+            $dynamicSelect[] = "
+                SUM(
+                  CASE WHEN sp.payment_name = '{$method->name}'
+                       THEN sp.amount ELSE 0 END
+                ) AS total_{$alias}_amount
+            ";
         }
 
-        $this->db->select(array_merge([
+        // Base selects: date, payable, discount, **grouped JSON**
+        $select = array_merge([
             's.sale_date',
-            'SUM(s.total_payable) AS total_payable',
+            'SUM(s.total_payable)         AS total_payable',
             'SUM(s.total_discount_amount) AS total_discount_amount',
-            'SUM(s.vat) AS total_vat'
-        ], $dynamicSelect), false);
+            // ensure we never get NULL
+            "COALESCE(
+               GROUP_CONCAT(s.sale_vat_objects SEPARATOR '|||'),
+               ''
+             ) AS sale_vat_objects_grouped"
+        ], $dynamicSelect);
 
-        $this->db->from('tbl_sales AS s');
-        $this->db->join('tbl_sale_payments AS sp', 'sp.sale_id = s.id', 'left');
-        $this->db->join('tbl_payment_methods AS pm', 'pm.id = sp.payment_id', 'left');
+        $this->db
+            ->select($select, FALSE)
+            ->from('tbl_sales AS s')
+            ->join('tbl_sale_payments AS sp', 'sp.sale_id = s.id', 'left')
+            ->where('s.delivery_status', 'Cash Received')
+            ->where('s.company_id',     $company_id)
+            ->where('s.del_status',      'Live');
 
-        if ($startMonth !== '' && $endMonth !== '') {
-            $this->db->where('s.sale_date >=', $startMonth);
-            $this->db->where('s.sale_date <=', $endMonth);
-        } elseif ($startMonth !== '') {
-            $this->db->where('s.sale_date', $startMonth);
-        } elseif ($endMonth !== '') {
-            $this->db->where('s.sale_date', $endMonth);
+        // date filters
+        if ($startDate && $endDate) {
+            $this->db
+                ->where('s.sale_date >=', $startDate)
+                ->where('s.sale_date <=', $endDate);
+        } elseif ($startDate) {
+            $this->db->where('s.sale_date', $startDate);
+        } elseif ($endDate) {
+            $this->db->where('s.sale_date', $endDate);
         }
 
-        if ($outlet_id !== '') {
+        // optional outlet filter
+        if ($outlet_id) {
             $this->db->where('s.outlet_id', $outlet_id);
         }
 
-        $this->db->where('s.delivery_status', 'Cash Received');
-        $this->db->where('s.company_id', $company_id);
-        $this->db->where('s.del_status', 'Live');
-        $this->db->group_by('s.sale_date');
-        $this->db->order_by('s.sale_date', 'asc');
+        $this->db
+            ->group_by('s.sale_date')
+            ->order_by('s.sale_date', 'asc');
 
         return $this->db->get()->result();
     }

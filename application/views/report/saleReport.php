@@ -71,87 +71,130 @@
             <!-- /.box-header -->
             <div class="table-responsive">
             <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('food_sales_report'); ?>" data-id_name="datatable">
-                <table id="datatable" class="table table-bordered table-striped">
+      <table id="datatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th class="w-5"><?php echo lang('sn'); ?></th>
-                            <th><?php echo lang('invoice_no'); ?></th>
-                            <th><?php echo lang('date_and_time'); ?></th>
-                            <th><?php echo lang('customer'); ?></th>
-                            <th><?php echo lang('items'); ?></th>
-                            <th class="text-center"><?php echo lang('sub_total'); ?></th>
-                            <th class="text-center"><?php echo lang('tax'); ?></th>
-                            <th class="text-center"><?php echo lang('charge'); ?></th>
-                            <th class="text-center"><?php echo lang('discount'); ?></th>
-                            <th class="text-center"><?php echo lang('total_payable'); ?></th>
-                            <th class="text-center"><?php echo lang('paid'); ?></th>
-                            <th><?php echo lang('due'); ?></th>
+                        <th class="w-5"><?= lang('sn')          ?></th>
+                        <th>     <?= lang('invoice_no')    ?></th>
+                        <th>     <?= lang('date_and_time') ?></th>
+                        <th>     <?= lang('items')         ?></th>    
+                        <th class="text-center"><?= lang('bill_amt')          ?></th>
+                        <th class="text-center"><?= lang('discount')      ?></th>
+                        <!-- Dynamic tax headers -->
+                        <?php foreach ($tax_settings as $tax): ?>
+                            <th class="text-center">
+                            <?= html_escape($tax['tax']) ?>
+                            (<?= html_escape($tax['tax_rate']) ?>%)
+                            </th>
+                        <?php endforeach; ?>
+                        <th class="text-center"><?= lang('net_amt_aed')      ?></th>
+                        <th>     <?= lang('pay_mode') ?></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php 
-                        $totalPayable = 0;
-                        $paidAmount = 0;
-                        $dueAmount = 0;
-                        $disAmount = 0;
-                        $subTotal = 0;
-                        $chargeTotal = 0;
-                        $totalTax = 0;
-                        if (isset($saleReport)):
-                            foreach ($saleReport as $key => $value) {
-                                $key++;
-                                $totalPayable += $value->total_payable;
-                                $paidAmount += $value->paid_amount;
-                                $dueAmount += $value->due_amount;
-                                $disAmount += $value->total_discount_amount;
-                                $subTotal += $value->sub_total;
-                                $totalTax += $value->vat;
-                                $chargeTotal += $value->delivery_charge;
-                                ?>
-                                <tr>
-                                    <td><?php echo $key; ?></td> 
-                                    <td><?php echo escape_output($value->sale_no); ?></td>
-                                    <td><?php echo dateFormat($value->date_time); ?></td>
-                                    <td><?php echo escape_output($value->customer_name); ?></td>
-                                    <td>
-                                        <?php 
-                                            $saleItems = getSaleReportItemsBySaleId($value->id);
-                                            if($saleItems){
-                                                echo "<strong>Name(Code)-Qty(Unit)-Price</strong><br>";
-                                                foreach($saleItems as $item){
-                                                    echo escape_output($item->name). '('. $item->code . ')-' . $item->qty . '(' .$item->unit_name . ')-' . $item->sale_item_price . "<br>";
-                                                }
-                                            }
-                                        ?>
-                                    </td>
-                                    <td class="text-center"><?php echo getAmtCustom($value->sub_total); ?></td>
-                                    <td class="text-center"><?php echo getAmtCustom($value->vat); ?></td>
-                                    <td class="text-center"><?php echo getAmtCustom($value->delivery_charge); ?></td>
-                                    <td class="text-center"><?php echo getAmtCustom($value->total_discount_amount); ?></td>
-                                    <td class="text-center"><?php echo getAmtCustom($value->total_payable); ?></td>
-                                    <td class="text-center"><?php echo getAmtCustom($value->paid_amount); ?></td>
-                                    <td><?php echo getAmtCustom($value->due_amount); ?></td>
-                                </tr>
-                                <?php
+                        <?php
+                        // grand‐totals init
+                        $totals = [
+                            'sub_total'       => 0,
+                            'charge'          => 0,
+                            'discount'        => 0,
+                            'total_payable'   => 0,
+                            'paid_amount'     => 0,
+                            'due_amount'      => 0,
+                        ];
+                        $taxTotals = [];
+                        foreach ($tax_settings as $t) {
+                            $taxTotals[$t['tax']] = 0;
+                        }
+
+                        if (! empty($saleReport)):
+                            foreach ($saleReport as $i => $row):
+                            // accumulate simple totals
+                            $totals['sub_total']     += $row->sub_total;
+                            $totals['charge']        += $row->delivery_charge;
+                            $totals['discount']      += $row->total_discount_amount;
+                            $totals['total_payable'] += $row->total_payable;
+                            $totals['paid_amount']   += $row->paid_amount;
+                            $totals['due_amount']    += $row->due_amount;
+
+                            // parse this sale’s tax JSON
+                            $perTax = array_fill_keys(array_keys($taxTotals), 0);
+                            $json   = $row->sale_vat_objects ?: '[]';
+                            $objs   = json_decode($json, true);
+                            if (is_array($objs)) {
+                                foreach ($objs as $o) {
+                                $type = $o['tax_field_type']   ?? '';
+                                $amt  = floatval($o['tax_field_amount'] ?? 0);
+                                if (isset($perTax[$type])) {
+                                    $perTax[$type]    += $amt;
+                                    $taxTotals[$type] += $amt;
+                                }
+                                }
                             }
-                        endif;
                         ?>
                         <tr>
-                            <th></th> 
+                            <td><?= $i + 1 ?></td>
+                            <td><?= escape_output($row->sale_no) ?></td>
+                            <td><?= dateFormat($row->date_time)  ?></td>
+
+                            <!-- Items list (as you had it) -->
+                            <td>
+                            <?php 
+                                $items = getSaleReportItemsBySaleId($row->id);
+                                if ($items) {
+                                echo "<strong>Name(Code)-Qty(Unit)-Price</strong><br>";
+                                foreach ($items as $it) {
+                                    echo sprintf(
+                                    "%s(%s)-%s(%s)-%s<br>",
+                                    escape_output($it->name),
+                                    $it->code,
+                                    $it->qty,
+                                    $it->unit_name,
+                                    $it->sale_item_price
+                                    );
+                                }
+                                }
+                            ?>
+                            </td>
+
+                            <!-- comma-sep payment methods -->
+                            
+                            
+                                <td class="text-center"><?= getAmtCustom($row->total_payable)        ?></td>
+                                <td class="text-center"><?= getAmtCustom($row->total_discount_amount) ?></td>
+                            <!-- per‐tax columns -->
+                            <?php foreach ($tax_settings as $tax): ?>
+                            <td class="text-center">
+                                <?= getAmtCustom($perTax[$tax['tax']]) ?>
+                            </td>
+                            <?php endforeach; ?>
+                            <td class="text-center"><?= getAmtCustom($row->sub_total) ?></td>
+                            <td><?= escape_output($row->payment_methods) ?></td>
+                        </tr>
+                        <?php
+                            endforeach;
+                        endif;
+                        ?>
+
+                        <!-- footer row -->
+                         <tr>
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th class="text-right"><?php echo lang('total'); ?></th>
-                            <th class="text-center"><?php echo getAmtCustom($subTotal); ?></th>
-                            <th class="text-center"><?php echo getAmtCustom($totalTax); ?></th>
-                            <th class="text-center"><?php echo getAmtCustom($chargeTotal); ?></th>
-                            <th class="text-center"><?php echo getAmtCustom($disAmount); ?></th>
-                            <th class="text-center"><?php echo getAmtCustom($totalPayable); ?></th>
-                            <th class="text-center"><?php echo getAmtCustom($paidAmount); ?></th>
-                            <th><?php echo getAmtCustom($dueAmount); ?></th>
-                        </tr> 
+                            <th class="text-right"><?= lang('total') ?></th>
+
+                            <th class="text-center"><?= getAmtCustom($totals['total_payable']) ?></th>
+                            <th class="text-center"><?= getAmtCustom($totals['discount'])      ?></th>
+                            <?php foreach ($tax_settings as $tax): ?>
+                                <th class="text-center">
+                                    <?= getAmtCustom($taxTotals[$tax['tax']]) ?>
+                                </th>
+                            <?php endforeach; ?>
+                            <th class="text-center"><?= getAmtCustom($totals['sub_total'])     ?></th>
+                            <th></th> <!-- placeholder for the Pay Mode column -->
+                        </tr>
                     </tbody>
-                </table>
+                    </table>
             </div>
             <!-- /.box-body -->
         </div>
