@@ -2845,7 +2845,7 @@ if (!function_exists('banglaNumber')) {
 if (!function_exists('salePaymentDetails')) {
     function salePaymentDetails($id,$outlet_id) {
         $CI = & get_instance();
-        $CI->db->select('p.name as payment_name,sp.amount,sp.payment_details, sp.multi_currency,sp.multi_currency_rate,sp.payment_id');
+        $CI->db->select('p.name as payment_name,sp.amount,sp.payment_details, sp.multi_currency,sp.multi_currency_rate,sp.payment_id, sp.voucher');
         $CI->db->from('tbl_sale_payments sp');
         $CI->db->join('tbl_payment_methods p', 'p.id = sp.payment_id', 'left');
         $CI->db->where('sp.outlet_id', $outlet_id);

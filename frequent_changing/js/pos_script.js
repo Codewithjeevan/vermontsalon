@@ -5563,11 +5563,13 @@ $(function () {
                             let payment_id = $(this).attr("data-payment_id");
                             let amount = $(this).attr("data-amount");
                             let usage_point = $(this).attr("data-usage_point");
+                            let voucher = $('#voucher_'+payment_id).val();
                             let paymentDetails = {
                                 "payment_id": payment_id,
                                 "payment_name": payment_name,
                                 "amount": amount,
-                                "usage_point": usage_point
+                                "usage_point": usage_point,
+                                "voucher": voucher ?? ''
                             };
                             payment_info.push(paymentDetails);
                         });
@@ -8406,10 +8408,7 @@ $(function () {
         let loyalty_rate = Number($("#loyalty_rate").val());
 
         $('.voucher_select').css('display', 'none');
-        if(acc_type == 'Groupon')
-        {
-            $('.voucher_select').css('display', 'block');
-        }
+        $('#voucher_select_'+id).css('display', 'block');
 
         if(acc_type != 'Loyalty Point'){
             $(".previous_due_div").show();

@@ -799,6 +799,12 @@ if($tax) {
                                                     </span>
                                                 <?php }
                                             } ?>
+                                        <?php 
+                                            if($p_name->voucher != null){
+                                            echo "(Voucher- ".@$p_name->voucher.")";
+                                            }
+                                        ?>
+
                                             :
                                         </p>
                                         <?php if ($p_name->multi_currency) { ?>
