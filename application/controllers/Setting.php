@@ -95,7 +95,7 @@ class Setting extends Cl_Controller {
             // $this->form_validation->set_rules('letter_head_gap', lang('letter_head_gap'), 'max_length[50]');
             // $this->form_validation->set_rules('letter_footer_gap', lang('letter_footer_gap'), 'max_length[50]');
             $this->form_validation->set_rules('allow_less_sale', lang('Allow_Overselling'), 'required|max_length[10]');
-            $this->form_validation->set_rules('default_customer', lang('default_customer'), 'required|max_length[10]');
+            $this->form_validation->set_rules('default_customer', lang('default_customer'), 'max_length[10]');
             $this->form_validation->set_rules('default_payment', lang('default_payment_method'), 'required|max_length[10]');
             $this->form_validation->set_rules('installment_days', lang('installment_notification_days'), 'required|max_length[10]');
             $this->form_validation->set_rules('is_loyalty_enable', lang('loyalty_point'), 'required|max_length[10]');

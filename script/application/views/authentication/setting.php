@@ -429,7 +429,7 @@
                     </div>
                     <div class="col-md-6 col-lg-3 mb-3">
                         <div class="form-group">
-                            <label> <?php echo lang('Default_Customer'); ?> <span class="required_star">*</span></label>
+                            <label> <?php echo lang('Default_Customer'); ?></label>
                             <select  class="form-control select2" name="default_customer" id="default_customer">
                                 <option value=""><?php echo lang('select'); ?></option>
                                 <?php

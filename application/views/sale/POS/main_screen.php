@@ -203,6 +203,10 @@ $company_short_name =  $getCompanyInfo->short_name;
         #reader {
             width: 100%; 
         }
+
+        .second_column_employee select{
+            background: none;
+        }
     </style>
 </head>
 
@@ -796,7 +800,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                 <!-- End Top Items -->
                 <div id="bottom_absolute">
                     <div class="bottom__info">
-                        <div class="footer__content">
+                        <div class="one-pay-container">
                             <div class="item d-flex">
                                 <span class="mr-10">
                                     <iconify-icon data-tippy-content="Note" id="open_note_modal" icon="solar:notebook-linear" class="op_cursor_pointer bottom-iconify-color" width="22"></iconify-icon>
@@ -836,7 +840,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                 <iconify-icon icon="solar:eye-broken" class="bottom-iconify-color px-3 cursor-pointer" id="open_tax_modal" width="22"></iconify-icon>
                                 <span id="show_vat_modal"><?php echo getAmtPre(0)?></span>
                             </div>
-                            <div class="item">
+                            <div class="item" style="display: none">
                                 <span class="cart-footer-title"><?php echo lang('charge'); ?>: </span>
                                 <iconify-icon icon="solar:chat-round-money-broken" class="px-3 bottom-iconify-color" width="22" id="open_charge_modal"></iconify-icon>
                                 <span id="show_charge_amount"><?php echo getAmtPre(isset($sale_item) && $sale_item->delivery_charge ? $sale_item->delivery_charge : 0)?></span>
@@ -850,16 +854,50 @@ $company_short_name =  $getCompanyInfo->short_name;
                                     (<span id="all_items_discount"><?php echo getAmtPre(0)?></span>)
                             </div>
                             <?php if(!moduleIsHideCheck('Delivery Partner-YES')){ ?>
-                            <div class="item">
+                            <div class="item" style="display: none">
                                 <span class="cart-footer-title"><?php echo lang('delivery_partner'); ?>: </span>
                                 <iconify-icon icon="solar:users-group-rounded-broken" class="bottom-iconify-color px-3 cursor-pointer" width="22" id="open_deliverypartner_modal"></iconify-icon>
                                 <span id="delivery_partner_info" data-partner-id="<?php echo (isset($sale_item) && $sale_item->delivery_partner_id ? $sale_item->delivery_partner_id : 0)?>"><?php echo getPartnerName(isset($sale_item) && $sale_item->delivery_partner_id ? $sale_item->delivery_partner_id : '') ?></span>
                             </div>
                             <?php } ?>
-                            <div class="item">
+                            <div class="item" style="display: none">
                                 <span class="cart-footer-title"><?php echo lang('rounding'); ?>: </span>
                                 <span id="rounding" class="p-l-3"><?php echo getAmtPCustom(isset($sale_item) && $sale_item->rounding ? $sale_item->rounding : '') ?></span>
                             </div>
+                            <div class="item flex-column pay-method">
+                                <div>
+                                <span class="cart-footer-title">Payment Method :</span>
+                                </div>
+                                <div class="payment_method_radio d-flex gap-15px" >
+                                    <?php foreach ($payment_methods as $value): ?>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_<?php echo $value->id?>" value="<?php echo $value->id?>" <?php echo (isset($sale_item) && $sale_item->payment_method_id == $value->id) ? 'checked' : ''?>>
+                                            <label class="form-check-label" for="payment_method_<?php echo $value->id?>"><?php echo $value->name?></label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <div class="item flex-column pay-method">
+                                <div>
+                                <span class="cart-footer-title">Pay Amount:</span>
+                                </div>
+                                <div class="cn-numpad-launcher" >
+                                    <input type="text" class="form-control cn-numpad-input" id="pay_amount" name="pay_amount" value="<?php echo isset($sale_item) && $sale_item->paid_amount ? $sale_item->paid_amount : '' ?>" placeholder="<?php echo lang('pay_amount'); ?>" onfocus="this.select();" autocomplete="off">
+                                </div>
+                            </div>    
+                            <div class="item flex-column pay-method">
+                                <div>
+                                <span class="cart-footer-title">Card Details:</span>
+                                </div>
+                                <div class="d-flex gap-15px">
+                                <div>
+                                    <input type="text"  id="card_holder_name" name="card_holder_name" value="<?php echo isset($sale_item) && $sale_item->card_holder_name ? $sale_item->card_holder_name : '' ?>" placeholder="<?php echo lang('card_holder_name'); ?>" onfocus="this.select();" autocomplete="off">
+                                </div>
+                                <div class="cn-numpad-launcher">
+                                    <input type="text" class="form-control cn-numpad-input" id="card_number" name="card_number" value="<?php echo isset($sale_item) && $sale_item->card_number ? $sale_item->card_number : '' ?>" placeholder="<?php echo lang('card_number'); ?>" onfocus="this.select();" autocomplete="off">
+                                </div>
+                                </div>
+                            </div>    
                             <!-- End Total Item -->
                         </div>
                         <div class="payable">

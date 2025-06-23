@@ -2408,7 +2408,9 @@ $(function () {
         let readonlyAttr = '';
         let customerPriceType = $("#walk_in_customer option:selected").attr("price_type");
         let customerDiscount = $("#walk_in_customer option:selected").attr("discount");
-        let item_object = findItemByItemId(item_id);
+        const el = document.getElementById('select_employee_id');
+        const employeselect = el.outerHTML.replace(/class="[^"]*"/, '').replace(/name="[^"]*"/, 'name="seller_id[]"');
+        let item_object = findItemByItemId(item_id);    
         if(customerPriceType == 1){
             customerPrice = item_object.price;
         }else if(customerPriceType == 2){
@@ -2443,6 +2445,9 @@ $(function () {
                 <div class="single_order_column first_column">
                     <iconify-icon icon="solar:pen-broken" class="op_cursor_pointer edit_item" id="edit_item_${item_id}" width="22"></iconify-icon>
                     <span id="item_name_table_${item_id}">${item_object.item_name + '(' + item_object.item_code + ')'}</span>
+                </div>
+                <div class="single_order_column second_column_employee">
+                    ${employeselect}
                 </div>
                 <div class="single_order_column second_column">
                     <span id="item_price_table_${item_id}">${customerPrice}</span>
@@ -3311,6 +3316,9 @@ $(function () {
                             <span class="d-none" id="free_item_buy_table_${item_id}">${buyPromoQty}</span>
                             <span class="d-none" id="free_item_get_table_${item_id}">${getPromoQty}</span>
                         </div>
+                        <div class="single_order_column second_column_emp">
+                            <span id="free_item_employee_table_${item_id}">test</span>
+                    </div>
                         <div class="single_order_column second_column text-center"> 
                             <span id="free_item_price_table_${item_id}">${Number(0).toFixed(op_precision)}</span>
                         </div>
