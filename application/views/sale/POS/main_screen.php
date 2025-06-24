@@ -869,12 +869,13 @@ $company_short_name =  $getCompanyInfo->short_name;
                                 <span class="cart-footer-title">Payment Method :</span>
                                 </div>
                                 <div class="payment_method_radio d-flex gap-15px" >
-                                    <?php foreach ($payment_methods as $value): ?>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_<?php echo $value->id?>" value="<?php echo $value->id?>" <?php echo (isset($sale_item) && $sale_item->payment_method_id == $value->id) ? 'checked' : ''?>>
-                                            <label class="form-check-label" for="payment_method_<?php echo $value->id?>"><?php echo $value->name?></label>
-                                        </div>
-                                    <?php endforeach; ?>
+                                    <select class="form-control" name="payment_method" id="payment_method">
+                                        <?php foreach ($payment_methods as $value): ?>
+                                            <option value="<?php echo $value->id?>" <?php echo (isset($sale_item) && $sale_item->payment_method_id == $value->id) ? 'selected' : ''?>>
+                                                <?php echo $value->name?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                 </div>
                             </div>
                             <div class="item flex-column pay-method">

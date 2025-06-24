@@ -3954,3 +3954,7 @@ aside#pos__sidebar .pos__menu__list > li:nth-child(29) > a > svg {
 .gap-20px{
   gap: 20px;
 }
+
+.one-pay-container .item input{
+  width: 210px;
+}
