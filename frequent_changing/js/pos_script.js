@@ -5470,6 +5470,9 @@ $(function () {
         if($('.continue_without_due').is(':checked')){
             $('.set_default_quick_cach').trigger('click');
         }
+
+
+        
         let cThis = $(this);
         let customer_id = $("#walk_in_customer").val();
         let voucher = $("#voucher").val();
@@ -5482,7 +5485,7 @@ $(function () {
         let customerCrLimit = $("#customer_credit_limit").val();
         let customer_previous_due = $("#customer_previous_due").val();
         let finalize_total_due = Number($("#finalize_total_due").text());
-        let account_type = $("#account_type").val();
+        
         let p_note = $("#account_note_s").val();
         let check_no = $("#bank_check_no").val();
         let check_issue_date = $("#bank_check_issue_date").val();
@@ -8311,11 +8314,11 @@ $(function () {
             $('#show_account_type').html(`
                 <div class="form-group">
                     <label>${card_holder_name_lan}</label>
-                    <input type="text" name="card_holder_name" class="form-control" placeholder="${card_holder_name_lan}" id="card_holder_name">
+                    <input type="text" name="card_holder_name" class="form-control" placeholder="${card_holder_name_lan}">
                 </div>
                 <div class="form-group cn-numpad-launcher">
                     <label>${card_holding_number_lan}</label>
-                    <input type="text" name="card_holding_number" class="form-control cn-numpad-input" placeholder="${card_holding_number_lan}" id="card_holding_number">
+                    <input type="text" name="card_holding_number" class="form-control cn-numpad-input" placeholder="${card_holding_number_lan}" >
                 </div>
             `);
             $('#show_account_type').addClass('show_account_type')

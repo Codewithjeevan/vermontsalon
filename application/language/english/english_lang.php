@@ -599,6 +599,7 @@ $lang['total_bill_amt'] = 'Total Bill Amount';
 $lang['bill_amt'] = 'Bill Amount';
 $lang['vat_amount'] = 'VAT Amount';
 $lang['therapist'] = 'Therapist';
+$lang['card_number'] = 'Card Number';
 $lang['purchase_unit'] = 'Purchase Unit';
 $lang['sale_unit'] = 'Sale Unit';
 $lang['conversion_rate'] = 'Conversion Rate';

@@ -869,7 +869,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                 <span class="cart-footer-title">Payment Method :</span>
                                 </div>
                                 <div class="payment_method_radio d-flex gap-15px" >
-                                    <select class="form-control" name="payment_method" id="payment_method">
+                                    <select class="select2" name="payment_method" id="payment_method">
                                         <?php foreach ($payment_methods as $value): ?>
                                             <option value="<?php echo $value->id?>" <?php echo (isset($sale_item) && $sale_item->payment_method_id == $value->id) ? 'selected' : ''?>>
                                                 <?php echo $value->name?>
@@ -883,7 +883,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                 <span class="cart-footer-title">Pay Amount:</span>
                                 </div>
                                 <div class="cn-numpad-launcher" >
-                                    <input type="text" class="form-control cn-numpad-input" id="pay_amount" name="pay_amount" value="<?php echo isset($sale_item) && $sale_item->paid_amount ? $sale_item->paid_amount : '' ?>" placeholder="<?php echo lang('pay_amount'); ?>" onfocus="this.select();" autocomplete="off">
+                                    <input type="text" class="form-control cn-numpad-input" id="finalize_given_amount_input" name="pay_amount" value="<?php echo isset($sale_item) && $sale_item->paid_amount ? $sale_item->paid_amount : '' ?>" placeholder="<?php echo lang('pay_amount'); ?>" onfocus="this.select();" autocomplete="off">
                                 </div>
                             </div>    
                             <div class="item flex-column pay-method">
@@ -895,7 +895,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                     <input type="text"  id="card_holder_name" name="card_holder_name" value="<?php echo isset($sale_item) && $sale_item->card_holder_name ? $sale_item->card_holder_name : '' ?>" placeholder="<?php echo lang('card_holder_name'); ?>" onfocus="this.select();" autocomplete="off">
                                 </div>
                                 <div class="cn-numpad-launcher">
-                                    <input type="text" class="form-control cn-numpad-input" id="card_number" name="card_number" value="<?php echo isset($sale_item) && $sale_item->card_number ? $sale_item->card_number : '' ?>" placeholder="<?php echo lang('card_number'); ?>" onfocus="this.select();" autocomplete="off">
+                                    <input type="text" class="form-control cn-numpad-input" id="card_holding_number" name="card_number" value="<?php echo isset($sale_item) && $sale_item->card_number ? $sale_item->card_number : '' ?>" placeholder="<?php echo lang('card_number'); ?>" onfocus="this.select();" autocomplete="off">
                                 </div>
                                 </div>
                             </div>    
@@ -2032,7 +2032,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <div class="payment_field_wrap">
                                 <div class="input-field cash_div f_focus easy-get">
                                     <label class="label set_no_access"><?php echo lang('given_amount'); ?></label>
-                                    <input type="text" placeholder="<?php echo lang('given_amount'); ?>" onfocus="select();" class="add_customer_modal_input set_no_access easy-put" id="finalize_given_amount_input">
+                                    <input type="text" placeholder="<?php echo lang('given_amount'); ?>" onfocus="select();" class="add_customer_modal_input set_no_access easy-put" >
                                 </div>
                                 <div class="input-field cash_div">
                                     <label class="label set_no_access"><?php echo lang('change_amount'); ?></label>
