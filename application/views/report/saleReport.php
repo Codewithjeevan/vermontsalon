@@ -140,21 +140,13 @@
                             <!-- Items list (as you had it) -->
                             <td>
                             <?php 
-                                $items = getSaleReportItemsBySaleId($row->id);
-                                if ($items) {
-                                echo "<strong>Name(Code)-Qty(Unit)-Price</strong><br>";
-                                foreach ($items as $it) {
-                                    echo sprintf(
-                                    "%s(%s)-%s(%s)-%s<br>",
-                                    escape_output($it->name),
-                                    $it->code,
-                                    $it->qty,
-                                    $it->unit_name,
-                                    $it->sale_item_price
-                                    );
-                                }
-                                }
-                            ?>
+                                            $saleItems = getSaleReportItemsBySaleId($row->id);
+                                            if($saleItems){
+                                                foreach($saleItems as $item){
+                                                    echo escape_output($item->name). '('. $item->qty . ')'. "<br>";
+                                                }
+                                            }
+                                        ?>
                             </td>
 
                             <!-- comma-sep payment methods -->

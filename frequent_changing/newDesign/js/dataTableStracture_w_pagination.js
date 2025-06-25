@@ -5,6 +5,8 @@ jqry(function () {
     let excel_db = $('#excel_db_exp').val();
     let csv_db = $('#csv_db_exp').val();
     let pdf_db = $('#pdf_db_exp').val();
+    let company_name = $('.company_name').text().trim();
+    let outlet_info = $('.outlet_info').first().text().trim();
 
     let APPLICATION_DEMO_TYPE = $('#APPLICATION_DEMO_TYPE').val();
 
@@ -22,12 +24,18 @@ jqry(function () {
         buttons: APPLICATION_DEMO_TYPE != 'Pharmacy' ? [
             {
             extend: "print",
+            title: company_name,
             messageTop: function () {
-                var dateText = getDateRangeText();
+                var dateText = '';
+                if (outlet_info) {
+                    dateText += '<div style="text-align:center;">' + outlet_info + '</div>';
+                }
+                dateText += getDateRangeText();
                 var therapistName = gettherapist();
                 if (therapistName) {
                     dateText += '<div style="text-align:left;">Therapist: <span style="color: green;">' + therapistName + '</span></div>';
                 }
+               
                 return dateText
                     ? '<div style="text-align:center; font-weight:bold;">' + dateText + '</div>'
                     : '';
