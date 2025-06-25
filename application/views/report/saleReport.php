@@ -117,9 +117,8 @@
                                         <?php 
                                             $saleItems = getSaleReportItemsBySaleId($value->id);
                                             if($saleItems){
-                                                echo "<strong>Name(Code)-Qty(Unit)-Price</strong><br>";
                                                 foreach($saleItems as $item){
-                                                    echo escape_output($item->name). '('. $item->code . ')-' . $item->qty . '(' .$item->unit_name . ')-' . $item->sale_item_price . "<br>";
+                                                    echo escape_output($item->name). '('. $item->qty . ')'. "<br>";
                                                 }
                                             }
                                         ?>
