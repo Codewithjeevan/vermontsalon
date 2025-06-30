@@ -104,8 +104,8 @@ $inv_config = json_decode($invoice_configuration);
                         <?php echo $inv_config->customer_tax_number_label .': '; ?>
                         <?php echo escape_output($customer_info->gst_number) ?></p>
                     <?php } ?>
-                      <p class="pb-7 f-w-500 color-71">
-                        <?= lang("room_number") ?>: <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
+                    <p class="pb-7 f-w-500 color-71">
+                        <?= lang('stylish_name') ?>: <?= implode(', ', array_column($sale_object->items, 'seller_name')) ?>
                     </p>
                     <?php if($sale_object->voucher != null) { ?>
                     <p class="f-w-500 color-71 font-size-13">

@@ -952,7 +952,9 @@ class Report_model extends CI_Model {
             's.grand_total',
             'c.name   AS customer_name',
             "GROUP_CONCAT(DISTINCT seller.full_name     SEPARATOR ', ') AS seller_names",
-            "GROUP_CONCAT(DISTINCT pm.name             SEPARATOR ', ') AS payment_methods"
+            "GROUP_CONCAT(DISTINCT pm.name             SEPARATOR ', ') AS payment_methods",
+            "GROUP_CONCAT(DISTINCT i.name             SEPARATOR ', ') AS item_name",
+            "GROUP_CONCAT(DISTINCT CONCAT(pm.name, ' : ', sp_amount.total_amount) SEPARATOR ', ') AS payment_amounts"
         ], false);
 
         $this->db->from('tbl_sales AS s');
@@ -961,6 +963,8 @@ class Report_model extends CI_Model {
         $this->db->join('tbl_users         AS seller','sd.item_seller_id = seller.id',   'left');
         $this->db->join('tbl_sale_payments AS sp',   'sp.sale_id    = s.id',             'left');
         $this->db->join('tbl_payment_methods AS pm', 'pm.id         = sp.payment_id',    'left');
+        $this->db->join('(SELECT sale_id, payment_id, SUM(amount) AS total_amount FROM tbl_sale_payments GROUP BY sale_id, payment_id) AS sp_amount', 'sp_amount.sale_id = s.id AND sp_amount.payment_id = pm.id', 'left');
+        $this->db->join('tbl_items i', 'i.id = sd.food_menu_id', 'left');
 
         // date filters
         if ($startMonth !== '' && $endMonth !== '') {

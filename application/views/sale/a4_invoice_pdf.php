@@ -138,7 +138,7 @@ $inv_config = json_decode($invoice_configuration);
                     </p>
                     <?php } ?>
                     <p class="pb-7 f-w-900 rgb-71">
-                        <?= lang("room_number") ?>: <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
+                        <?= lang('stylish_name') ?>: <?= implode(', ', array_column($sale_object->items, 'seller_name')) ?>
                     </p>
                     <?php if($sale_object->voucher != null) { ?>
                                     <p class="pb-3 color-71">
@@ -860,10 +860,6 @@ $inv_config = json_decode($invoice_configuration);
             <tr>
                 <td>
                  <div class="d-flex justify-content-between" style="margin-top: 20px">
-                    <div>
-                        <p class="f-w-600 font-size-13"><?= lang('attended_by') ?></p>
-                        <p class="font-size-13"><?= implode(', ', array_column($sale_object->items, 'seller_name')) ?></p>
-                    </div>
                     <div>
                        <p class="f-w-600 font-size-13"><?= lang('processed_by') ?></p>
                         <p class="font-size-13"><?= $sale_object->user_name ?></p>
