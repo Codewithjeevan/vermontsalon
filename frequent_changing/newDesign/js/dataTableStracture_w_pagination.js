@@ -33,7 +33,7 @@ jqry(function () {
                 dateText += getDateRangeText();
                 var therapistName = gettherapist();
                 if (therapistName) {
-                    dateText += '<div style="text-align:left;">Therapist: <span style="color: green;">' + therapistName + '</span></div>';
+                    dateText += '<div style="text-align:left;">Stylist : <span style="color: green;">' + therapistName + '</span></div>';
                 }
                
                 return dateText

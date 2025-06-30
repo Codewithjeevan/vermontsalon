@@ -3907,3 +3907,68 @@ aside#pos__sidebar .pos__menu__list > li:nth-child(29) > a > svg {
     transition: all 0.3s;
     font-family: "Montserrat", Helvetica, Arial sans-serif;
 }
+
+.justify-content-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.justify-content-center  {
+  display: flex;
+  justify-content: center;
+}
+
+.justify-content-end {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.one-pay-container{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+.pay-method .form-check-input{
+  height: 10px !important;
+}
+
+.gap-10px{
+  gap: 10px;
+}
+
+.gap-15px{
+  gap: 15px;
+}
+
+.gap-20px{
+  gap: 20px;
+}
+
+.one-pay-container .item input{
+  width: 210px;
+}
+
+.d-none{
+  display: none !important;
+}
+
+.paid-list{
+  width: 186px;
+  margin: 0px;
+}
+
+.employee_select_append, #onepay_method_select{
+  background: none;
+}

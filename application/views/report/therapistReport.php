@@ -87,9 +87,13 @@
                 <table id="datatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th class="text-center"><?php echo lang('date'); ?></th>
                             <th class="text-center" style="text-align: center !important;"><?php echo lang('invoice_no'); ?></th>
-                            <th class="text-center"><?php echo lang('bill_amt'); ?></th>
+                            <th>Items</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th><?php echo lang('bill_amt'); ?></th>
+                            <th>Dis.</th>
+                            <th>Mode</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,6 +105,8 @@
                         $subTotal = 0;
                         $chargeTotal = 0;
                         $totalTax = 0;
+                        $key = 0;
+                        $totalAmounts = []; // store total per payment method
                         if (isset($saleReport)):
                             foreach ($saleReport as $key => $value) {
                                 $key++;
@@ -111,11 +117,31 @@
                                 $subTotal += $value->sub_total;
                                 $totalTax += $value->vat;
                                 $chargeTotal += $value->delivery_charge;
+                                $payments = explode(',', $value->payment_amounts);
+
+                                foreach ($payments as $pay) {
+                                    $pay = trim($pay);
+                                    if (empty($pay)) continue;
+
+                                    list($method, $amount) = explode(':', $pay);
+                                    $method = trim($method);
+                                    $amount = floatval(trim($amount));
+
+                                    // Add amount to total
+                                    if (!isset($totalAmounts[$method])) {
+                                        $totalAmounts[$method] = 0;
+                                    }
+                                    $totalAmounts[$method] += $amount;
+                                }
                                 ?>
                                 <tr>
-                                    <td class="text-center"><?php echo date('d/m/Y',strtotime($value->date_time)); ?></td>
-                                    <td class="text-center" style="text-align: center !important;"><?php echo escape_output($value->sale_no); ?></td>
-                                    <td class="text-center"><?php echo getAmtCustom($value->total_payable); ?></td>
+                                    <td class="text-center" style="text-align: center !important;"><?php echo escape_output(@$value->sale_no); ?></td>
+                                    <td><?php echo @$value->item_name; ?></td>
+                                    <td>1</td>
+                                    <td><?= getAmtCustom($value->total_payable) ?></td>
+                                    <td><?php echo getAmtCustom(@$value->total_payable); ?></td>
+                                    <td><?php echo getAmtCustom(@$value->total_discount_amount); ?></td>
+                                    <td><?php echo $value->payment_methods; ?></td>
                                 </tr>
                                 <?php
                             }
@@ -124,8 +150,34 @@
                         <tr>
                             <th class="text-center" style="border-right: 0px;font-weight: bold"><?php echo lang('total'); ?></th>
                             <th style="border-left: 0px;"></th>
-                            <th class="text-center"><?php echo getAmtCustom($totalPayable); ?></th>
+                            <th><?= $key ?></th>
+                            <th><?= getAmtCustom($subTotal) ?></th>
+                            <th><?php echo getAmtCustom($totalPayable); ?></th>
+                            <th><?php echo getAmtCustom($disAmount); ?></th>
+                            <th></th>
                         </tr>
+
+                        
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Discount</th>
+                            <th><?php echo getAmtCustom($disAmount); ?></th>
+                        </tr>
+                        <?php foreach($totalAmounts as $method => $amount) { ?>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th><?= $method ?></th>
+                            <th><?= $amount ?></th>
+                        </tr>
+                        <?php } ?>
                     </tbody>
                     
                 </table>
@@ -194,7 +246,7 @@
             <div class="col-sm-12 col-md-6 mb-2">
                 <div class="form-group">
                     <select  class="form-control select2 op_width_100_p" id="user_id" name="user_id">
-                        <option value="">Select Therapist</option>
+                        <option value="">Select stylish</option>
                         <?php
                         foreach ($users as $value) {
                             ?>

@@ -44,6 +44,7 @@ $(function () {
     let are_you_delete_all_hold_sale = $('#are_you_delete_all_hold_sale').val();
     let no_hold = $('#no_hold').val();
     let select_a_customer = $('#select_a_customer').val();
+    let select_employee_each_cart_data = $('#select_employee_each_cart_data').val();
     let edit_warning = $('#edit_warning').val();
     let collect_tax = $('#collect_tax').val();
     let collect_gst = $('#tax_is_gst').val();
@@ -2279,6 +2280,8 @@ $(function () {
                 itemAppentToCart(item_id, item_type, is_promo, 1); 
             }
         }
+
+        
     });
 
     function itemAppentToCart(item_id, item_type, is_promo, default_qty){
@@ -2408,6 +2411,18 @@ $(function () {
         let readonlyAttr = '';
         let customerPriceType = $("#walk_in_customer option:selected").attr("price_type");
         let customerDiscount = $("#walk_in_customer option:selected").attr("discount");
+        const el = document.getElementById('select_employee_id');
+          const employeselect = el.outerHTML.replace(
+                        /class="[^"]*"/,
+                        `class="employee_item_id_${item_id} employee_select_append"`
+                        ).replace(
+                        /name="[^"]*"/,
+                        `name="seller_id[]"`
+                        ).replace(
+                        /id="[^"]*"/,
+                        ``
+                        );
+
         let item_object = findItemByItemId(item_id);
         if(customerPriceType == 1){
             customerPrice = item_object.price;
@@ -2444,6 +2459,9 @@ $(function () {
                     <iconify-icon icon="solar:pen-broken" class="op_cursor_pointer edit_item" id="edit_item_${item_id}" width="22"></iconify-icon>
                     <span id="item_name_table_${item_id}">${item_object.item_name + '(' + item_object.item_code + ')'}</span>
                 </div>
+                <div class="single_order_column second_column_employee">
+                    ${employeselect}
+                </div>
                 <div class="single_order_column second_column">
                     <span id="item_price_table_${item_id}">${customerPrice}</span>
                 </div>
@@ -2468,6 +2486,9 @@ $(function () {
         $('#search_barcode').val('');
 
         $(".order_holder").append(draw_table_for_order);
+
+        $(`.single_order .employee_item_id_${item_id}`).val('').trigger('change');
+
         if(edit_mode == ''){
             storageCartDataInLocal();
         }
@@ -4877,6 +4898,15 @@ $(function () {
         $('.finalize_modal_is_mul_currency').hide();
         $(".change_amount_div").hide();
 
+        let allFilled = true;
+
+        $(".single_order .employee_select_append").each(function() {
+            if (!$(this).val()) {
+                allFilled = false;
+                return false; // break the loop if any select is empty
+            }
+        });
+
         if(sms_enable_status == '1' && is_offline_system == '1'){
             $('.sms_enable_status').prop('checked', true);
         }else{
@@ -4892,10 +4922,8 @@ $(function () {
         }else{
             $('.send_invoice_whatsapp').prop('checked', false);
         }
-        $('.clear_quick_data').click();
-        $('#payment_list_div').html('');
 
-        let currentActivePayment = $('.list-for-payment-type .active').attr('data-type_value');
+        let currentActivePayment = $('#onepay_method_select option:selected').data('type');
         if(currentActivePayment != undefined){
             if(currentActivePayment == 'Cash'){
                 $('#finalize_given_amount_input').focus();
@@ -4945,6 +4973,29 @@ $(function () {
         let rounding = $.trim($('#rounding').text());
         let old_sale_id = $('#old_sale_id').val();
         let total_items_in_cart = $('.order_holder .single_order').length;
+
+
+        if (customer_id == null || customer_id == "") {
+            toastr['error']((select_a_customer), '');
+            $('.pos__modal__overlay').fadeOut(300);
+            return false;
+        }
+
+
+        if (allFilled) {
+            // console.log("All selects have a value.");
+        } else {
+            toastr['error']((select_employee_each_cart_data), '');
+            $('.pos__modal__overlay').fadeOut(300);
+            return false;
+        }
+
+
+        if($("#payment_list_div").children().length == 0){
+            $('#finalize_given_amount_input').trigger('click');
+            $('#easy-numpad-output').text(total_payable);
+            $('#done').trigger('click');
+        }
 
         $("#finalize_previous_due").html(parseFloat(previous_due).toFixed(op_precision));
         $('.set_value_for').html(Number(customer_previous_due));
@@ -5018,11 +5069,8 @@ $(function () {
         } else {
             sub_total_discount_type = 'plain';
         }
-        if (customer_id == null || customer_id == "") {
-            toastr['error']((select_a_customer), '');
-            $('.pos__modal__overlay').fadeOut(300);
-            return false;
-        }
+        
+        
         let orderInfo = {
             sale_id: old_sale_id,
             charge_type: charge_type,
@@ -5058,7 +5106,7 @@ $(function () {
                 let is_promo = $(this).attr('is_promo');
                 let item_name = $(this).find('#item_name_table_' + item_id).text();
                 let expiry_date_maintain = $(this).find('#expiry_date_maintain_' + item_id).text();
-                let item_seller_id = $(this).find('#item_seller_table' + item_id).text();
+                let item_seller_id = $(this).find('.employee_item_id_' + item_id).val();
                 let item_room_id = $(this).find('#item_room_table' + item_id).text();
                 let item_description = $(this).find('.item_modal_description_table_' + item_id).text();
                 let item_last_purchase_price = $(this).find('#item_last_purchase_price_table_' + item_id).text();
@@ -5462,6 +5510,7 @@ $(function () {
         if($('.continue_without_due').is(':checked')){
             $('.set_default_quick_cach').trigger('click');
         }
+
         let cThis = $(this);
         let customer_id = $("#walk_in_customer").val();
         let voucher = $("#voucher").val();
@@ -5552,13 +5601,15 @@ $(function () {
                         let sale_id = $('.order_table_holder .order_holder').html();
                     }
                     $('.loader1').slideDown('500');
-                    // Payment Method Start
+                     // Payment Method Start
                     let paymentAccountDetails = $('.paymentAccountDetails').map(function() {
                         return $(this).val();
                     }).get();
                     let payment_info = [];
-                    if ($(".payment_list_counter").length > 0) {
-                        $(".payment_list_counter").each(function(i, obj) {
+                    
+
+                    if ($("#payment_list_div .payment_list_counter").length > 0) {
+                        $("#payment_list_div .payment_list_counter").each(function(i, obj) {
                             let payment_name = $(this).attr("data-payment_name");
                             let payment_id = $(this).attr("data-payment_id");
                             let amount = $(this).attr("data-amount");
@@ -5572,6 +5623,9 @@ $(function () {
                             payment_info.push(paymentDetails);
                         });
                     }
+
+                    console.log("Payment Info: ", payment_info);
+
                     let is_multi_currency = $("#is_multi_currency").val();
                     let multi_currency = $("#multi_currency").val();
                     let multi_currency_rate = $("#multi_currency_rate").val();
@@ -5607,6 +5661,8 @@ $(function () {
                                 console.log("Object store 'sales' created");
                             }
                         };
+
+                        console.log("Opening IndexedDB database..."+ payment_object);
 
                         request.onsuccess = function(event) {
                             db = event.target.result;
@@ -5778,6 +5834,7 @@ $(function () {
                         resetFinalizeModal();
                         // ############ Index DB ############
                     } else {
+
                         $.ajax({
                             url: base_url + "Sale/add_sale_by_ajax",
                             method: "POST",
@@ -7918,6 +7975,15 @@ $(function () {
         // }
         $('#total_payable').html((parseFloat(total_payable_round)).toFixed(op_precision));
         $('#rounding').text(parseFloat(decimal_round).toFixed(op_precision));
+
+        let finalize_previous_due = 0;
+        let finalize_total_payable = (Number(total_payable)).toFixed(op_precision);
+        $('#finalize_grand_total').text(total_payable);
+        $('#finalize_total_payable').text(finalize_total_payable);
+        $("#finalize_total_payable").attr('data-original_payable',finalize_total_payable);
+        $('.set_default_quick_cach').text((Number(total_payable) + (Number(finalize_previous_due))).toFixed(op_precision));
+        $('.set_default_quick_cach').attr('data-amount', (Number(total_payable) + (Number(finalize_previous_due))).toFixed(op_precision));
+        $('#pay_amount_invoice_input').val((Number(total_payable) + (Number(finalize_previous_due))).toFixed(op_precision));
         //set row number for every single item
         setTimeout(function(){
             $('.order_holder .single_order').each(function (i, obj) {
@@ -7928,7 +7994,13 @@ $(function () {
 
 
         put_cart_content();
+        
+        setTimeout(() => {
+        setFinalizeDiscount();
+        calFinalizeModal('');
+        }, 500);
     }
+
 
     
     
@@ -8384,10 +8456,10 @@ $(function () {
 
 
     // Code optimize by Azhar ** Final **
-    $(document).on("click", ".set_payment", function (e) {
+    $(document).on("change", "#onepay_method_select", function (e) {
         $("#finalize_amount_input").val('');
-        let id = Number($(this).attr('data-id'));
-        let acc_type = $(this).attr('data-type_value');
+        let id = Number($(this).find('option:selected').val());
+        let acc_type = $(this).find('option:selected').data('type_value');
         let amount_txt = $("#amount_txt").val();
         let loyalty_point_txt = $("#loyalty_point_txt").val();
         let loyalty_rate = Number($("#loyalty_rate").val());
@@ -8602,7 +8674,11 @@ $(function () {
         let paypal_email = '';
         let stripe_email = '';
         let paymentTypeArr = [];
-        let account_type = $('.list-for-payment-type .active').attr('data-type_value');
+
+        let methodId   = $('#onepay_method_select').val();
+        let methodText = $('#onepay_method_select option:selected').text();
+        let account_type = $('#onepay_method_select option:selected').data('type');
+        const amountStr  = $('#finalize_given_amount_input').val().trim();
 
         let  payment_exist_check = 'No';
         $('.payment_list_counter .payment-type-name').each(function(){
@@ -8615,8 +8691,9 @@ $(function () {
         }
 
 
+        
         if(account_type == 'Cash' && account_type != undefined){
-            account_note = $('#p_note').val();
+            account_note = $('#p_note').val() || '';
             if(account_note != ''){
                 account_note = `Note:${account_note}`;
             }
@@ -8638,12 +8715,12 @@ $(function () {
             }
             paymentTypeArr.push(check_expiry_date);
         }else if(account_type == 'Card' && account_type != undefined){
-            card_holder_name = $('#card_holder_name').val();
+            card_holder_name = $('#onepay_card_holder_name').val();
             if(card_holder_name != ''){
                 card_holder_name = `Card Holder Name: ${card_holder_name}`;
             }
             paymentTypeArr.push(card_holder_name);
-            card_holding_number = $('#card_holding_number').val();
+            card_holding_number = $('#onepay_card_holder_number').val();
             if(card_holding_number != ''){
                 card_holding_number = `Card Holding Number: ${card_holding_number}`;
             }
@@ -8753,16 +8830,16 @@ $(function () {
         let payment_id = 0 ;
         let acc_type = '' ;
         let payment_text = '' ;
-        let payment_name = $("#payment_preview").text() ;
-        let payment_acc_type = $("#payment_preview").attr('data-account_type') ;
-        $(".set_payment").each(function () {
-            if($(this).hasClass('active')){
+        let payment_name = methodText;
+        let payment_acc_type = account_type;
+        // $(".set_payment").each(function () {
+        //     if($(this).hasClass('active')){
                 status = true;
-                payment_id = Number($(this).attr('data-id'));
-                acc_type = $(this).attr('data-type_value');
-                payment_text = $(this).text();
-            }
-        });
+                payment_id = Number(methodId);
+                acc_type = account_type;
+                payment_text = methodText;
+        //     }
+        // });
         $("#finalize_given_amount_input").css("border","1px solid #bcbdbe");
         $("#finalize_amount_input").css("border","1px solid #bcbdbe");
         let minimum_point_to_redeem = Number($("#minimum_point_to_redeem").val());
@@ -8817,8 +8894,8 @@ $(function () {
                     if(check_exist==true){
                         toastr['error']((already_added), '');
                     }else{
-                        $(".set_payment").each(function (i, obj) {
-                            if($(this).hasClass('active')){
+                        // $(".set_payment").each(function (i, obj) {
+                            // if($(this).hasClass('active')){
                                 let payment_id_action = Number($(this).attr('data-id'));
                                 let name = $(this).text();
                                 // if(name=="Cash"){
@@ -8843,8 +8920,8 @@ $(function () {
                                     $("#finalize_given_amount_input").val('');
                                     $("#finalize_change_amount_input").val('');
                                 // }
-                            }
-                        });
+                            // }
+                        // });
                         
                         $(".empty_title").hide();
                         $("#payment_list_div").append(html);
@@ -9054,24 +9131,44 @@ $(function () {
         cartMobileRemoveMsgAndItemCount();
     });
 
-
+    // 1) Show/hide card fields when method changes
+    $(document).on('change', '#onepay_method_select', function() {
+    const type = $(this).find('option:selected').data('type');
+    if (type === 'Card') {
+        $('#onepay_card_fields').removeClass('d-none');
+        $('#onepay_card_holder_name, #onepay_card_holder_number').val('');
+    } else {
+        $('#onepay_card_fields').addClass('d-none');
+    }
+    $('#onepay_amount_input').focus();
+    });
 
 
     // Code optimize by Azhar ** Final **
     function add_sale_by_ajax(order_object, total_payable) {
-        $("#finalize_order_modal").addClass("active");
-        $(".pos__modal__overlay").fadeIn(200);
+        // $("#finalize_order_modal").addClass("active");
+        // $(".pos__modal__overlay").fadeIn(200);
         // let finalize_previous_due = $('#walk_in_customer option:selected').attr('data-previous_due');
-        let finalize_previous_due = 0;
-        let finalize_total_payable = (Number(total_payable)).toFixed(op_precision);
-        $('#finalize_grand_total').text(total_payable);
-        $('#finalize_total_payable').text(finalize_total_payable);
-        $("#finalize_total_payable").attr('data-original_payable',finalize_total_payable);
-        $('.set_default_quick_cach').text((Number(total_payable) + (Number(finalize_previous_due))).toFixed(op_precision));
-        $('.set_default_quick_cach').attr('data-amount', (Number(total_payable) + (Number(finalize_previous_due))).toFixed(op_precision));
-        $('#pay_amount_invoice_input').val((Number(total_payable) + (Number(finalize_previous_due))).toFixed(op_precision));
         $("#order_object").val(order_object);
         setDefaultPayment();
+
+        // pendingPayments.forEach(function(pay) {
+        //     // 1) Select the same method in the (just-opened) modal’s list
+        //     $('#finalize_payment_method a[data-id="' + pay.methodId + '"]').click();
+        //     // 2) Copy the amount into the hidden modal field
+        //     $('#finalize_amount_input').val(pay.amount.toFixed(op_precision));
+        //     // 3) “Add” it via the modal’s own button
+        //     $('#add_payment').click();
+        //     // 4) If it was a card, also fill in card fields
+        //     if (pay.type === 'Card') {
+        //         $('#onepay_card_holder_name').val(pay.holderName);
+        //         $('#onepay_card_holder_number').val(pay.holderNumber);
+        //     }
+        //     });
+            // 5) Finally, fire the modal’s Finalize button to submit the order
+            // setTimeout(() => {
+                $('#finalize_order_button').click();
+            // }, 1000);
     }
 
 
@@ -9970,6 +10067,8 @@ $(function () {
         $('#send_invoice_sms').prop('checked', false);
         $('#send_invoice_email').prop('checked', false);
         $('#finalie_order_payment_method').css('border', '1px solid #B5D6F6');
+        $('#onepay_method_select option:contains("Cash")').prop('selected', true).trigger('change');
+
     }
 
     
@@ -11658,11 +11757,14 @@ $(function () {
             let easy_numpad_output_val = $('#easy-numpad-output').text();
             $('.easy-put').val(easy_numpad_output_val);
             easy_numpad_close();
-            $(".set_payment").each(function (i, obj) {
-                let id = ($(this).text());
-                if($(this).hasClass('active')){
+            // $(".set_payment").each(function (i, obj) {
+            //     let id = ($(this).text());
+            //     if($(this).hasClass('active')){
                         let finalize_total_payable = Number($("#finalize_total_due").text());
                         let finalize_given_amount_input = Number($("#finalize_given_amount_input").val());
+
+                        console.log('finalize_total_payable: ', finalize_total_payable, ' finalize_given_amount_input: ', finalize_given_amount_input);
+
                         let change_amount = (finalize_given_amount_input - finalize_total_payable);
                         $("#finalize_change_amount_input").val((change_amount && change_amount>0?change_amount:0).toFixed(op_precision));
                         let finalize_change_amount_input = Number($("#finalize_change_amount_input").val());
@@ -11670,8 +11772,8 @@ $(function () {
                             let amount = Number($("#finalize_total_due").text());
                             $("#finalize_amount_input").val(amount.toFixed(op_precision));
                         }
-                }
-            });
+            //     }
+            // });
             $("#add_payment").click();
         }
         $(document).on('click', '#cancel', function(){
@@ -11920,5 +12022,5 @@ $(function () {
     // disableDevTools();
 
 
-
 });
+
