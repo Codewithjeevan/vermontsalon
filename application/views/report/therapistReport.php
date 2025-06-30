@@ -117,7 +117,8 @@
                                 $subTotal += $value->sub_total;
                                 $totalTax += $value->vat;
                                 $chargeTotal += $value->delivery_charge;
-                                $payments = explode(',', $value->payment_amounts);
+                                
+                                $payments = $value->payment_amounts ? explode(',', $value->payment_amounts) : [];
 
                                 foreach ($payments as $pay) {
                                     $pay = trim($pay);
