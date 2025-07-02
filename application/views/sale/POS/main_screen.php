@@ -616,7 +616,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                     </select>
                                 </div>
                                 <div class="customer_pannel">
-                                    <select id="walk_in_customer"  class="" tabindex="2">
+                                    <select id="walk_in_customer"  class="customer_data" tabindex="2">
                                     </select>
                                     <input type="hidden" name="old_sale_id" id="old_sale_id" value="<?php echo isset($sale_id) && $sale_id ? $sale_id : ''; ?>">
                                 </div>
@@ -1742,11 +1742,8 @@ $company_short_name =  $getCompanyInfo->short_name;
             <div class="last_ten_sales_modal_info_holder">
                 <div class="mobile_last_ten_sale op_display_flex op_justify_space_between op_margin_bottom_10">
                     <input type="text" name="date_c" id="date_c" placeholder="Date" autocomplete="off" class="form-control date_sale op_width_100_p">
-                    <select class="select2 op_width_100_p" name="customer_c" id="customer_c">
+                    <select class="select2 op_width_100_p customer_data" name="customer_c" id="customer_c">
                         <option value=""><?php echo lang('customer'); ?></option>
-                        <?php foreach($customers as $customer){?>
-                        <option value="<?php echo escape_output($customer->id); ?>"><?php echo escape_output($customer->name); ?> <?php echo escape_output($customer->phone != '' ? '(' . $customer->phone . ')' : ''); ?></option>
-                        <?php } ?>
                     </select>
                     <input  autocomplete="off" type="text" id="invoice_c" name="invoice_c" placeholder="Invoice No" class="form-control op_width_100_p">
                     <button class="search_sale bg__blue offline_prevent">
