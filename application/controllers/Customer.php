@@ -89,8 +89,8 @@ class Customer extends Cl_Controller {
             $this->form_validation->set_rules('credit_limit', lang('credit_limit'), "max_length[11]");
             $this->form_validation->set_rules('opening_balance', lang('opening_balance'), "max_length[11]");
             if(collectGST()=="Yes"){
-                $this->form_validation->set_rules('gst_number', lang('gst_number'), 'required|max_length[50]');
-                $this->form_validation->set_rules('same_or_diff_state', lang('same_or_diff_state'), 'required|max_length[11]');
+                // $this->form_validation->set_rules('gst_number', lang('gst_number'), 'required|max_length[50]');
+                // $this->form_validation->set_rules('same_or_diff_state', lang('same_or_diff_state'), 'required|max_length[11]');
             }
             if ($this->form_validation->run() == TRUE) {
                 $customer_info = array();
