@@ -822,6 +822,17 @@ class Sale_model extends CI_Model {
   }
 
 
+  public function directgetOpeningBalance($user_id, $outlet_id)
+  {
+    $this->db->select("opening_balance as amount");
+    $this->db->from('tbl_register');
+    $this->db->where("user_id", $user_id);
+    $this->db->where("outlet_id", $outlet_id);
+    $this->db->where("register_status", 1);
+    $this->db->order_by('id', 'DESC');
+    return $this->db->get()->row();
+  }
+
   /**
    * getOpeningDateTime
    * @access public
