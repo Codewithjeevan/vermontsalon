@@ -7424,16 +7424,16 @@ $(function () {
                         error = 1;
                     }
                     if(collect_gst=="Yes"){
-                        if (same_or_diff_state == "") {
-                            $("#state_err_msg").text('The State field is require');
-                            $(".state_err_msg_contnr").show(200).delay(6000).hide(200, function () {});
-                            error = 1;
-                        }
-                        if (customer_gst_number == "") {
-                            $("#gst_err_msg").text('The GST field is require');
-                            $(".gst_err_msg_conter").show(200).delay(6000).hide(200, function () {});
-                            error = 1;
-                        }
+                        // if (same_or_diff_state == "") {
+                        //     $("#state_err_msg").text('The State field is require');
+                        //     $(".state_err_msg_contnr").show(200).delay(6000).hide(200, function () {});
+                        //     error = 1;
+                        // }
+                        // if (customer_gst_number == "") {
+                        //     $("#gst_err_msg").text('The GST field is require');
+                        //     $(".gst_err_msg_conter").show(200).delay(6000).hide(200, function () {});
+                        //     error = 1;
+                        // }
                     }
                     if (error != 0) {
                         return false;

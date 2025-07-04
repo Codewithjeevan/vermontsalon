@@ -1393,7 +1393,7 @@ $company_short_name =  $getCompanyInfo->short_name;
 
                 <?php if(collectGST()=="Yes"){?>
                     <div class="customer_section">
-                        <p class="input_level"><?php echo lang('same_or_diff_state'); ?> <span class="required_star">*</span></p>
+                        <p class="input_level"><?php echo lang('same_or_diff_state'); ?> </p>
                         <select class="form-control irp_width_100 select2 same_or_diff_state_modal" name="same_or_diff_state" id="same_or_diff_state">
                             <option value=""><?php echo lang('select'); ?></option>
                             <option value="1"><?php echo lang('same_state'); ?></option>
@@ -1407,7 +1407,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                 <?php } ?>
                 <?php if(collectGST()=="Yes"){?>
                     <div class="customer_section">
-                        <p class="input_level"><?php echo lang('gst_number'); ?> <span class="required_star">*</span></p>
+                        <p class="input_level"><?php echo lang('gst_number'); ?></p>
                         <input type="text" autocomplete="off" class="add_customer_modal_input" id="customer_gst_number_modal" placeholder="<?php echo lang('gst_number'); ?>">
                         <div class="alert alert-error error-msg gst_err_msg_conter modal_err_msg">
                             <p id="gst_err_msg"></p>
@@ -2181,7 +2181,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <span class="checkmark"></span>
                         </label>
                         <label class="container op_margin_top_6 op_color_dim_grey  mr-10 send_email_finalize"> <?php echo lang('send_invoice_via_email'); ?>
-                            <input class="smtp_enable_status" type="checkbox" name="send_invoice_email" <?php echo escape_output($getCompanyInfo->smtp_enable_status) == "1" ? 'checked'  : '' ?>>
+                            <input class="smtp_enable_status" type="checkbox" name="send_invoice_email" value="off">
                             <span class="checkmark"></span>
                         </label>
                         <?php if($getCompanyInfo->whatsapp_invoice_enable_status == 'Enable'){?>
