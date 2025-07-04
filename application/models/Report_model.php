@@ -991,38 +991,46 @@ class Report_model extends CI_Model {
 
 
 
-     public function summarySaleReport($startDate, $endDate, $outlet_id = '') {
+    public function summarySaleReport($startDate, $endDate, $outlet_id = '')
+    {
         $company_id      = $this->session->userdata('company_id');
         $payment_methods = $this->Common_model->getAllPaymentMethods();
-        $dynamicSelect   = [];
 
-        // Build SUM(CASE…) for each payment method
+        $pivotSelect = ['sale_id'];
         foreach ($payment_methods as $method) {
             $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
-            $dynamicSelect[] = "
+            $pivotSelect[] = "
                 SUM(
-                  CASE WHEN sp.payment_name = '{$method->name}'
-                       THEN sp.amount ELSE 0 END
+                CASE WHEN payment_name = '{$method->name}'
+                    THEN amount ELSE 0 END
                 ) AS total_{$alias}_amount
             ";
         }
 
-        // Base selects: date, payable, discount, **grouped JSON**
-        $select = array_merge([
+        $pivotSql = $this->db
+            ->select($pivotSelect, FALSE)
+            ->from('tbl_sale_payments')
+            ->group_by('sale_id')
+            ->get_compiled_select();
+
+        $outerSelect = [
             's.sale_date',
             'SUM(s.total_payable)         AS total_payable',
             'SUM(s.total_discount_amount) AS total_discount_amount',
-            // ensure we never get NULL
             "COALESCE(
-               GROUP_CONCAT(s.sale_vat_objects SEPARATOR '|||'),
-               ''
-             ) AS sale_vat_objects_grouped"
-        ], $dynamicSelect);
+            GROUP_CONCAT(s.sale_vat_objects SEPARATOR '|||'),
+            ''
+            ) AS sale_vat_objects_grouped",
+        ];
+        foreach ($payment_methods as $method) {
+            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
+            $outerSelect[] = "SUM(pm.total_{$alias}_amount) AS total_{$alias}_amount";
+        }
 
         $this->db
-            ->select($select, FALSE)
+            ->select($outerSelect, FALSE)
             ->from('tbl_sales AS s')
-            ->join('tbl_sale_payments AS sp', 'sp.sale_id = s.id', 'left')
+            ->join("({$pivotSql}) AS pm", 'pm.sale_id = s.id', 'left')
             ->where('s.delivery_status', 'Cash Received')
             ->where('s.company_id',     $company_id)
             ->where('s.del_status',      'Live');
