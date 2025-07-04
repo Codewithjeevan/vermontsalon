@@ -180,7 +180,6 @@ class Sale extends Cl_Controller {
             }
         }
         $data = array();
-        $data['customers'] = $this->Common_model->getAllByCustomerByCompanyIdASC($company_id, 'tbl_customers');
         $data['denominations'] = $this->Common_model->getDenomination($company_id);
         $data['item_categories'] = $this->Sale_model->getItemCategoriesBySorted($company_id, 'tbl_item_categories');
         $data['brands'] = $this->Common_model->getAllByCompanyId($company_id, 'tbl_brands');
@@ -381,7 +380,11 @@ class Sale extends Cl_Controller {
         if(trim_checker($order_details->sale_date)){
             $data['sale_date'] = date("Y-m-d",strtotime(trim_checker($order_details->sale_date)));
         }else{
-            $data['sale_date'] = date("Y-m-d");
+            if($sale_old_id > 0 && $sale_old_id != ''){
+                
+            }else{
+                $data['sale_date'] = date("Y-m-d");
+            }
         }
         $data['vat'] = trim_checker($order_details->total_vat);
         $data['due_date'] = $due_date;
