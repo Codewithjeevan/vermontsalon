@@ -2266,12 +2266,12 @@ $(function () {
                 current_row = $(this).attr('data_cart_item_id');
                 if(item_type_single != 'IMEI_Product' && item_type_single != 'Serial_Product' && item_type_single != 'Medicine_Product'){
                     if(item_id == current_row){
-                        $(this).find('.edit_item').click();
+                        $(this).find('.increase_item_table').click();
                         matchRow = '1';
                     }
                 }else if(item_type_single == 'Medicine_Product' &&  expiry_date_maintain == 'No'){
                     if(item_id == current_row){
-                        $(this).find('.edit_item').click();
+                        $(this).find('.increase_item_table').click();
                         matchRow = '1';
                     } 
                 }
@@ -2411,17 +2411,35 @@ $(function () {
         let readonlyAttr = '';
         let customerPriceType = $("#walk_in_customer option:selected").attr("price_type");
         let customerDiscount = $("#walk_in_customer option:selected").attr("discount");
-        const el = document.getElementById('select_employee_id');
-          const employeselect = el.outerHTML.replace(
-                        /class="[^"]*"/,
-                        `class="employee_item_id_${item_id} employee_select_append"`
-                        ).replace(
-                        /name="[^"]*"/,
-                        `name="seller_id[]"`
-                        ).replace(
-                        /id="[^"]*"/,
-                        ``
-                        );
+        
+        
+       const el = document.getElementById('select_employee_id');
+
+        // Step 1: Get selected value from last existing select (if any)
+        var $lastSelect = $('.employee_select_append').last();
+        var selectedValue = '';
+
+        if ($lastSelect.length > 0) {
+            selectedValue = $lastSelect.val(); // Get last selected value
+        }
+
+        // Step 2: Create new select HTML from base template
+        var employeselectoption = el.outerHTML
+            .replace(/class="[^"]*"/, `class="employee_item_id_${item_id} employee_select_append"`)
+            .replace(/name="[^"]*"/, `name="seller_id[]"`)
+            .replace(/id="[^"]*"/, ``)
+            .replace(/selected(="[^"]*")?/gi, ''); // Ensure old selected attributes are removed
+
+        // Step 3: Convert HTML string to jQuery element
+        var $newSelect = $(employeselectoption);
+
+        // Step 4: Set selected value if it exists in the new options
+        if ($newSelect.find(`option[value="${selectedValue}"]`).length > 0) {
+            $newSelect.val(selectedValue).find(`option[value="${selectedValue}"]`).attr('selected', 'selected');
+        }
+
+        // Step 5: Get final HTML string if needed
+        const employeselect = $newSelect.prop('outerHTML');
 
         let item_object = findItemByItemId(item_id);
         if(customerPriceType == 1){
@@ -2485,9 +2503,7 @@ $(function () {
         $('#search').val('');
         $('#search_barcode').val('');
 
-        $(".order_holder").append(draw_table_for_order);
-
-        $(`.single_order .employee_item_id_${item_id}`).val('').trigger('change');
+        $(".order_holder").append(draw_table_for_order);        
 
         if(edit_mode == ''){
             storageCartDataInLocal();
@@ -3664,7 +3680,7 @@ $(function () {
         $(".pos__modal__overlay").fadeIn(200);
         let item_id = $(this).attr('id').substr(10);
         let item_obj = findItemByItemId(item_id);
-        let sellerid = $('#item_seller_table'+item_id).text();
+        let sellerid = $('.employee_item_id_'+item_id).val();
         let roomid = $('#item_room_table'+item_id).text();
         $('#seller_id').val(sellerid).trigger('change');
         $('#room_id').val(roomid).trigger('change');
