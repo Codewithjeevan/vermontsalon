@@ -57,7 +57,7 @@
                             <input type="hidden" value="<?php echo escape_output($value->id); ?>" name="payment_ids[]">
                             <input  onfocus="select();" type="text" name="payments[]" class="form-control cal_row"
                                 placeholder="<?php echo lang('opening_balance'); ?>"
-                                value="<?php echo escape_output($amount); ?>">
+                                value="<?php echo $amount ? escape_output($amount) : '0'; ?>">
                         </div>
                         <?php if (form_error('opening_balance')) { ?>
                         <div class="callout callout-danger my-2">
@@ -76,7 +76,7 @@
                             <select name="counter_id" id="counter_id" class="select2 form-control">
                                 <option value=""><?php echo lang('select_counter') ?></option>
                                 <?php foreach($counters as $counter){ ?>
-                                <option value="<?php echo escape_output($counter->id) ?>" <?= @$register_balance->counter_id == $counter->id ? 'selected' : '' ?>><?php echo escape_output($counter->name) ?></option>
+                                <option value="<?php echo escape_output($counter->id) ?>" <?= @$register_balance->counter_id == $counter->id ? 'selected' : 'selected' ?>><?php echo escape_output($counter->name) ?></option>
                                 <?php } ?>
                             </select>
                             <?php if (form_error('counter_id')) { ?>
@@ -93,7 +93,7 @@
             <a><?php echo lang('total_opening_balance'); ?>: <?php echo escape_output($this->session->userdata('currency')); ?><span class="total_opening_balance"><?php echo getAmt($totalopenbalance)?></span></a>
             <p>&nbsp;</p>
             <div class="box-footer">
-                <button type="submit" name="submit" value="submit" class="btn bg-blue-btn">
+                <button type="submit" id="submitform" name="submit" value="submit" class="btn bg-blue-btn">
                     <iconify-icon icon="solar:upload-minimalistic-broken"></iconify-icon>
                     <?php echo lang('submit'); ?>
                 </button>
@@ -102,4 +102,9 @@
         </div>
     </div>
     <script src="<?php echo base_url('frequent_changing/js/opening_register.js'); ?>"></script>
+    <script>
+         $(document).ready(function () {
+            $('#submitform').click();
+        });
+    </script>
 </section>

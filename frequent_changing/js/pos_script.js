@@ -11299,19 +11299,19 @@ $(function () {
 
     // Code optimize by Azhar ** Final **
     $(document).on('click', '.logOutTrigger', function(){
-        if(is_offline_system == '1'){
-            let register_status = $('#register_status').val();
-            if(register_status == '1'){
-                Swal.fire({
-                    title: warning + "!",
-                    text: "Your Register is not close!",
-                    showDenyButton: true,
-                    showCancelButton: false,
-                    confirmButtonText: "Not Now!",
-                    denyButtonText: `Close Now?`
-                }).then((result) => {
-                    /* Read more about isConfirmed, isDenied below */
-                    if (result.isConfirmed) {
+        // if(is_offline_system == '1'){
+        //     let register_status = $('#register_status').val();
+        //     if(register_status == '1'){
+        //         Swal.fire({
+        //             title: warning + "!",
+        //             text: "Your Register is not close!",
+        //             showDenyButton: true,
+        //             showCancelButton: false,
+        //             confirmButtonText: "Not Now!",
+        //             denyButtonText: `Close Now?`
+        //         }).then((result) => {
+        //             /* Read more about isConfirmed, isDenied below */
+        //             if (result.isConfirmed) {
                         $.ajax({
                             type: "POST",
                             url: base_url+"Authentication/logOut",
@@ -11319,23 +11319,23 @@ $(function () {
                                 window.location.href = base_url + "Authentication/index"; 
                             }
                         });
-                    } else if (result.isDenied) {
-                        $.ajax({
-                            url: base_url + "Sale/closeRegister",
-                            method: "POST",
-                            success: function (response) {
-                                toastr['success']((register_close), '');
-                                $("#close_register_button").hide();
-                                window.location.href = base_url + "Register/openRegister";
-                            },
-                            error: function () {
-                                alert("error");
-                            },
-                        });
-                    }
-                });
-            }
-        }
+        //             } else if (result.isDenied) {
+        //                 $.ajax({
+        //                     url: base_url + "Sale/closeRegister",
+        //                     method: "POST",
+        //                     success: function (response) {
+        //                         toastr['success']((register_close), '');
+        //                         $("#close_register_button").hide();
+        //                         window.location.href = base_url + "Register/openRegister";
+        //                     },
+        //                     error: function () {
+        //                         alert("error");
+        //                     },
+        //                 });
+        //             }
+        //         });
+        //     }
+        // }
         
     });
 

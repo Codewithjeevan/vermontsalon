@@ -96,6 +96,10 @@ class Sale extends Cl_Controller {
         $company_id = $this->session->userdata('company_id');
         $register_data = $this->Register_model->getRegisterBalance($outlet_id, $company_id);
         
+        if($register_data->register_status == 1 && date('Y-m-d', strtotime($register_data->opening_balance_date_time)) != date('Y-m-d')){
+            $this->closeRegister();
+            $register_data = $this->Register_model->getRegisterBalance($outlet_id, $company_id);   
+        }
         $main_company = getMainCompany();
         if(@$register_data->register_status){
             $this->session->set_userdata('register_status', @$register_data->register_status);

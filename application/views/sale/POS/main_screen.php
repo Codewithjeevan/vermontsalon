@@ -2590,10 +2590,10 @@ $company_short_name =  $getCompanyInfo->short_name;
         <footer class="pos__modal__footer">
             <div class="right_box">
                 <div>
-                    <button type="button"  id="register_close" class="btn bg__grey"><?php echo lang('close_register'); ?></button>
-                    <a href="<?php echo base_url(); ?>Register/editBalance" class="btn custom-btn bg__green" target="_blank"><?php echo lang('edit_open_balance'); ?></a>
+                    <!-- <button type="button"  id="register_close" class="btn bg__grey"><?php echo lang('close_register'); ?></button> -->
+                    <!-- <a href="<?php echo base_url(); ?>Register/editBalance" class="btn custom-btn bg__green" target="_blank"><?php echo lang('edit_open_balance'); ?></a> -->
                 </div>
-                <button type="button" class="modal_hide_register btn bg__red"><?php echo lang('cancel'); ?></button>
+                <button type="button" class="modal_hide_register btn bg__red"><?php echo lang('close'); ?></button>
             </div>
         </footer>
     </div>
@@ -2790,12 +2790,12 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <?php echo lang('list_outlet'); ?>
                         </a>
                     </li>
-                    <li data-access="openRegister-25" class="menu_assign_class" module-is-hide="Outlet-YES">
+                    <!-- <li data-access="openRegister-25" class="menu_assign_class" module-is-hide="Outlet-YES">
                         <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Register/openRegister'?>">
                             <?php echo lang('add_edit_open_balance'); ?>
                             <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </li>
             <li class="have_sub_menu">

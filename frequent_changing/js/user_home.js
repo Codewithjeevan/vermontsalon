@@ -383,18 +383,18 @@ $(function($) {
     });
 
     $(document).on('click', '.logOutTrigger', function(){
-        let register_status = $('#register_status').val();
-        if(register_status == '1'){
-            Swal.fire({
-                title: "Warning!",
-                text: "Your Register is not close!",
-                showDenyButton: true,
-                showCancelButton: false,
-                confirmButtonText: "Not Now!",
-                denyButtonText: `Close Now?`
-            }).then((result) => {
-                /* Read more about isConfirmed, isDenied below */
-                if (result.isConfirmed) {
+        // let register_status = $('#register_status').val();
+        // if(register_status == '1'){
+        //     Swal.fire({
+        //         title: "Warning!",
+        //         text: "Your Register is not close!",
+        //         showDenyButton: true,
+        //         showCancelButton: false,
+        //         confirmButtonText: "Not Now!",
+        //         denyButtonText: `Close Now?`
+        //     }).then((result) => {
+        //         /* Read more about isConfirmed, isDenied below */
+        //         if (result.isConfirmed) {
                     $.ajax({
                         type: "POST",
                         url: base_url+"Authentication/logOut",
@@ -402,36 +402,36 @@ $(function($) {
                             window.location.href = base_url + "Authentication/index"; 
                         }
                     });
-                } else if (result.isDenied) {
-                    $.ajax({
-                        url: base_url + "Sale/closeRegister",
-                        method: "POST",
-                        success: function (response) {
-                            $.ajax({
-                                type: "POST",
-                                url: base_url+"Authentication/logOut",
-                                success: function (response) {
-                                    window.location.href = base_url + "Authentication/index"; 
-                                }
-                            });
-                        },
-                        error: function () {
-                            alert("error");
-                        },
-                    });
-                }
-            });
+        //         } else if (result.isDenied) {
+        //             $.ajax({
+        //                 url: base_url + "Sale/closeRegister",
+        //                 method: "POST",
+        //                 success: function (response) {
+        //                     $.ajax({
+        //                         type: "POST",
+        //                         url: base_url+"Authentication/logOut",
+        //                         success: function (response) {
+        //                             window.location.href = base_url + "Authentication/index"; 
+        //                         }
+        //                     });
+        //                 },
+        //                 error: function () {
+        //                     alert("error");
+        //                 },
+        //             });
+        //         }
+        //     });
 
 
-        }else{
-            $.ajax({
-                type: "POST",
-                url: base_url+"Authentication/logOut",
-                success: function (response) {
-                    window.location.href = base_url + "Authentication/index"; 
-                }
-            }); 
-        }
+        // }else{
+        //     $.ajax({
+        //         type: "POST",
+        //         url: base_url+"Authentication/logOut",
+        //         success: function (response) {
+        //             window.location.href = base_url + "Authentication/index"; 
+        //         }
+        //     }); 
+        // }
     });
 
     $(document).on('click', '.todays_summary_trigger', function(){
