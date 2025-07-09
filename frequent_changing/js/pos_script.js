@@ -5556,7 +5556,7 @@ $(function () {
         let old_sale_id = $("#offline_edit_sale").val();
         let offline_edit_sale_no = $("#offline_edit_sale_no").val();
         let due_date = $("#due_date").val();
-        let tip_amount = $('.tip_amount_div').is(':visible') && $("#tip_amount").is(':checked') ? 1 : 0;
+        let tip_amount = $("#tip_amount").is(':checked') ? 1 : 0;
         let status = true;
 
         if (account_type == "Stripe") {
@@ -5639,8 +5639,6 @@ $(function () {
                             payment_info.push(paymentDetails);
                         });
                     }
-
-                    console.log("Payment Info: ", payment_info);
 
                     let is_multi_currency = $("#is_multi_currency").val();
                     let multi_currency = $("#multi_currency").val();
@@ -10068,6 +10066,7 @@ $(function () {
         $('#modal_finalize_sale_id').html('');
         $('#send_invoice_sms').prop('checked', false);
         $('#send_invoice_email').prop('checked', false);
+        $("#tip_amount").prop('checked', false);
         $('#finalie_order_payment_method').css('border', '1px solid #B5D6F6');
         $('#onepay_method_select option:contains("Cash")').prop('selected', true).trigger('change');
 
@@ -11764,9 +11763,6 @@ $(function () {
             //     if($(this).hasClass('active')){
                         let finalize_total_payable = Number($("#finalize_total_due").text());
                         let finalize_given_amount_input = Number($("#finalize_given_amount_input").val());
-
-                        console.log('finalize_total_payable: ', finalize_total_payable, ' finalize_given_amount_input: ', finalize_given_amount_input);
-
                         let change_amount = (finalize_given_amount_input - finalize_total_payable);
                         $("#finalize_change_amount_input").val((change_amount && change_amount>0?change_amount:0).toFixed(op_precision));
                         let finalize_change_amount_input = Number($("#finalize_change_amount_input").val());

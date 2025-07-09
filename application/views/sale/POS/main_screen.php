@@ -919,11 +919,17 @@ $company_short_name =  $getCompanyInfo->short_name;
 
                             <ul class="paid-list pl-0" id="payment_list_div">
                             </ul>
+                            
+                            <div class="change_amount_color text-center">
+                                <b><span class="change_amount_div display_none change_amount_p ml-10"><?php echo lang('change_amount'); ?>: </span></b>
+                                <span class="change_amount_font change_amount_div display_none change_amount_p" id="change_amount_div_">0</span>
+                                <input type="hidden" id="hidden_given_amount" class="d-none"></input>
+                            </div>
 
                             <label class="container op_margin_top_6 op_color_dim_grey mr-10 change_amount_div display_none tip_amount_div"> <?php echo lang('change_amt_consider_as_tip'); ?>
-                            <input class="tip_amount" type="checkbox" name="tip_amount" id="tip_amount"  value="1" checked>
-                            <span class="checkmark"></span>
-                        </label>
+                                <input class="tip_amount" type="checkbox" name="tip_amount" id="tip_amount"  value="1">
+                                <span class="checkmark"></span>
+                            </label>
                             </div>
 
 
@@ -2044,13 +2050,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                             <span class="change_amount_color" id="available_loyalty_point"></span>
                                         </div>
                                     </div>
-                                    <div class="previous_due_div">
-                                        <div class="change_amount_color text-center">
-                                            <b><span class="change_amount_div display_none change_amount_p ml-10"><?php echo lang('change_amount'); ?></span></b><br>
-                                            <span class="change_amount_font change_amount_div display_none change_amount_p" id="change_amount_div_">0</span>
-                                            <input type="hidden" id="hidden_given_amount" class="d-none"></input>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </div>
                             <div class="payment_field_wrap">
@@ -2166,10 +2166,6 @@ $company_short_name =  $getCompanyInfo->short_name;
                     </div>
                     <div class="sms-email-mobile d-flex justify-content-end my-20">
                         
-                        <label class="container op_margin_top_6 op_color_dim_grey mr-10 change_amount_div display_none tip_amount_div"> <?php echo lang('change_amt_consider_as_tip'); ?>
-                            <input class="tip_amount" type="checkbox" name="tip_amount" id="tip_amount"  value="1" checked>
-                            <span class="checkmark"></span>
-                        </label>
                         
                         <label class="container op_margin_top_6 op_color_dim_grey mr-10 continue_without_due_div"> <?php echo lang('continue_without_due'); ?>
                             <input class="continue_without_due" type="checkbox" name="continue_without_due" checked>
