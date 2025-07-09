@@ -999,50 +999,69 @@ class Report_model extends CI_Model {
 
 
 
-   public function summarySaleReport($startMonth, $endMonth, $outlet_id = '')
+   public function summarySaleReport($startDate, $endDate, $outlet_id = '')
     {
-        $company_id = $this->session->userdata('company_id');
-
-        // Step 1: Get all payment methods
+        $company_id      = $this->session->userdata('company_id');
         $payment_methods = $this->Common_model->getAllPaymentMethods();
-        $dynamicSelect = [];
 
+        $pivotSelect = ['sale_id'];
         foreach ($payment_methods as $method) {
-            $methodName = $method->name;
-            $alias = strtolower(str_replace(' ', '_', $methodName));
-            $alias = preg_replace('/[^a-z0-9_]/', '', $alias); // Remove special chars
-            $dynamicSelect[] = "SUM(CASE WHEN sp.payment_name = '{$methodName}' THEN sp.amount ELSE 0 END) AS total_{$alias}_amount";
+            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
+            $pivotSelect[] = "
+                SUM(
+                CASE WHEN payment_name = '{$method->name}'
+                    THEN amount ELSE 0 END
+                ) AS total_{$alias}_amount
+            ";
         }
 
-        $this->db->select(array_merge([
+        $pivotSql = $this->db
+            ->select($pivotSelect, FALSE)
+            ->from('tbl_sale_payments')
+            ->group_by('sale_id')
+            ->get_compiled_select();
+
+        $outerSelect = [
             's.sale_date',
-            'SUM(s.total_payable) AS total_payable',
+            'SUM(s.total_payable)         AS total_payable',
             'SUM(s.total_discount_amount) AS total_discount_amount',
-            'SUM(s.vat) AS total_vat'
-        ], $dynamicSelect), false);
-
-        $this->db->from('tbl_sales AS s');
-        $this->db->join('tbl_sale_payments AS sp', 'sp.sale_id = s.id', 'left');
-        $this->db->join('tbl_payment_methods AS pm', 'pm.id = sp.payment_id', 'left');
-
-        if ($startMonth !== '' && $endMonth !== '') {
-            $this->db->where('s.sale_date >=', $startMonth);
-            $this->db->where('s.sale_date <=', $endMonth);
-        } elseif ($startMonth !== '') {
-            $this->db->where('s.sale_date', $startMonth);
-        } elseif ($endMonth !== '') {
-            $this->db->where('s.sale_date', $endMonth);
+            "COALESCE(
+            GROUP_CONCAT(s.sale_vat_objects SEPARATOR '|||'),
+            ''
+            ) AS sale_vat_objects_grouped",
+        ];
+        foreach ($payment_methods as $method) {
+            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
+            $outerSelect[] = "SUM(pm.total_{$alias}_amount) AS total_{$alias}_amount";
         }
 
-        if ($outlet_id !== '') {
+        $this->db
+            ->select($outerSelect, FALSE)
+            ->from('tbl_sales AS s')
+            ->join("({$pivotSql}) AS pm", 'pm.sale_id = s.id', 'left')
+            ->where('s.delivery_status', 'Cash Received')
+            ->where('s.company_id',     $company_id)
+            ->where('s.del_status',      'Live');
+
+        // date filters
+        if ($startDate && $endDate) {
+            $this->db
+                ->where('s.sale_date >=', $startDate)
+                ->where('s.sale_date <=', $endDate);
+        } elseif ($startDate) {
+            $this->db->where('s.sale_date', $startDate);
+        } elseif ($endDate) {
+            $this->db->where('s.sale_date', $endDate);
+        }
+
+        // optional outlet filter
+        if ($outlet_id) {
             $this->db->where('s.outlet_id', $outlet_id);
         }
 
-        $this->db->where('s.delivery_status', 'Cash Received');
-        $this->db->where('s.company_id', $company_id);
-        $this->db->where('s.del_status', 'Live');
-        $this->db->group_by('s.sale_date');
-        $this->db->order_by('s.sale_date', 'asc');
+        $this->db
+            ->group_by('s.sale_date')
+            ->order_by('s.sale_date', 'asc');
 
         return $this->db->get()->result();
     }
