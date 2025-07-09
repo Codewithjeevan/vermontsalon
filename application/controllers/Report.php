@@ -285,7 +285,7 @@ class Report extends Cl_Controller {
         $data['users'] = $this->Common_model->getAllUsersNameMobileForReportDropdown();
         $data['userdata'] = $userid ? $this->Common_model->getAllByCustomRowId($userid,'id','tbl_users') : array();
         $data['main_content'] = $this->load->view('report/therapistReport', $data, TRUE);
-        $data['page_title'] = "Therapist Report";
+        $data['page_title'] = "Stylise Wise Sale Report";
         $this->load->view('userHome', $data);
     }
 

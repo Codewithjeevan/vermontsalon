@@ -183,7 +183,7 @@
                     <?php if(collectGST()=="Yes"){?>
                     <div class="col-sm-12 mb-2 col-md-4">
                         <div class="form-group">
-                            <label> <?php echo lang('same_or_diff_state'); ?> <span class="required_star">*</span></label>
+                            <label> <?php echo lang('same_or_diff_state'); ?> </label>
                             <select  class="form-control select2" name="same_or_diff_state"
                                     id="same_or_diff_state">
                                 <option value=""><?php echo lang('select'); ?></option>
@@ -199,7 +199,7 @@
                     </div>
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
-                            <label><?php echo lang('gst_number'); ?> <span class="required_star">*</span></label>
+                            <label><?php echo lang('gst_number'); ?> </label>
                             <input  autocomplete="off" type="text" name="gst_number" class="form-control"
                                 placeholder="<?php echo lang('gst_number'); ?>"
                                 value="<?php echo set_value('gst_number'); ?>">

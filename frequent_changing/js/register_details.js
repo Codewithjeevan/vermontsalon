@@ -8,6 +8,9 @@ $(function () {
     let excel_db = $('#excel_db_exp').val();
     let csv_db = $('#csv_db_exp').val();
     let pdf_db = $('#pdf_db_exp').val();
+    var outlet_name = $("#outlet_name").val() || '';
+    var outlet_address = $("#outlet_address").val() || '';
+    var outlet_phone = $("#outlet_phone").val() || '';
 
 
     function show_details_for_details_page() {
@@ -168,9 +171,28 @@ $(function () {
                                 'bFilter': false,
                                 dom: 'Blfrtip',
                                 buttons: [{
-                                    extend: "print",
-                                    text: '<span style="display: flex; align-items-center; gap: 8px;"><iconify-icon icon="solar:printer-broken" width="16"></iconify-icon> '+print_db+'</span>',
-                                    titleAttr: "print",
+                                      extend: 'print',
+                                        text: '<i class="icon-printer"></i> Print',
+                                        title: 'Z-Sale Report',
+                                        // messageTop can be a string or a function that returns a string.
+                                        // You can include HTML here (DataTables will preserve it).
+                                        messageTop: function () {
+                                            return `
+                                            <div style="text-align:center; margin-bottom:1em;">
+                                                <strong>${outlet_name}</strong><br>
+                                                ${outlet_address}<br>
+                                                Mobile: ${outlet_phone}<br>
+                                                <span>From: ${getCurrentDate()} &nbsp; To: ${getCurrentDate()}</span>
+                                            </div>
+                                            `;
+                                        },
+                                        customize: function ( win ) {
+                                            // center the title <h1>
+                                            $(win.document.body).find('h1')
+                                            .css('text-align', 'center')
+                                            // if you want to remove that automatic bottom border
+                                            .css('border-bottom', 'none');
+                                        }
                                 },
                                 {
                                     extend: "copyHtml5",
@@ -338,4 +360,12 @@ $(function () {
         });
     });
 
+
+    function getCurrentDate() {
+        const now   = new Date();
+        const day   = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year  = now.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
 });

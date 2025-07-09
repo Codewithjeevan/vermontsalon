@@ -211,7 +211,7 @@ $company_short_name =  $getCompanyInfo->short_name;
 
     <input type="hidden" id="fccpath" value="<?php echo $s_status?>">
     <!-- Preloader HTML -->
-    <div class="main-preloader">
+    <div class="main-preloader" style="display:none;">
         <div class="loadingio-spinner-spin-nq4q5u6dq7r"><div class="ldio-x2uulkbinbj">
         <div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div><div><div></div></div></div></div>
     </div>
@@ -329,6 +329,8 @@ $company_short_name =  $getCompanyInfo->short_name;
     <input type="hidden" id="sure_delete_this_order" value="<?php echo lang('sure_delete_this_order'); ?>">
     <input type="hidden" id="please_select_an_order" value="<?php echo lang('please_select_an_order'); ?>">
     <input type="hidden" id="tool_tip_loyalty_point" value="<?php echo lang('tool_tip_loyalty_point'); ?>">
+    <input type="hidden" id="add_payment_amount" value="<?php echo lang('add_payment_amount'); ?>">
+    <input type="hidden" id="select_employee_each_cart_data" value="<?php echo lang('select_employee_each_cart_data'); ?>">
     <input type="hidden" id="please_select_hold_sale" value="<?php echo lang('please_select_hold_sale'); ?>">
     <input type="hidden" id="no_permission_for_this_module" value="<?php echo lang('no_permission_for_this_module'); ?>">
     <input type="hidden" id="product_display" value="<?php echo escape_output($this->session->userdata('product_display')); ?>">
@@ -438,7 +440,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                             </a>
                         </li>
                         <li>
-                            <a tabindex="-1" href="javascript:void(0)" id="x_report" class="header_menu_icon x_report" data-tippy-content="<?php echo lang('x_report');?>">
+                            <a tabindex="-1" href="javascript:void(0)" id="x_report" class="header_menu_icon x_report" data-tippy-content="<?php echo lang('z_report');?>">
                             <iconify-icon icon="solar:document-broken" width="22"></iconify-icon>
                             </a>
                         </li>
@@ -796,7 +798,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                 <!-- End Top Items -->
                 <div id="bottom_absolute">
                     <div class="bottom__info">
-                        <div class="footer__content">
+                        <div class="one-pay-container">
                             <div class="item d-flex">
                                 <span class="mr-10">
                                     <iconify-icon data-tippy-content="Note" id="open_note_modal" icon="solar:notebook-linear" class="op_cursor_pointer bottom-iconify-color" width="22"></iconify-icon>
@@ -836,7 +838,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                 <iconify-icon icon="solar:eye-broken" class="bottom-iconify-color px-3 cursor-pointer" id="open_tax_modal" width="22"></iconify-icon>
                                 <span id="show_vat_modal"><?php echo getAmtPre(0)?></span>
                             </div>
-                            <div class="item">
+                            <div class="item d-none">
                                 <span class="cart-footer-title"><?php echo lang('charge'); ?>: </span>
                                 <iconify-icon icon="solar:chat-round-money-broken" class="px-3 bottom-iconify-color" width="22" id="open_charge_modal"></iconify-icon>
                                 <span id="show_charge_amount"><?php echo getAmtPre(isset($sale_item) && $sale_item->delivery_charge ? $sale_item->delivery_charge : 0)?></span>
@@ -850,18 +852,82 @@ $company_short_name =  $getCompanyInfo->short_name;
                                     (<span id="all_items_discount"><?php echo getAmtPre(0)?></span>)
                             </div>
                             <?php if(!moduleIsHideCheck('Delivery Partner-YES')){ ?>
-                            <div class="item">
+                            <div class="item d-none">
                                 <span class="cart-footer-title"><?php echo lang('delivery_partner'); ?>: </span>
                                 <iconify-icon icon="solar:users-group-rounded-broken" class="bottom-iconify-color px-3 cursor-pointer" width="22" id="open_deliverypartner_modal"></iconify-icon>
                                 <span id="delivery_partner_info" data-partner-id="<?php echo (isset($sale_item) && $sale_item->delivery_partner_id ? $sale_item->delivery_partner_id : 0)?>"><?php echo getPartnerName(isset($sale_item) && $sale_item->delivery_partner_id ? $sale_item->delivery_partner_id : '') ?></span>
                             </div>
                             <?php } ?>
-                            <div class="item">
+                            <div class="item d-none">
                                 <span class="cart-footer-title"><?php echo lang('rounding'); ?>: </span>
                                 <span id="rounding" class="p-l-3"><?php echo getAmtPCustom(isset($sale_item) && $sale_item->rounding ? $sale_item->rounding : '') ?></span>
                             </div>
                             <!-- End Total Item -->
                         </div>
+                       <div class="one-pay-container mt-10">
+                            <div class="d-flex align-items-start" style="gap:8px;">
+                                <!-- Payment Method Dropdown -->
+                                <select id="onepay_method_select" class="form-control">
+                                <?php foreach ($payment_methods as $pm): ?>
+                                    <option
+                                    value="<?= escape_output($pm->id) ?>"
+                                    data-type="<?= escape_output(@$pm->name) ?>"
+                                    data-type_value="<?= escape_output(@$pm->name) ?>"
+                                    data-id="<?= escape_output($pm->id) ?>"
+                                    ><?= escape_output($pm->name) ?></option>
+                                <?php endforeach; ?>
+                                </select>
+
+                                <!-- Amount Input + Add Button (with num-pad support) -->
+                                <div class="position-relative flex-grow-1">
+                                <input
+                                    type="text"
+                                    id="finalize_given_amount_input"
+                                    class="form-control easy-put easy-get"
+                                    placeholder="<?php echo lang('amount'); ?>"
+                                />
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary position-absolute d-none"
+                                    style="top:0; right:0; height:100%;"
+                                ><b><?php echo lang('add'); ?></b></button>
+                                </div>
+                            </div>
+
+                            <!-- Card-only fields (hidden unless “Card” selected) -->
+                            <div id="onepay_card_fields" class="mt-2 d-none ">
+                                <div class="d-flex">
+                                <input
+                                type="text"
+                                id="onepay_card_holder_name"
+                                class="form-control mb-2"
+                                placeholder="<?php echo lang('card_holder_name'); ?>"
+                                />
+                                <div class="cn-numpad-launcher">
+                                <input
+                                type="text"
+                                id="onepay_card_holder_number"
+                                class="form-control cn-numpad-input"
+                                placeholder="<?php echo lang('card_holder_number'); ?>"
+                                />
+                                </div>
+                                </div>
+                            </div>
+
+                            <!-- List of pending payments -->
+                            <ul id="onepay_list" class="paid-list mt-2 d-none"></ul>
+
+                            <ul class="paid-list pl-0" id="payment_list_div">
+                            </ul>
+
+                            <label class="container op_margin_top_6 op_color_dim_grey mr-10 change_amount_div display_none tip_amount_div"> <?php echo lang('change_amt_consider_as_tip'); ?>
+                            <input class="tip_amount" type="checkbox" name="tip_amount" id="tip_amount"  value="1" checked>
+                            <span class="checkmark"></span>
+                        </label>
+                            </div>
+
+
+
                         <div class="payable">
                             <h1><?php echo lang('total_payable'); ?>:  <span id="total_payable"><?php echo getAmtPre(0)?></span></h1>
                         </div>
@@ -1327,7 +1393,7 @@ $company_short_name =  $getCompanyInfo->short_name;
 
                 <?php if(collectGST()=="Yes"){?>
                     <div class="customer_section">
-                        <p class="input_level"><?php echo lang('same_or_diff_state'); ?> <span class="required_star">*</span></p>
+                        <p class="input_level"><?php echo lang('same_or_diff_state'); ?> </p>
                         <select class="form-control irp_width_100 select2 same_or_diff_state_modal" name="same_or_diff_state" id="same_or_diff_state">
                             <option value=""><?php echo lang('select'); ?></option>
                             <option value="1"><?php echo lang('same_state'); ?></option>
@@ -1341,7 +1407,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                 <?php } ?>
                 <?php if(collectGST()=="Yes"){?>
                     <div class="customer_section">
-                        <p class="input_level"><?php echo lang('gst_number'); ?> <span class="required_star">*</span></p>
+                        <p class="input_level"><?php echo lang('gst_number'); ?></p>
                         <input type="text" autocomplete="off" class="add_customer_modal_input" id="customer_gst_number_modal" placeholder="<?php echo lang('gst_number'); ?>">
                         <div class="alert alert-error error-msg gst_err_msg_conter modal_err_msg">
                             <p id="gst_err_msg"></p>
@@ -1921,13 +1987,13 @@ $company_short_name =  $getCompanyInfo->short_name;
                                 if($value->name != 'Loyalty Point'):
                             ?>
                             <li class="f-item">
-                                <a data-type_value="<?php echo escape_output($value->account_type); ?>" class="<?php echo escape_output($is_cash)?> <?php echo escape_output($selected)?> set_payment account_type" data-id="<?php echo escape_output($value->id)?>" href="javascript:void(0)"><?php echo escape_output($value->name)?></a>
+                                <a data-type_value="<?php echo escape_output($value->account_type); ?>" class="<?php echo escape_output($is_cash)?> <?php echo escape_output($selected)?> account_type" data-id="<?php echo escape_output($value->id)?>" href="javascript:void(0)"><?php echo escape_output($value->name)?></a>
                             </li>
                             <?php
                                 endif;
                             else:?>
                             <li class="payment_element <?php echo $selected2 ?>">
-                                <a data-type_value="<?php echo escape_output($value->account_type); ?>" class="<?php echo escape_output($is_cash)?> <?php echo escape_output($selected)?> set_payment account_type" data-id="<?php echo escape_output($value->id)?>" href="javascript:void(0)"><?php echo escape_output($value->name)?></a>
+                                <a data-type_value="<?php echo escape_output($value->account_type); ?>" class="<?php echo escape_output($is_cash)?> <?php echo escape_output($selected)?> account_type" data-id="<?php echo escape_output($value->id)?>" href="javascript:void(0)"><?php echo escape_output($value->name)?></a>
                             </li>
                             <?php endif;?>
                             <?php endforeach;?>
@@ -1990,7 +2056,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <div class="payment_field_wrap">
                                 <div class="input-field cash_div f_focus easy-get">
                                     <label class="label set_no_access"><?php echo lang('given_amount'); ?></label>
-                                    <input type="text" placeholder="<?php echo lang('given_amount'); ?>" onfocus="select();" class="add_customer_modal_input set_no_access easy-put" id="finalize_given_amount_input">
+                                    <input type="text" placeholder="<?php echo lang('given_amount'); ?>" onfocus="select();" class="add_customer_modal_input set_no_access easy-put">
                                 </div>
                                 <div class="input-field cash_div">
                                     <label class="label set_no_access"><?php echo lang('change_amount'); ?></label>
@@ -2055,8 +2121,6 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <div class="paid-list-wrapper">
                                 <div class="w_100_p">
                                     <p class="empty_title"><?php echo lang('payment_show_tooltip_pos') ?></p>
-                                    <ul class="paid-list pl-0" id="payment_list_div">
-                                    </ul>
                                 </div>
                                 <div class="right-content">
                                     <div class="item">
@@ -2117,7 +2181,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <span class="checkmark"></span>
                         </label>
                         <label class="container op_margin_top_6 op_color_dim_grey  mr-10 send_email_finalize"> <?php echo lang('send_invoice_via_email'); ?>
-                            <input class="smtp_enable_status" type="checkbox" name="send_invoice_email" <?php echo escape_output($getCompanyInfo->smtp_enable_status) == "1" ? 'checked'  : '' ?>>
+                            <input class="smtp_enable_status" type="checkbox" name="send_invoice_email" value="off">
                             <span class="checkmark"></span>
                         </label>
                         <?php if($getCompanyInfo->whatsapp_invoice_enable_status == 'Enable'){?>
@@ -2538,7 +2602,7 @@ $company_short_name =  $getCompanyInfo->short_name;
     <!-- x Report Modal Start -->
     <div class="cus_pos_modal modal" id="x_report_modal">
         <h1 class="main_header">
-            <?php echo lang('x_report');?>
+            <?php echo lang('z_report');?>
             <a href="javascript:void(0)" class="alertCloseIcon pos__modal__close">
                 <i data-feather="x"></i>
             </a>
