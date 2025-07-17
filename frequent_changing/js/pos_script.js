@@ -7307,7 +7307,7 @@ $(function () {
         return $.ajax({
             url: base_url + "Sale/getCustomersAjax",
             method: "GET",
-            data: { search: '', page: 1 }
+            data: { search: customer_id, page: 1 }
         })
         .done(function (response) {
             if (customer_id) {
@@ -7319,7 +7319,9 @@ $(function () {
                 true,  // selected
                 true   // defaultSelected
                 );
-                $sel.append(option).trigger('change');
+                if($sel.length > 0 && typeof $sel.append === 'function'){
+                    $sel.append(option).trigger('change');
+                }
             }
             }
         })
@@ -7374,7 +7376,8 @@ $(function () {
 
             $(document).ready(function () {
                 const $first = $('#walk_in_customer');
-                getAllCustomers($first, edit_sale_customer, false);
+                var defaultcustomer = edit_sale_customer ? edit_sale_customer : default_customer;
+                getAllCustomers($first, defaultcustomer, false);
             });
 
     
@@ -7479,7 +7482,8 @@ $(function () {
                             },
                             success: function (response) {
                                 if(response.status == 'success'){
-                                    getAllCustomers($('#walk_in_customer'), response.customer_id, true)
+                                    var walkcustomer = $('#walk_in_customer');
+                                    getAllCustomers(walkcustomer, response.customer_id, true)
                                     customerModalFieldRest();
                                     $('.loader1').slideUp('500');
                                 }else if(response.status == 'error'){
@@ -9495,8 +9499,11 @@ $(function () {
 
     // Code optimize by Azhar ** Final **
     function resetDefaultCustomer() {
-        let customer_id = $('#walk_in_customer > option:contains("Walk-in Customer")').attr('value');
-        $("#walk_in_customer").val(customer_id).trigger("change");
+        var walkncustomer = $('#walk_in_customer');
+        var defaultcustomer = default_customer;
+        getAllCustomers(walkncustomer, defaultcustomer, false);
+        // let customer_id = $('#walk_in_customer > option:contains("Walk-in Customer")').attr('value');
+        // $("#walk_in_customer").val(customer_id).trigger("change");
         $('#place_edit_order').text(Place_Order);
     }
 
@@ -10069,7 +10076,7 @@ $(function () {
         $("#tip_amount").prop('checked', false);
         $('#finalie_order_payment_method').css('border', '1px solid #B5D6F6');
         $('#onepay_method_select option:contains("Cash")').prop('selected', true).trigger('change');
-
+        resetDefaultCustomer();
     }
 
     
