@@ -466,7 +466,8 @@ class Common_model extends CI_Model {
 
         if ($search) {
             $this->db->group_start();
-            $this->db->like("c.name", $search);
+            $this->db->where("c.id", $search);
+            $this->db->or_like("c.name", $search);
             $this->db->or_like("c.phone", $search);
             $this->db->group_end();
         }

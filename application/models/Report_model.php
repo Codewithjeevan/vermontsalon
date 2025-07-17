@@ -991,7 +991,7 @@ class Report_model extends CI_Model {
 
 
 
-    public function summarySaleReport($startDate, $endDate, $outlet_id = '')
+   public function summarySaleReport($startDate, $endDate, $outlet_id = '')
     {
         $company_id      = $this->session->userdata('company_id');
         $payment_methods = $this->Common_model->getAllPaymentMethods();
