@@ -460,7 +460,8 @@ select {
 }
 
 .main_right .category_items .single_item .item_name {
-  font-weight: 400;
+  font-weight: bold;
+  color: #000;
   text-align: center;
   font-size: 14px;
   white-space: nowrap;
@@ -3971,4 +3972,11 @@ aside#pos__sidebar .pos__menu__list > li:nth-child(29) > a > svg {
 
 .employee_select_append, #onepay_method_select{
   background: none;
+  font-weight: bold;
+  width: 100%;
 }
+
+.cart-footer-title{
+  font-weight: bold;
+}
+

@@ -399,7 +399,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                             </ul>
                         </li>
                         <!-- Langulage -->
-                        <li class="has__children languages">
+                        <!-- <li class="has__children languages">
                             <?php $language=$this->session->userdata('language');
                                 $icon = "usd";
                             ?>
@@ -419,7 +419,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                 endforeach;
                                 ?>
                             </ul>
-                        </li>
+                        </li> -->
                         <!-- Langulage End-->
                         <li>
                             <a tabindex="-1" href="javascript:void(0)" id="open_hold_sales" class="header_menu_icon" data-tippy-content="<?php echo lang('Open_Draft_Sales');?>">
@@ -430,15 +430,15 @@ $company_short_name =  $getCompanyInfo->short_name;
                         <li>
                             <a tabindex="-1" href="javascript:void(0)" id="last_ten_sales_button" class="header_menu_icon" data-tippy-content="<?php echo lang('Recent_Sales');?>"><iconify-icon icon="solar:history-broken" width="22"></iconify-icon></a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a tabindex="-1" href="javascript:void(0)" id="calculator_button" class="header_menu_icon calculator_button" data-tippy-content="<?php echo lang('calculator');?>"> <iconify-icon icon="solar:calculator-minimalistic-broken" width="22"></iconify-icon>
                             </a>
-                        </li>
-                        <li>
+                        </li> -->
+                        <!-- <li>
                             <a tabindex="-1" href="javascript:void(0)" id="register_details" class="header_menu_icon register_details" data-tippy-content="<?php echo lang('register');?>">
                             <iconify-icon icon="solar:document-add-broken" width="22"></iconify-icon>
                             </a>
-                        </li>
+                        </li> -->
                         <li>
                             <a tabindex="-1" href="javascript:void(0)" id="x_report" class="header_menu_icon x_report" data-tippy-content="<?php echo lang('z_report');?>">
                             <iconify-icon icon="solar:document-broken" width="22"></iconify-icon>
@@ -449,26 +449,26 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <iconify-icon icon="heroicons-outline:document-report" width="22"></iconify-icon>
                             </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a tabindex="-1" href="javascript:void(0)" id="keyboard_short_cut" class="header_menu_icon " data-tippy-content="<?php echo lang('keyboard_short_cut');?>">
                             <iconify-icon icon="solar:keyboard-broken" width="22"></iconify-icon>
                             </a>
-                        </li>
+                        </li> -->
                         <li>
                             <a tabindex="-1" href="<?php echo base_url();?>Dashboard/dashboard" target="_blank" class="header_menu_icon offline_prevent" data-tippy-content="<?php echo lang('dashboard');?>">
                             <iconify-icon icon="solar:chart-2-broken" width="22"></iconify-icon>
                             </a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a tabindex="-1" href="<?php echo base_url()?>customer-panel" class="header_menu_icon offline_prevent" target="_blank" data-tippy-content="<?php echo lang('customer_panel');?>">
                             <iconify-icon icon="solar:monitor-broken" width="22"></iconify-icon>
                             </a>
-                        </li>
-                        <li>
+                        </li> -->
+                        <!-- <li>
                             <a tabindex="-1" href="<?php echo base_url()?>Booking/booking" class="header_menu_icon offline_prevent" target="_blank" data-tippy-content="<?php echo lang('booking');?>">
                             <iconify-icon icon="solar:bookmark-broken" width="22"></iconify-icon>
                             </a>
-                        </li>
+                        </li> -->
                     </ul>
                     <ul class="icon__menu">
                         <li>
