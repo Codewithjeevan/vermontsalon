@@ -5908,7 +5908,7 @@ $(function () {
                                 $(cThis).attr('disabled', false);
                                 $("#last_sale_id").val('').val(response.sales_id);
     
-                                // window.location.href = base_url+"Sale/POS";
+                                window.location.href = base_url+"Sale/POS";
                                 let toastr_title = '';
                                 if(response.status == 'success'){
                                     toastr_title = 'Success';
