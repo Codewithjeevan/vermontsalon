@@ -673,10 +673,20 @@ $company_short_name =  $getCompanyInfo->short_name;
                                                 <?php echo escape_output($sale_details->item_name) . '(' . $sale_details->item_code . ')'; ?>
                                             </span>
                                         </div>
-                                        <div class="single_order_column second_column_emp">
-                                            <span id="item_price_table_<?php echo escape_output($sale_details->food_menu_id); ?>">
-                                                <?php echo escape_output($sale_details->seller_name); ?>
-                                            </span>
+                                        <div class="single_order_column second_column_employee">
+                                            <select name="seller_id[]" class="employee_item_id_<?php echo escape_output($sale_details->food_menu_id); ?> employee_select_append" tabindex="1">
+                                                    <option value=""><?php echo lang('select_employee'); ?></option>
+                                                    <?php
+                                                    $logedin_user = $this->session->userdata('user_id');
+                                                    foreach ($waiters as $value):
+                                                        if($value->id!=1):
+                                                    ?>
+                                                    <option <?php echo escape_output($value->id) == $sale_details->seller_id ? 'selected' : '' ?> value="<?php echo escape_output($value->id) ?>"><?php echo escape_output($value->full_name)?></option>
+                                                    <?php
+                                                    endif;
+                                                    endforeach;
+                                                    ?>
+                                            </select>
                                         </div>
                                         <div class="single_order_column second_column">
                                             <span id="item_price_table_<?php echo escape_output($sale_details->food_menu_id); ?>">
@@ -874,6 +884,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                     data-type="<?= escape_output(@$pm->name) ?>"
                                     data-type_value="<?= escape_output(@$pm->name) ?>"
                                     data-id="<?= escape_output($pm->id) ?>"
+                                    
                                     ><?= escape_output($pm->name) ?></option>
                                 <?php endforeach; ?>
                                 </select>
