@@ -12,9 +12,9 @@
     <section class="content-header">
         <div class="row justify-content-between">
             <div class="col-6 p-0">
-                <h3 class="top-left-header mt-2"><?php echo lang('summary_sales_report'); ?></h3>
+                <h3 class="top-left-header mt-2"><?php echo lang('all_stylist_sale_report'); ?></h3>
             </div>
-            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('report'), 'secondSection'=> lang('summary_sales_report')])?>
+            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('report'), 'secondSection'=> lang('all_stylist_sale_report')])?>
         </div>
     </section>
 
@@ -26,7 +26,7 @@
                 <?php echo escape_output($this->session->userdata('business_name'));?> 
             </h3>
             <h5 class="outlet_info">
-                <strong><?php echo lang('summary_sales_report'); ?></strong>
+                <strong><?php echo lang('all_stylist_sale_report'); ?></strong>
             </h5>
             <?php if(isset($outlet_id)  && $outlet_id){
                 $outlet_info = getOutletInfoById($outlet_id); 
@@ -77,71 +77,38 @@
         <div class="table-box">
             <!-- /.box-header -->
             <div class="table-responsive">
-            <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('summary_sales_report'); ?>" data-id_name="datatable">
+            <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('all_stylish_report'); ?>" data-id_name="datatable">
                 <table id="datatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th><?php echo lang('date_and_time'); ?></th>
-                            <th class="text-center"><?php echo lang('total_bill_amt'); ?></th>
-                            <th class="text-center"><?php echo lang('discount_amount'); ?></th>
-
-                            <?php foreach($payment_methods as $method): ?>
-                                <th class="text-center">Total <?= $method->name ?> Amt</th>
-                            <?php endforeach; ?>
-
-                            <th class="text-center"><?php echo lang('vat_amount'); ?></th>
+                            <th><?php echo lang('stylish_name'); ?></th>
+                            <th class="text-center"><?php echo lang('bill_amt'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
-                        $totalPayable = 0;
-                        $disAmount = 0;
-                        $totalTax = 0;
-                        $totals = []; // dynamic totals by payment type
-
+                        $total_discounted_sales = 0;
                         if (isset($saleReport)):
                             foreach ($saleReport as $value):
-                                $totalPayable += $value->total_payable;
-                                $disAmount += $value->total_discount_amount;
-                                $totalTax += @$value->total_vat;
+                                $total_discounted_sales += $value->total_discounted_sales;
                         ?>
                             <tr>
-                                <td><?= date('d-m-Y', strtotime($value->sale_date)) ?></td>
-                                <td class="text-center"><?= getAmtCustom($value->total_payable) ?></td>
-                                <td class="text-center"><?= getAmtCustom($value->total_discount_amount) ?></td>
-
-                                <?php foreach ($payment_methods as $method): 
-                                    $field = 'total_' . strtolower(str_replace(' ', '_', $method->name)) . '_amount';
-                                    $field = preg_replace('/[^a-z0-9_]/', '', $field); // sanitize
-                                    $amt = isset($value->$field) ? $value->$field : 0;
-                                    if (!isset($totals[$field])) $totals[$field] = 0;
-                                    $totals[$field] += $amt;
-                                ?>
-                                    <td class="text-center"><?= getAmtCustom($amt) ?></td>
-                                <?php endforeach; ?>
-
-                                <td class="text-center"><?= @$value->total_vat ? getAmtCustom($value->total_vat) : getAmtCustom(0) ?></td>
+                                <td><?= $value->seller_name ?></td>
+                                <td></td>   
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td class="text-center"><?= getAmtCustom($value->total_discounted_sales) ?></td>
                             </tr>
                         <?php 
                             endforeach;
                         endif;
                         ?>
-                            <tr>
-                                <th class="text-right"><?php echo lang('total'); ?></th>
-                                <th class="text-center"><?= getAmtCustom($totalPayable) ?></th>
-                                <th class="text-center"><?= getAmtCustom($disAmount) ?></th>
-
-                                <?php foreach ($payment_methods as $method): 
-                                    $field = 'total_' . strtolower(str_replace(' ', '_', $method->name)) . '_amount';
-                                    $field = preg_replace('/[^a-z0-9_]/', '', $field);
-                                    $amt = isset($totals[$field]) ? $totals[$field] : 0;
-                                ?>
-                                    <th class="text-center"><?= getAmtCustom($amt) ?></th>
-                                <?php endforeach; ?>
-
-                                <th class="text-center"><?= getAmtCustom($totalTax) ?></th>
-                            </tr> 
-                        </tbody>
+                        <tr>
+                            <td>Total Sale</td>
+                            <td class="text-center"><?= getAmtCustom($total_discounted_sales) ?></td>
+                        </tr>
+                    </tbody>
 
                 </table>
             </div>
@@ -162,7 +129,7 @@
                     </span>
                 </button>
         </header>
-        <?php echo form_open(base_url() . 'Report/summarySalesReport', $arrayName = array('id' => 'saleReport')) ?>
+        <?php echo form_open(base_url() . 'Report/allstylishReport', $arrayName = array('id' => 'saleReport')) ?>
         <div class="row">
             <div class="col-sm-12 col-md-6 mb-2">
                 <div class="form-group">
