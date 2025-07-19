@@ -138,6 +138,7 @@ $lang['pur_ref_no'] = 'Purchase Reference No';
 $lang['date'] = 'Date';
 $lang['supplier'] = 'Supplier';
 $lang['g_total'] = 'G. Total';
+$lang['all_stylist_sale_report'] = 'All stylist sale report';
 $lang['due'] = 'Due';
 $lang['added_by'] = 'Added By';
 $lang['received_by'] = 'Received By';

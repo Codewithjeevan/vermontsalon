@@ -997,6 +997,47 @@ class Report_model extends CI_Model {
         return $query->result();
     }
 
+    public function stylistSaleReport($startMonth = '', $endMonth = '', $outlet_id = '')
+    {
+        // in your model method:
+        $company_id = $this->session->userdata('company_id');
+        $this->db->select([
+        'seller.full_name    AS seller_name',
+        'SUM(sd.menu_price_with_discount) AS total_discounted_sales',
+        ], false);
+
+        $this->db->from('tbl_sales AS s');
+        $this->db->join('tbl_sales_details AS sd',   'sd.sales_id        = s.id',            'inner');
+        $this->db->join('tbl_users           AS seller','seller.id        = sd.item_seller_id','inner');
+
+        // date filters
+        if ($startMonth !== '' && $endMonth !== '') {
+        $this->db->where('s.sale_date >=', $startMonth);
+        $this->db->where('s.sale_date <=', $endMonth);
+        } elseif ($startMonth !== '') {
+        $this->db->where('s.sale_date', $startMonth);
+        } elseif ($endMonth !== '') {
+        $this->db->where('s.sale_date', $endMonth);
+        }
+
+        // optional outlet filter
+        if ($outlet_id !== '') {
+        $this->db->where('s.outlet_id', $outlet_id);
+        }
+
+        // keep only confirmed, live sales for this company
+        $this->db->where('s.delivery_status', 'Cash Received');
+        $this->db->where('s.company_id', $company_id);
+        $this->db->where('s.del_status', 'Live');
+
+        // group by the seller
+        $this->db->group_by('sd.item_seller_id');
+
+        $query = $this->db->get();
+        return $query->result();
+
+    }
+
 
 
    public function summarySaleReport($startDate, $endDate, $outlet_id = '')
