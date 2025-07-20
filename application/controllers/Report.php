@@ -336,7 +336,7 @@ class Report extends Cl_Controller {
         }
         
         $data['payment_methods'] = $this->Common_model->getAllPaymentMethods();
-        $data['main_content'] = $this->load->view('report/allstylishreport', $data, TRUE);
+        $data['main_content'] = $this->load->view('report/allstylishReport', $data, TRUE);
         $data['page_title'] = "All Stylish Report";
         $this->load->view('userHome', $data);
     }
