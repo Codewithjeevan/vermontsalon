@@ -421,11 +421,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                             </ul>
                         </li> -->
                         <!-- Langulage End-->
-                        <li>
+                        <!-- <li>
                             <a tabindex="-1" href="javascript:void(0)" id="open_hold_sales" class="header_menu_icon" data-tippy-content="<?php echo lang('Open_Draft_Sales');?>">
                             <iconify-icon icon="solar:adhesive-plaster-broken" width="22"></iconify-icon>
                             </a>
-                        </li>
+                        </li> -->
                         <li><a tabindex="-1" href="javascript:void(0)" class="header_menu_icon" id="print_last_invoice" data-tippy-content="<?php echo lang('print_last_invoice');?>"><iconify-icon icon="solar:printer-broken" width="22"></iconify-icon></a></li>
                         <li>
                             <a tabindex="-1" href="javascript:void(0)" id="last_ten_sales_button" class="header_menu_icon" data-tippy-content="<?php echo lang('Recent_Sales');?>"><iconify-icon icon="solar:history-broken" width="22"></iconify-icon></a>
@@ -442,6 +442,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                         <li>
                             <a tabindex="-1" href="javascript:void(0)" id="x_report" class="header_menu_icon x_report" data-tippy-content="<?php echo lang('z_report');?>">
                             <iconify-icon icon="solar:document-broken" width="22"></iconify-icon>
+                            </a>
+                        </li>
+                        <li>
+                            <a tabindex="-1" href="<?php echo base_url();?>Report/allstylishReport" target="_blank" id="stylist_report" class="header_menu_icon stylist_report" data-tippy-content="<?php echo lang('all_stylist_sale_report');?>">
+                            <iconify-icon icon="solar:palette-round-broken" width="22"></iconify-icon>
                             </a>
                         </li>
                         <li>
@@ -3134,6 +3139,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                     <li data-access="summary_sales_report-249" class="menu_assign_class">
                         <a href="<?php echo base_url(); ?>Report/summarySalesReport">
                             <?php echo lang('summary_sales_report'); ?>
+                        </a>
+                    </li>
+                    <li data-access="stylist_report-249" class="menu_assign_class " module-is-hide="Stylish Report-YES">
+                        <a class="child-menu " href="<?php echo base_url(); ?>Report/allstylishReport">
+                            <?php echo lang('all_stylist_sale_report'); ?>
                         </a>
                     </li>
                     <li data-access="therapist_report-249" class="menu_assign_class">
