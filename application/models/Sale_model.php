@@ -312,9 +312,12 @@ class Sale_model extends CI_Model {
     $customer_c = $_GET['customer_c'];
     $invoice_c = $_GET['invoice_c'];
     $status = $_GET['status'];
-    $this->db->select("tbl_sales.*,tbl_customers.name as customer_name");
+    $this->db->select("tbl_sales.*, tbl_customers.name AS customer_name, 
+    GROUP_CONCAT(DISTINCT seller.full_name SEPARATOR ', ') as seller_names");
     $this->db->from('tbl_sales');
     $this->db->join('tbl_customers', 'tbl_customers.id = tbl_sales.customer_id', 'left');
+    $this->db->join('tbl_sales_details sd', 'sd.sales_id = tbl_sales.id', 'left');
+    $this->db->join('tbl_users seller', 'sd.item_seller_id = seller.id', 'left');
     $this->db->where("tbl_sales.outlet_id", $outlet_id);
 
     if($date_c!=''){
@@ -330,8 +333,9 @@ class Sale_model extends CI_Model {
       $this->db->where("tbl_sales.sale_date", $current_date);
     }
     $this->db->where("tbl_sales.del_status", "Live");
+    $this->db->group_by('tbl_sales.id'); // Yeh bahut important hai
     $this->db->order_by('tbl_sales.id', 'DESC');
-    return $this->db->get()->result();
+     return $this->db->get()->result();
   }
   /**
    * getAllItemsFromSalesDetailBySalesId
