@@ -1778,7 +1778,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                         <div class="hold_list_holder fix">
                             <div class="header_row fix">
                                 <div class="first_column column fix"><?php echo lang('invoice_no'); ?></div>
-                                <div class="second_column column fix"><?php echo lang('customer'); ?></div>
+                                <div class="second_column column fix"><?php echo lang('employee'); ?></div>
                                 <div class="third_column column fix"><?php echo lang('date_time'); ?></div>
                             </div>
                             <div class="detail_holder fix op_overflow_auto">
