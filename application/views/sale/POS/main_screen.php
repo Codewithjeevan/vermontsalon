@@ -92,6 +92,16 @@ $company_short_name =  $getCompanyInfo->short_name;
     cursor: pointer;
   }
 
+  .datatable th,
+    .datatable td 
+    {
+    color: #000000 !important;
+    }
+
+    body{
+        color: #000000 !important;
+    }
+
   /* backdrop (was .easy-numpad-frame) */
   .cn-np-backdrop {
     position: fixed;
