@@ -4990,6 +4990,11 @@ $(function () {
         let old_sale_id = $('#old_sale_id').val();
         let total_items_in_cart = $('.order_holder .single_order').length;
 
+        if(currentActivePayment == "Card" && $('#onepay_card_holder_number').val() == ''){
+            toastr['error'](('Please enter card holder details'), '');
+            $('.pos__modal__overlay').fadeOut(300);
+            return false;
+        }
 
         if (customer_id == null || customer_id == "") {
             toastr['error']((select_a_customer), '');
