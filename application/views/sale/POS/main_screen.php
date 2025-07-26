@@ -4105,6 +4105,17 @@ $company_short_name =  $getCompanyInfo->short_name;
         window.initCustomNumpad = initCustomNumpad;
         $(initCustomNumpad);
         })(jQuery);
+
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(() => {
+                const $methodSelect = $('#onepay_method_select');
+                // console.log('POS script loaded successfully >>', $methodSelect.length);
+                if ($methodSelect.length) {
+                    $methodSelect.val('56').trigger('change');
+                }    
+            }, 1000);
+        });
+
         </script>
 
 </body>

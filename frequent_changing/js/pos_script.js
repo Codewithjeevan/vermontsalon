@@ -7244,9 +7244,9 @@ $(function () {
         });
     }
 
-    setTimeout(function() {
-        setItemStockInIndexDB();
-    }, 700);
+    // setTimeout(function() {
+    //     setItemStockInIndexDB();
+    // }, 700);
 
     function clearItemData() {
         const request = indexedDB.open("off_pos_2", 2);
