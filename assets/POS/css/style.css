@@ -135,6 +135,7 @@ select {
 }
 
 #main_part {
+  height: 106vh;
   display: grid;
   padding: 7px 7px;
 }
@@ -399,7 +400,7 @@ select {
 
 .main_right .category_items {
   position: relative;
-  height: calc(100vh - 125px);
+  height: calc(100vh - 44px);
   width: calc(100% - 10px) !important;
   margin: auto;
 }

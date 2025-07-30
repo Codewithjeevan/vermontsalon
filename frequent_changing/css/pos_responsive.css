@@ -96,12 +96,12 @@ px      68    160    252    344    436    528    620    712    */
     .top_header_part .header_part_middle .icon__menu li a {
         padding: 6px 8px;
     }
-    #main_part .order_table_header_row {
+    /* #main_part .order_table_header_row {
         grid-template-columns: 30% 20% 17% 15% 18%;
-    }
-    #main_part .order_holder .first_portion {
+    } */
+    /* #main_part .order_holder .first_portion {
         grid-template-columns: 30% 20% 17% 15% 18%;
-    }
+    } */
     .order_table_holder .order_holder .single_order .first_portion .third_column span.cart_quantity {
         width: 35px;
     }
@@ -134,7 +134,7 @@ px      68    160    252    344    436    528    620    712    */
         margin: 10px 5px 0px 5px;
     } */
     .main_center {
-        height: calc(100vh - 275px);
+        height: calc(100vh - 244px);
     }
     .customer_add_modal_info_holder {
         height:380px;
@@ -1030,7 +1030,7 @@ px      68    160    252    344    436    528    620    712    */
         margin-bottom: 10px;
     }
     #main_part .main_right, #main_part .main_middle {
-        height: calc(100vh - 130px);
+        height: 100%;
     }
     #bottom_absolute .bottom__info .footer__content .item {
         margin-bottom: 0px;

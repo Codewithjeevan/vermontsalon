@@ -4107,5 +4107,28 @@ $company_short_name =  $getCompanyInfo->short_name;
         })(jQuery);
         </script>
 
+        <script>
+        function scaleUItoDesignWidth(designWidth) {
+            var ww = window.innerWidth;
+
+            // Only scale to fit the design width
+            var scale = ww / designWidth;
+
+            // Set the transform
+            document.body.style.transform = "scale(" + scale + ")";
+            document.body.style.transformOrigin = "top left";
+
+            // Set width to the design width, height to 100%
+            document.body.style.width = designWidth + "px";
+            document.body.style.height = "100%"; // Fill window height
+        }
+        function autoScale() {
+            scaleUItoDesignWidth(1180);
+        }
+        window.addEventListener('DOMContentLoaded', autoScale);
+        window.addEventListener('resize', autoScale);
+        </script>
+
+
 </body>
 </html>

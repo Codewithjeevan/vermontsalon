@@ -513,7 +513,7 @@ body {
 
 #main_part .main_right,
 #main_part .main_middle {
-  height: calc(100vh - 70px);
+  height: 100%;
   overflow: hidden;
 }
 #generate_sale_hold_modal input{
