@@ -96,10 +96,23 @@ class Sale extends Cl_Controller {
         $company_id = $this->session->userdata('company_id');
         $register_data = $this->Register_model->getRegisterBalance($outlet_id, $company_id);
         
-        if($register_data->register_status == 1 && date('Y-m-d', strtotime($register_data->opening_balance_date_time)) != date('Y-m-d')){
+        date_default_timezone_set('Asia/Dubai'); // Dubai time set
+        $current_time = date('H:i');
+        $current_date = date('Y-m-d');
+
+        // Agar current time 01:30 se pehle hai, to current_date ko ek din pichhle ka lo
+        if ($current_time < '01:30') {
+            $current_date = date('Y-m-d', strtotime('-1 day'));
+        }
+
+        if (
+            $register_data->register_status == 1 &&
+            date('Y-m-d', strtotime($register_data->opening_balance_date_time)) != $current_date
+        ) {
             $this->closeRegister();
             $register_data = $this->Register_model->getRegisterBalance($outlet_id, $company_id);   
         }
+
         $main_company = getMainCompany();
         if(@$register_data->register_status){
             $this->session->set_userdata('register_status', @$register_data->register_status);

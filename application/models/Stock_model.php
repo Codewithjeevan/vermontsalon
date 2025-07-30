@@ -222,7 +222,7 @@ class Stock_model extends CI_Model {
         $grocerexp  = $this->session->userdata('grocery_experience');
         $company_id = $this->session->userdata('company_id');
         $where = '';
-        $order_statgus = "i.id DESC";
+        $order_statgus = "i.sale_price ASC";
         if ($grocerexp) {
             // $order_statgus = "i.name ASC";  // Use table alias 'i' for consistency
         }
