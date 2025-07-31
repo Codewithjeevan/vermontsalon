@@ -1,21 +1,19 @@
-
 <?php
 /*
-  ###########################################################
-  # PRODUCT NAME:   Off POS
-  ###########################################################
-  # AUTHER:   Door Soft
-  ###########################################################
-  # EMAIL:   info@doorsoft.co
-  ###########################################################
-  # COPYRIGHTS:   RESERVED BY Door Soft
-  ###########################################################
-  # WEBSITE:   https://www.doorsoft.co
-  ###########################################################
-  # This is Setting Controller
-  ###########################################################
+    ###########################################################
+    # PRODUCT NAME:   Off POS
+    ###########################################################
+    # AUTHER:   Door Soft
+    ###########################################################
+    # EMAIL:   info@doorsoft.co
+    ###########################################################
+    # COPYRIGHTS:   RESERVED BY Door Soft
+    ###########################################################
+    # WEBSITE:   https://www.doorsoft.co
+    ###########################################################
+    # This is Setting Controller
+    ###########################################################
  */
-
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Setting extends Cl_Controller {
@@ -24,7 +22,7 @@ class Setting extends Cl_Controller {
      * load constructor
      * @access public
      * @return void
-     */   
+     */    
     public function __construct() {
         parent::__construct();
         $this->load->model('Authentication_model');
