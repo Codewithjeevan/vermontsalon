@@ -775,7 +775,14 @@ $inv_config = json_decode($invoice_configuration);
 
 
     <script src="<?php echo base_url(); ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="<?php echo base_url(); ?>frequent_changing/js/onload_print.js"></script>
+    <!-- <script src="<?php echo base_url(); ?>frequent_changing/js/onload_print.js"></script> -->
+     <script>
+            $(document).ready(function () {
+                setTimeout(() => {
+                    $('.print-btn').click();
+                }, 1000);
+            });
+     </script>  
 </body>
 
 </html>
