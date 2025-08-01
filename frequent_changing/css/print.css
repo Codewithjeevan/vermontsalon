@@ -1,0 +1,10 @@
+@media print {
+  @page {
+    margin: 0; /* THIS removes print margins */
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
+}

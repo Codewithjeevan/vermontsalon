@@ -86,17 +86,24 @@ $company_short_name =  $getCompanyInfo->short_name;
     <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/preloader.css?var=1.6">
     <!-- POS Screen Final Responsive CSS -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/pos_responsive.css?var=1.6" type="text/css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/print.css" media="print">
     <style>
   /* make launcher show pointer on hover */
   .cn-numpad-launcher:hover {
     cursor: pointer;
   }
 
-   .datatable th,
+   .datatable th{
+        color: #000000 !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+   }
+
    .datatable td 
     {
         color: #000000 !important;
-        font-size: 13px !important;
+        font-size: 15px !important;
+        font-weight: 600 !important;
     }
 
     .dt-print-view h1{
