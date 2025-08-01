@@ -1016,6 +1016,7 @@ class Report_model extends CI_Model {
         $outerSelect = [
             's.sale_date',
             'SUM(s.total_payable)         AS total_payable',
+            'SUM(s.sub_total)         AS sub_total',
             'SUM(s.total_discount_amount) AS total_discount_amount',
             "COALESCE(
             GROUP_CONCAT(s.sale_vat_objects SEPARATOR '|||'),
