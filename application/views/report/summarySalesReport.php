@@ -83,13 +83,14 @@
                         <tr>
                             <th><?= lang('date') ?></th>
                             <th class="text-center"><?= lang('total_bill_amt') ?></th>
+                            <th class="text-center"><?= lang('net_amount') ?></th>
                             <th class="text-center"><?= lang('dis_amt') ?></th>
 
                              <!-- Dynamic tax columns -->
                             <?php foreach ($tax_settings as $tax): ?>
                                 <th class="text-center">
                                     <?= html_escape($tax['tax']) ?>
-                                    (<?= html_escape($tax['tax_rate']) ?>%)
+                                    (<?= strtolower($tax['tax']) == "vat" ? "5" : html_escape($tax['tax_rate']) ?>%)
                                 </th>
                             <?php endforeach; ?>
 
@@ -143,6 +144,7 @@
                                 <tr>
                                     <td><?= date('d-m-Y', strtotime($row->sale_date)) ?></td>
                                     <td class="text-center"><?= getAmtCustom($row->total_payable) ?></td>
+                                    <td class="text-center"><?= getAmtCustom($row->sub_total) ?></td>
                                     <td class="text-center"><?= getAmtCustom($row->total_discount_amount) ?></td>
 
                                     <!-- taxes -->

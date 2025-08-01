@@ -1696,6 +1696,7 @@ $lang['printer'] = 'Printer';
 $lang['print_server_url'] = 'Print Server URL';
 $lang['given_amount'] = 'Given Amount';
 $lang['change_amount'] = 'Change Amount';
+$lang['net_amount'] = 'Net Amount';
 $lang['setting'] = 'Setting';
 $lang['edit_denomination'] = 'Edit Denomination';
 $lang['add_denomination'] = 'Add Denomination';
