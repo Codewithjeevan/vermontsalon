@@ -108,6 +108,7 @@
                         <?php
                         // Grand totals
                         $totalPayable = 0;
+                        $subTotal = 0;
                         $disAmount = 0;
                         $totalsTax = [];
                         foreach ($tax_settings as $t) {
@@ -118,6 +119,7 @@
                             foreach ($saleReport as $row):
                                 $totalPayable += $row->total_payable;
                                 $disAmount += $row->total_discount_amount;
+                                $subTotal += $row->sub_total;
 
                                 // --- Safe parse of grouped tax JSON ---
                                 $raw = $row->sale_vat_objects_grouped ?? '';
@@ -174,6 +176,7 @@
                         <tr>
                             <th class="text-right"><?= lang('total') ?></th>
                             <th class="text-center"><?= getAmtCustom($totalPayable) ?></th>
+                            <th class="text-center"><?= getAmtCustom($subTotal) ?></th>
                             <th class="text-center"><?= getAmtCustom($disAmount) ?></th>
 
                             <?php foreach ($tax_settings as $tax):
