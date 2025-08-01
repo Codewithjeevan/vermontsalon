@@ -779,8 +779,9 @@ $inv_config = json_decode($invoice_configuration);
      <script>
             $(document).ready(function () {
                 $('.print-btn').click();
-            });
-     </script> 
+            }); 
+     </script>  
+     
 </body>
 
 </html>
