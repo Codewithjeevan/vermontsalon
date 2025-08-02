@@ -38,6 +38,7 @@ class Sale_model extends CI_Model {
    * @return object
    */
   public function getSaleListByDate($outlet_id,$start_date,$end_date) {
+    $end_time = date('Y-m-d H:i:s', strtotime($end_date . ' 23:59:59 +2 hours'));
     $query = "SELECT s.*, u.full_name, c.name as customer_name
           FROM tbl_sales s
           INNER JOIN tbl_customers c ON s.customer_id = c.id
@@ -49,7 +50,7 @@ class Sale_model extends CI_Model {
 
       $result = $this->db->query($query, [
       $start_date . ' 00:00:00',
-      $end_date . ' 23:59:59',
+      $end_time,
       $outlet_id
       ])->result();
       return $result;
@@ -62,6 +63,8 @@ class Sale_model extends CI_Model {
    * @return object
    */
   public function getCatgReportByDate($outlet_id,$start_date,$end_date) {
+            $end_time = date('Y-m-d H:i:s', strtotime($end_date . ' 23:59:59 +2 hours'));
+
     $query = "
             SELECT 
                 tic.id AS category_id, 
@@ -91,7 +94,7 @@ class Sale_model extends CI_Model {
 
       $result = $this->db->query($query, [
       $start_date . ' 00:00:00',
-      $end_date . ' 23:59:59',
+      $end_time,
       $outlet_id
       ])->result();
       return $result;
@@ -99,6 +102,8 @@ class Sale_model extends CI_Model {
 
 
   public function getSellerReportByDate($outlet_id,$start_date,$end_date) {
+    $end_time = date('Y-m-d H:i:s', strtotime($end_date . ' 23:59:59 +2 hours'));
+
     $query = "
             SELECT 
                 seller.id AS seller_id, 
@@ -127,7 +132,7 @@ class Sale_model extends CI_Model {
 
       $result = $this->db->query($query, [
       $start_date . ' 00:00:00',
-      $end_date . ' 23:59:59',
+      $end_time,
       $outlet_id
       ])->result();
       return $result;
