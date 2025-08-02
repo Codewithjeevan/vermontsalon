@@ -94,23 +94,21 @@ class Sale extends Cl_Controller {
 
         $outlet_id = $this->session->userdata('outlet_id');
         $company_id = $this->session->userdata('company_id');
-        $register_data = $this->Register_model->getRegisterBalance($outlet_id, $company_id);
-        
-        date_default_timezone_set('Asia/Dubai'); // Dubai time set
+        $this->session->unset_userdata('register_status');
+        $this->session->unset_userdata('register_content');
+        $register_data = $this->Register_model->getRegisterBalance($outlet_id);
+        date_default_timezone_set('Asia/Dubai');
         $current_time = date('H:i');
         $current_date = date('Y-m-d');
-
-        // Agar current time 01:30 se pehle hai, to current_date ko ek din pichhle ka lo
-        if ($current_time < '01:30') {
-            $current_date = date('Y-m-d', strtotime('-1 day'));
-        }
-
-        if (
-            $register_data->register_status == 1 &&
-            date('Y-m-d', strtotime($register_data->opening_balance_date_time)) != $current_date
-        ) {
-            $this->closeRegister();
-            $register_data = $this->Register_model->getRegisterBalance($outlet_id, $company_id);   
+        // Agar current time 01:30 ke baad hai, toh check karo register close hua hai ya nahi
+        if ($current_time >= '01:30') {
+            if (isset($register_data) &&
+                @$register_data->register_status == 1 && 
+                date('Y-m-d', strtotime($register_data->opening_balance_date_time)) != $current_date
+            ) {
+                $this->closeRegister();
+                $register_data = $this->Register_model->getRegisterBalance($outlet_id);   
+            }
         }
 
         $main_company = getMainCompany();
