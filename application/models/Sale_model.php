@@ -38,19 +38,19 @@ class Sale_model extends CI_Model {
    * @return object
    */
   public function getSaleListByDate($outlet_id,$start_date,$end_date) {
-    $end_time = date('Y-m-d H:i:s', strtotime($end_date . ' 23:59:59 +2 hours'));
+    
     $query = "SELECT s.*, u.full_name, c.name as customer_name
           FROM tbl_sales s
           INNER JOIN tbl_customers c ON s.customer_id = c.id
           LEFT JOIN tbl_users u ON s.user_id = u.id
-          WHERE s.sale_date >= ? AND s.sale_date <= ?
+          WHERE s.date_time >= ? AND s.date_time <= ?
           AND s.del_status = 'Live' 
           AND s.outlet_id = ?
           ORDER BY s.id DESC";
 
       $result = $this->db->query($query, [
-      $start_date . ' 00:00:00',
-      $end_time,
+      $start_date,
+      $end_date,
       $outlet_id
       ])->result();
       return $result;
