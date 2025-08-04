@@ -162,7 +162,7 @@ $(function () {
                         response = JSON.parse(response);
                         $("#x_report_modal").addClass("active");
                         $(".x_report_content").html(response.html_content_for_div);
-    
+                        var xdaterange = $('#x_date_range').text();
                         setTimeout(function () {
                             $(".datatable").DataTable({
                                 'autoWidth': false,
@@ -182,7 +182,7 @@ $(function () {
                                                 <strong>${outlet_name}</strong><br>
                                                 ${outlet_address}<br>
                                                 Mobile: ${outlet_phone}<br>
-                                                <span>From: ${getCurrentDate()} &nbsp; To: ${getCurrentDate()}</span>
+                                                <span>${xdaterange}</span>
                                             </div>
                                             `;
                                         },
@@ -190,8 +190,13 @@ $(function () {
                                             // center the title <h1>
                                             $(win.document.body).find('h1')
                                             .css('text-align', 'center')
-                                            // if you want to remove that automatic bottom border
                                             .css('border-bottom', 'none');
+                                            
+                                        $(win.document.body).css('font-size', '15px');
+                                        $(win.document.body).css('color', '#000');
+                                        $(win.document.body).find('table').css('border', '1px solid #000');
+                                        $(win.document.body).find('table').css('color', '#000');
+                                        $(win.document.body).find('table thead').css('background-color', '#eee');
                                         }
                                 },
                                 {
