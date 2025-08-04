@@ -98,16 +98,18 @@ class Sale extends Cl_Controller {
         $this->session->unset_userdata('register_content');
         $register_data = $this->Register_model->getRegisterBalance($outlet_id);
         date_default_timezone_set('Asia/Dubai');
-        $current_time = date('H:i');
-        $current_date = date('Y-m-d');
-        // Agar current time 01:30 ke baad hai, toh check karo register close hua hai ya nahi
-        if ($current_time >= '01:30') {
-            if (isset($register_data) &&
-                @$register_data->register_status == 1 && 
+
+        $current_time = date('H:i');            // e.g. "02:05"
+        $current_date = date('Y-m-d');          // e.g. "2025-08-05"
+
+        if ($current_time >= '02:00') {
+            if (
+                isset($register_data) &&
+                @$register_data->register_status == 1 &&
                 date('Y-m-d', strtotime($register_data->opening_balance_date_time)) != $current_date
             ) {
                 $this->closeRegister();
-                $register_data = $this->Register_model->getRegisterBalance($outlet_id);   
+                $register_data = $this->Register_model->getRegisterBalance($outlet_id);
             }
         }
 
@@ -2414,11 +2416,12 @@ class Sale extends Cl_Controller {
      */
     public function xReportDetailCalculationToShow(){
         $outlet_id = $this->session->userdata('outlet_id');
-        $date = date('Y-m-d');
-        $saledata = $this->Sale_model->getSaleListByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
-        $catgdata = $this->Sale_model->getCatgReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
-        $empdata = $this->Sale_model->getSellerReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
-        $expensesdata = $this->Common_model->getExpensesByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        $register_data = $this->Register_model->getRegisterBalance($outlet_id);
+        $firstdate = $register_data->opening_balance_date_time ? date('Y-m-d H:i', strtotime($register_data->opening_balance_date_time)) : date('Y-m-d H:i');
+        $enddate = $register_data->closing_balance_date_time ? date('Y-m-d H:i', strtotime($register_data->closing_balance_date_time)) : date('Y-m-d H:i');
+        
+        $saledata = $this->Sale_model->getSaleListByDate($outlet_id, $firstdate, $enddate);
+        $expensesdata = $this->Common_model->getExpensesByDate($outlet_id, $firstdate, $enddate);
         $user_id = $this->session->userdata('user_id');
         $outletname = $this->session->userdata('outlet_name');
         $outlet_address = $this->session->userdata('address');
@@ -2435,7 +2438,7 @@ class Sale extends Cl_Controller {
                                                 <strong>'.$outletname.'</strong><br>
                                                 Address: '.$outlet_address.'<br>
                                                 Mobile: '.$outlet_phone.'<br>
-                                                <span>From: '.date('d/m/Y').' &nbsp; To: '.date('d/m/Y').'</span>
+                                                <span id="x_date_range">From: '.date('d/m/Y h:i A', strtotime($firstdate)).' &nbsp; To: '.date('d/m/Y h:i A', strtotime($enddate)).'</span>
                                             </div>';
 
         $html_content .= '<table  class="datatable table_register_details top_margin_15"> 
