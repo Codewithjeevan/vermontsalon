@@ -464,7 +464,7 @@ body {
 }
 
 .order_table_holder .order_holder .single_order .single_order_column {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 #bottom_absolute .bottom__info .footer__content .item {
@@ -1148,13 +1148,13 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-deny:focus {
 }
 #main_part .order_table_header_row {
   display: grid;
-  grid-template-columns: 29% 16% 15% 15% 15% 10%;
+  grid-template-columns: 29% 26% 15% 15% 15%;
   font-size: 15px;
   font-weight: 600;
 }
 #main_part .order_holder .first_portion {
   display: grid;
-  grid-template-columns: 29% 16% 15% 15% 15% 10%;
+  grid-template-columns: 29% 26% 15% 15% 15%;
   align-items: center;
 }
 

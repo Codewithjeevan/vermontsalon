@@ -666,7 +666,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <div class="single_header_column" id="single_order_employee"><?php echo lang('employee'); ?></div>
                             <div class="single_header_column" id="single_order_price"><?php echo lang('price'); ?></div>
                             <div class="single_header_column" id="single_order_qty"><?php echo lang('qty'); ?></div>
-                            <div class="single_header_column" id="single_order_discount"><?php echo lang('discount'); ?></div>
+                            <div class="single_header_column" id="single_order_discount" style="display: none;"><?php echo lang('discount'); ?></div>
                             <div class="single_header_column" id="single_order_total"><?php echo lang('sub_total'); ?></div>
                         </div>
                         
@@ -728,7 +728,7 @@ $company_short_name =  $getCompanyInfo->short_name;
                                             </span>
                                             <iconify-icon icon="uil:plus" class="increase_item_table op_cursor_pointer" id="increase_item_table_<?php echo escape_output($sale_details->food_menu_id); ?>" width="22"></iconify-icon>
                                         </div>
-                                        <div class="single_order_column forth_column">
+                                        <div class="single_order_column forth_column" style="display:none;">
                                             <input type=""  onfocus="select();" inline_dis_column="" placeholder="Amt or %" class="special_textbox access_control inline_dis_column" id="percentage_table_<?php echo escape_output($sale_details->food_menu_id); ?>" data-discount_for_edit="<?php echo escape_output($sale_details->menu_discount_value); ?>" value="<?php echo escape_output($sale_details->menu_discount_value); ?>">
                                         </div>
                                         <div class="single_order_column fifth_column">

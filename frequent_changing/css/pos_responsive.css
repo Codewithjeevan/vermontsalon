@@ -106,7 +106,7 @@ px      68    160    252    344    436    528    620    712    */
         width: 35px;
     }
     .order_table_holder .order_table_header_row .single_header_column {
-        font-size: 13px;
+        font-size: 15px;
         font-weight: bold;
     }
     #bottom_absolute .bottom__info .footer__content .item .cart-footer-title {
@@ -299,7 +299,7 @@ px      68    160    252    344    436    528    620    712    */
         display: block;
     }
     .order_table_holder .order_table_header_row .single_header_column {
-        font-size: 13px;
+        font-size: 15px;
         font-weight: bold;
     }
     #bottom_absolute .bottom__info .footer__content .item .cart-footer-title {

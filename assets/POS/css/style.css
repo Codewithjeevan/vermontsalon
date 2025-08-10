@@ -3971,9 +3971,11 @@ aside#pos__sidebar .pos__menu__list > li:nth-child(29) > a > svg {
 }
 
 .employee_select_append, #onepay_method_select{
-  background: none;
-  font-weight: bold;
-  width: 100%;
+    background: none;
+    font-weight: bold;
+    width: 100%;
+    font-size: 15px;
+    padding: 0px;
 }
 
 .cart-footer-title{

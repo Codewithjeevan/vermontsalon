@@ -2488,7 +2488,7 @@ $(function () {
                     <span class="cart_quantity" id="item_quantity_table_${item_id}">${qtyItem}</span> 
                     <iconify-icon icon="uil:plus" class="increase_item_table op_cursor_pointer" id="increase_item_table_${item_id}" width="22"></iconify-icon>
                 </div>
-                <div class="single_order_column forth_column">
+                <div class="single_order_column forth_column" style="display: none;">
                     <input type="" name="" onfocus="select();" inline_dis_column="${item_id}" placeholder="Amt or %" class="special_textbox access_control inline_dis_column" id="percentage_table_${item_id}" value="${cDiscount == '' ? Number(0) : cDiscount}" ${readonlyAttr}>
                 </div>
                 <div class="single_order_column fifth_column">
@@ -2502,7 +2502,6 @@ $(function () {
         posDefaultCursor();
         $('#search').val('');
         $('#search_barcode').val('');
-
         $(".order_holder").append(draw_table_for_order);        
 
         if(edit_mode == ''){
