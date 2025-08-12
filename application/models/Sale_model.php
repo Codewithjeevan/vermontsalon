@@ -42,14 +42,14 @@ class Sale_model extends CI_Model {
           FROM tbl_sales s
           INNER JOIN tbl_customers c ON s.customer_id = c.id
           LEFT JOIN tbl_users u ON s.user_id = u.id
-          WHERE s.sale_date >= ? AND s.sale_date <= ?
+          WHERE s.date_time >= ? AND s.date_time <= ?
           AND s.del_status = 'Live' 
           AND s.outlet_id = ?
           ORDER BY s.id DESC";
 
       $result = $this->db->query($query, [
-      $start_date . ' 00:00:00',
-      $end_date . ' 23:59:59',
+      $start_date,
+      $end_date,
       $outlet_id
       ])->result();
       return $result;
@@ -77,9 +77,9 @@ class Sale_model extends CI_Model {
             JOIN 
                 tbl_item_categories tic ON ti.category_id = tic.id 
             WHERE 
-                s.sale_date >= ? 
+                s.date_time >= ? 
                 AND
-                s.sale_date <= ?
+                s.date_time <= ?
                 AND
                 s.del_status = 'Live' 
                 AND s.outlet_id = ? 
@@ -90,8 +90,8 @@ class Sale_model extends CI_Model {
           ";
 
       $result = $this->db->query($query, [
-      $start_date . ' 00:00:00',
-      $end_date . ' 23:59:59',
+      $start_date,
+      $end_date,
       $outlet_id
       ])->result();
       return $result;
@@ -113,9 +113,9 @@ class Sale_model extends CI_Model {
             JOIN 
                 tbl_users seller ON seller.id = ts.item_seller_id 
             WHERE 
-                s.sale_date >= ? 
+                s.date_time >= ? 
                 AND
-                s.sale_date <= ?
+                s.date_time <= ?
                 AND
                 s.del_status = 'Live' 
                 AND s.outlet_id = ? 
@@ -126,8 +126,8 @@ class Sale_model extends CI_Model {
           ";
 
       $result = $this->db->query($query, [
-      $start_date . ' 00:00:00',
-      $end_date . ' 23:59:59',
+      $start_date,
+      $end_date,
       $outlet_id
       ])->result();
       return $result;

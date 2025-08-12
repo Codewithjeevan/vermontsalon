@@ -71,8 +71,8 @@ class Common_model extends CI_Model {
         $this->db->join('tbl_expense_items expitem', 'expitem.id = exp.category_id');
         $this->db->where('exp.outlet_id', $outlet_id);
         $this->db->where('exp.del_status', 'Live');
-        $this->db->where('exp.date >=', $start_date);
-        $this->db->where('exp.date <=', $end_date);
+        $this->db->where('exp.added_date >=', $start_date);
+        $this->db->where('exp.added_date <=', $end_date);
         $this->db->group_by('exp.category_id');
         $this->db->order_by('exp.id', 'Desc');
         $query_result = $this->db->get();

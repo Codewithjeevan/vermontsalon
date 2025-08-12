@@ -2399,11 +2399,12 @@ class Sale extends Cl_Controller {
      */
     public function xReportDetailCalculationToShow(){
         $outlet_id = $this->session->userdata('outlet_id');
-        $date = date('Y-m-d');
-        $saledata = $this->Sale_model->getSaleListByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
-        $catgdata = $this->Sale_model->getCatgReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
-        $empdata = $this->Sale_model->getSellerReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
-        $expensesdata = $this->Common_model->getExpensesByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        $start_date = date('Y-m-d').' 00:00:00';
+        $end_date = date('Y-m-d').' 23:59:59';
+        $saledata = $this->Sale_model->getSaleListByDate($outlet_id, $start_date, $end_date);
+        $catgdata = $this->Sale_model->getCatgReportByDate($outlet_id, $start_date, $end_date);
+        $empdata = $this->Sale_model->getSellerReportByDate($outlet_id, $start_date, $end_date);
+        $expensesdata = $this->Common_model->getExpensesByDate($outlet_id, $start_date, $end_date);
         $user_id = $this->session->userdata('user_id');
         $outletname = $this->session->userdata('outlet_name');
         $outlet_address = $this->session->userdata('address');
@@ -2536,11 +2537,12 @@ class Sale extends Cl_Controller {
      */
     public function commissionEmpReportDetailCalculationToShow(){
         $outlet_id = $this->session->userdata('outlet_id');
-        $date = date('Y-m-d');
-        $saledata = $this->Sale_model->getSaleListByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
-        $catgdata = $this->Sale_model->getCatgReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
-        $empdata = $this->Sale_model->getSellerReportByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
-        $expensesdata = $this->Common_model->getExpensesByDate($outlet_id, date('Y-m-d', strtotime('-1 days')), $date);
+        $start_date = date('Y-m-d').' 00:00:00';
+        $end_date = date('Y-m-d').' 23:59:59';
+        $saledata = $this->Sale_model->getSaleListByDate($outlet_id, $start_date, $end_date);
+        $catgdata = $this->Sale_model->getCatgReportByDate($outlet_id, $start_date, $end_date);
+        $empdata = $this->Sale_model->getSellerReportByDate($outlet_id, $start_date, $end_date);
+        $expensesdata = $this->Common_model->getExpensesByDate($outlet_id, $start_date, $end_date);
         
         $expamount = array_sum(array_column($expensesdata, 'total_amount')) ?? 0;
         $paidamount = 0;
