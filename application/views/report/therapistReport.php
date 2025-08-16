@@ -204,7 +204,7 @@
         <div class="row">
             <div class="col-sm-12 col-md-6 mb-2">
                 <div class="form-group">
-                    <input  autocomplete="off" type="text" name="startDate" id="startDate" readonly class="form-control customDatepicker" placeholder="<?php echo lang('start_date'); ?>" value="<?php echo set_value('startDate'); ?>">
+                    <input type="datetime-local" name="startDate" id="startDate" class="form-control" placeholder="<?php echo lang('start_date'); ?>" value="<?php echo set_value('startDate'); ?>">
                 </div>
                 <div class="alert alert-error error-msg startDate_err_msg_contnr ">
                     <p id="startDate_err_msg"></p>
@@ -212,7 +212,7 @@
             </div>
             <div class="col-sm-12 col-md-6 mb-2">
                 <div class="form-group">
-                    <input  autocomplete="off" type="text" id="endDate" name="endDate" readonly class="form-control customDatepicker" placeholder="<?php echo lang('end_date'); ?>" value="<?php echo set_value('endDate'); ?>">
+                    <input type="datetime-local" name="endDate" id="endDate" class="form-control" placeholder="<?php echo lang('end_date'); ?>" value="<?php echo set_value('endDate'); ?>">
                 </div>
                 <div class="alert alert-error error-msg endDate_err_msg_contnr ">
                     <p id="endDate_err_msg"></p>

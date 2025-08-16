@@ -2417,8 +2417,11 @@ class Sale extends Cl_Controller {
     public function xReportDetailCalculationToShow(){
         $outlet_id = $this->session->userdata('outlet_id');
         $register_data = $this->Register_model->getRegisterBalance($outlet_id);
-        $firstdate = $register_data->opening_balance_date_time ? date('Y-m-d H:i', strtotime($register_data->opening_balance_date_time)) : date('Y-m-d H:i');
-        $enddate = $register_data->closing_balance_date_time ? date('Y-m-d H:i', strtotime($register_data->closing_balance_date_time)) : date('Y-m-d H:i');
+
+        $startDate = @$_POST['startDate'] ? date('Y-m-d H:i:s', strtotime($_POST['startDate'])) : '';
+        $endDate1 = @$_POST['endDate'] ? date('Y-m-d H:i:s', strtotime($_POST['endDate'])) : '';
+        $firstdate = $startDate ? $startDate : ($register_data->opening_balance_date_time ? date('Y-m-d H:i', strtotime($register_data->opening_balance_date_time)) : date('Y-m-d H:i'));
+        $enddate = $endDate1 ? $endDate1 : ($register_data->closing_balance_date_time ? date('Y-m-d H:i', strtotime($register_data->closing_balance_date_time)) : date('Y-m-d H:i'));
         
         $saledata = $this->Sale_model->getSaleListByDate($outlet_id, $firstdate, $enddate);
         $expensesdata = $this->Common_model->getExpensesByDate($outlet_id, $firstdate, $enddate);
@@ -2641,7 +2644,7 @@ class Sale extends Cl_Controller {
      * @return void
      */
     public function closeRegister(){
-        $register_content = json_decode($this->session->userdata('register_content'));
+        $register_content = $this->session->userdata('register_content') ? json_decode($this->session->userdata('register_content'),true) : '';
 
         $register_status = array();
         $register_status['register_status'] = 2;

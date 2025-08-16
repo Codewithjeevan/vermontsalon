@@ -2645,6 +2645,24 @@ $company_short_name =  $getCompanyInfo->short_name;
         <div class="pos__modal__body scrollbar-macosx">
             <div class="default_inner_body" id="x_report_details_content_o">
                 <input type="hidden" class="datatable_name" data-title="<?php echo lang('register_details'); ?>" data-id_name="datatable">
+                <div class="d-flex gap-10px">
+                    <div class="col-sm-12 col-md-6 mb-2">
+                        <div class="form-group">
+                            <input type="datetime-local" name="xstartDate" id="xstartDate" class="form-control" placeholder="<?php echo lang('start_date'); ?>">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6 mb-2">
+                        <div class="form-group">
+                            <input type="datetime-local" name="xendDate" id="xendDate" class="form-control" placeholder="<?php echo lang('end_date'); ?>">
+                        </div>
+                    </div>
+                    <div class="col-12 mb-2">
+                        <button type="button" onclick="document.querySelector('.x_report').click();" class="new-btn saleReport">
+                            <iconify-icon icon="solar:hourglass-broken" width="22"></iconify-icon>
+                            <?php echo lang('submit'); ?>
+                        </button>
+                    </div>
+                </div>
                 <div class="x_report_content">
                 </div>
             </div>
@@ -3141,12 +3159,6 @@ $company_short_name =  $getCompanyInfo->short_name;
                 </a>
                 
                 <ul class="sub__menu__list">
-                    <li data-access="register_report-249" class="menu_assign_class " module-is-hide="Register Report-YES">
-                        <a class="child-menu " href="<?php echo base_url(); ?>Report/registerReport">
-                            <?php echo lang('register_report'); ?>
-                        </a>
-                    </li>
-
                     <li data-access="zReport-249" class="menu_assign_class " module-is-hide="Z Report-YES">
                         <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/zReport'?>">
                             <?php echo lang('z_report'); ?>
@@ -3399,6 +3411,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                         <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/usageLoyaltyPointReport'?>">
                             <?php echo lang('usage_loyalty_point_report'); ?>
                             <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
+                        </a>
+                    </li>
+                    <li data-access="register_report-249" class="menu_assign_class " module-is-hide="Register Report-YES">
+                        <a class="child-menu " href="<?php echo base_url(); ?>Report/registerReport">
+                            <?php echo lang('register_report'); ?>
                         </a>
                     </li>
                 </ul>

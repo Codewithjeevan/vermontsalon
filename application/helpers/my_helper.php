@@ -831,7 +831,7 @@ if(!function_exists('dateFormat')){
         $separate = explode(" ",$paramDate);
         $time = '';
         if(isset($separate[1]) && $separate[1]){
-            $time = " <span class='time_design'>".$separate[1]."</span>";
+            $time = " <span class='time_design'>".date('h:i A',strtotime($separate[1]))."</span>";
         }
         return (date($dateFormate, strtotime($paramDate)))."".$time;
     }

@@ -254,6 +254,8 @@ class Report extends Cl_Controller {
             $data['report_generate_time'] = generatedOnCurrentDateTime();
             $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
             $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
+            $start_date = $start_date ? date('Y-m-d H:i:s', strtotime($start_date)) : '';
+            $end_date = $end_date ? date('Y-m-d H:i:s', strtotime($end_date)) : '';
             $data['start_date'] = $start_date;
             $data['end_date'] = $end_date;
             $data['saleReport'] = $this->Report_model->saleReport($start_date, $end_date, $outlet_id);
@@ -278,6 +280,8 @@ class Report extends Cl_Controller {
             $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
             $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
             $userid = htmlspecialcharscustom($this->input->post($this->security->xss_clean('user_id')));
+            $start_date = $start_date ? date('Y-m-d H:i:s', strtotime($start_date)) : '';
+            $end_date = $end_date ? date('Y-m-d H:i:s', strtotime($end_date)) : '';
             $data['start_date'] = $start_date;
             $data['end_date'] = $end_date;
             $data['saleReport'] = $this->Report_model->therapistReport($start_date, $end_date, $outlet_id, $userid);
@@ -304,6 +308,8 @@ class Report extends Cl_Controller {
             $data['report_generate_time'] = generatedOnCurrentDateTime();
             $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
             $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
+            $start_date = $start_date ? date('Y-m-d H:i:s', strtotime($start_date)) : '';
+            $end_date = $end_date ? date('Y-m-d H:i:s', strtotime($end_date)) : '';
             $data['start_date'] = $start_date;
             $data['end_date'] = $end_date;
             $data['saleReport'] = $this->Report_model->summarySaleReport($start_date, $end_date, $outlet_id);
@@ -330,6 +336,8 @@ class Report extends Cl_Controller {
             $data['report_generate_time'] = generatedOnCurrentDateTime();
             $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
             $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
+             $start_date = $start_date ? date('Y-m-d H:i:s', strtotime($start_date)) : '';
+            $end_date = $end_date ? date('Y-m-d H:i:s', strtotime($end_date)) : '';
             $data['start_date'] = $start_date;
             $data['end_date'] = $end_date;
             $data['saleReport'] = $this->Report_model->stylistSaleReport($start_date, $end_date, $outlet_id);

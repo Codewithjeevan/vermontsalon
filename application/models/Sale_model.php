@@ -46,7 +46,7 @@ class Sale_model extends CI_Model {
           WHERE s.date_time >= ? AND s.date_time <= ?
           AND s.del_status = 'Live' 
           AND s.outlet_id = ?
-          ORDER BY s.id DESC";
+          ORDER BY s.date_time DESC";
 
       $result = $this->db->query($query, [
       $start_date,
