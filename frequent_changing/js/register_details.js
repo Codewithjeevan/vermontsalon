@@ -145,6 +145,8 @@ $(function () {
  
     $(document).on("click", ".x_report", function (e) {
         let is_offline_system = $('#is_offline_system').val();
+        let startDate = $('#xstartDate').val();
+        let endDate = $('#xendDate').val();
 
         if(is_offline_system == '1'){
             $('.overlayForCalculator').css('display', 'none');
@@ -157,6 +159,8 @@ $(function () {
                     method: "POST",
                     data: {
                         csrf_name_: csrf_value_,
+                        startDate: startDate,
+                        endDate: endDate
                     },
                     success: function (response) {
                         response = JSON.parse(response);

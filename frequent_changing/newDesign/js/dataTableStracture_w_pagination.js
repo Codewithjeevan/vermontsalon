@@ -139,11 +139,36 @@ jqry(function () {
     });
 });
 
-function formatDate(dateStr) {
-    if (!dateStr) return '';
-    var parts = dateStr.split('-'); // [yyyy, mm, dd]
-    return parts[2] + '/' + parts[1] + '/' + parts[0].slice(2); // dd/mm/yy
+function formatDate(datetimeValue) {
+    if (!datetimeValue) return '';
+
+    // Create date object from datetime-local value
+    let dateObj = new Date(datetimeValue);
+
+    if (isNaN(dateObj.getTime())) return ''; // Invalid date check
+
+    // Format date parts
+    let day = String(dateObj.getDate()).padStart(2, '0');
+    let month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    let year = dateObj.getFullYear();
+
+    // Format time with AM/PM
+    let hours = dateObj.getHours();
+    let minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 => 12
+
+    // Check if time was provided
+    let hasTime = datetimeValue.includes('T');
+
+    if (hasTime) {
+        return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
+    } else {
+        return `${day}/${month}/${year}`;
+    }
 }
+
 
 function getDateRangeText(type = 0) { // type 1 = only text, 0 with style
     var startDateElement = $('#startDate');

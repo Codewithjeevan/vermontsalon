@@ -849,12 +849,6 @@
                                 </a>
                                 
                                 <ul class="treeview-menu">
-                                    <li data-access="register_report-249" class="menu_assign_class " module-is-hide="Register Report-YES">
-                                        <a class="child-menu " href="<?php echo base_url(); ?>Report/registerReport">
-                                            <?php echo lang('register_report'); ?>
-                                        </a>
-                                    </li>
-
                                     <li data-access="zReport-249" class="menu_assign_class " module-is-hide="Z Report-YES">
                                         <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/zReport'?>">
                                             <?php echo lang('z_report'); ?>
@@ -1108,6 +1102,11 @@
                                         <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/usageLoyaltyPointReport'?>">
                                             <?php echo lang('usage_loyalty_point_report'); ?>
                                             <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
+                                        </a>
+                                    </li>
+                                    <li data-access="register_report-249" class="menu_assign_class " module-is-hide="Register Report-YES">
+                                        <a class="child-menu " href="<?php echo base_url(); ?>Report/registerReport">
+                                            <?php echo lang('register_report'); ?>
                                         </a>
                                     </li>
                                 </ul>
