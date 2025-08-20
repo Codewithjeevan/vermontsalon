@@ -97,6 +97,10 @@
         <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/userHomeResponsive.css?var=1.6">
 
         <style>
+            .dt-print-view h1{
+                font-weight: 900;
+                color: #000000;
+            }
             .dataTable {
                 tbody tr {
                     border-bottom: thin solid #ebebeb;
@@ -104,8 +108,9 @@
 
                 th{
                     white-space: nowrap;
-                    font-weight: 800;
-                    font-size: 15px !important;
+                    color: #000000 !important;
+                    font-weight: 900 !important;
+                    font-size: 16px !important;
                 }
                 td {
                     vertical-align: middle;

@@ -37,15 +37,15 @@ jqry(function () {
                 }
                
                 return dateText
-                    ? '<div style="text-align:center; font-weight:bold;">' + dateText + '</div>'
+                    ? '<div style="text-align:center; font-weight:900;">' + dateText + '</div>'
                     : '';
             },
             text: '<span style="display: flex; align-items-center; gap: 8px;"><iconify-icon icon="solar:printer-broken" width="16"></iconify-icon> ' + print_db + '</span>',
             titleAttr: "Print",
             customize: function (win) {
                 var css = 'table { border-collapse: collapse; width: 100%; } ' +
-                        'th, td { border: 1px solid #dddddd; padding: 8px; text-align: center; }'+ 
-                        'tr:last-child td { font-weight: bold;color: #000; }' 
+                        'th, td { border: 1px solid #dddddd; padding: 8px; text-align: center;font-weight: 900;color: #000000; }'+ 
+                        'tr:last-child td { font-weight: 900;color: #000000; }' 
                         ;
                 var head = win.document.head || win.document.getElementsByTagName('head')[0];
                 var style = win.document.createElement('style');
@@ -155,7 +155,7 @@ function getDateRangeText(type = 0) { // type 1 = only text, 0 with style
         if (type === 1) {
             return 'From Date: ' + formatDate(from) + ' To Date: ' + formatDate(to);
         }else{
-            return 'From Date: <span style="color: green;">' + formatDate(from) + '</span>&nbsp; To Date: <span style="color: green;">' + formatDate(to) + '</span>';
+            return 'From Date: <span style="color: #000000;font-weight: 900;">' + formatDate(from) + '</span>&nbsp; To Date: <span style="color: #000000;font-weight: 900;">' + formatDate(to) + '</span>';
         }
     } else {
         return '';
