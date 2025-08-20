@@ -97,6 +97,25 @@
         <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/userHomeResponsive.css?var=1.6">
 
         <style>
+            .dataTable {
+                tbody tr {
+                    border-bottom: thin solid #ebebeb;
+                }
+
+                th{
+                    white-space: nowrap;
+                    font-weight: 800;
+                    font-size: 15px !important;
+                }
+                td {
+                    vertical-align: middle;
+                    color: #000000;
+                    font-weight: 700;
+                    font-size: 14px !important;
+                    white-space: nowrap;
+                    line-height: 1.2;
+                }
+            }
             /* for dynamic language font load, used internal css */
             /* for check change of bangla language font */
             <?php 
