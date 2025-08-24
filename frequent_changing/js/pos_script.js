@@ -9586,7 +9586,7 @@ $(function () {
                 success: function (data) {
                     if (data.printer_server_url) {
                         $.ajax({
-                            url: data.printer_server_url + "print_server/off_pos_printer_server.php",
+                            url: base_url + "/print_server/off_pos_printer_server.php",
                             method: "post",
                             dataType: "json",
                             data: {
