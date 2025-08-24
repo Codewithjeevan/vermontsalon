@@ -48,7 +48,7 @@ $company_short_name =  $getCompanyInfo->short_name;
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1027">
     <title><?php echo $site_name; ?></title>
     <!-- Favicon -->
     <link rel="shortcut icon" href="<?php echo $site_favicon ?>" type="image/x-icon">
@@ -88,6 +88,9 @@ $company_short_name =  $getCompanyInfo->short_name;
     <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/pos_responsive.css?var=1.6" type="text/css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/print.css" media="print">
     <style>
+        body {
+    min-width: 1027px;
+}
   /* make launcher show pointer on hover */
   .cn-numpad-launcher:hover {
     cursor: pointer;
@@ -394,7 +397,7 @@ $company_short_name =  $getCompanyInfo->short_name;
     <span id="stop_refresh_for_search" class="d-none"><?php echo lang('yes'); ?></span>
 
     <!-- Start Header Wrap -->
-    <div class="wrapper fix">
+    <div class="wrapper fix" id="app-wrapper">
         <!-- Header Desktop Area -->
         <div class="top_header_part">
             <!-- Left Header Menu List -->
@@ -4134,25 +4137,21 @@ $company_short_name =  $getCompanyInfo->short_name;
         <script>
         function scaleUItoDesignWidth(designWidth) {
             var ww = window.innerWidth;
-
-            // Only scale to fit the design width
             var scale = ww / designWidth;
 
-            // Set the transform
-            document.body.style.transform = "scale(" + scale + ")";
-            document.body.style.transformOrigin = "top left";
-
-            // Set width to the design width, height to 100%
-            document.body.style.width = designWidth + "px";
-            document.body.style.height = "100%"; // Fill window height
+            var wrapper = document.getElementById("app-wrapper");
+            wrapper.style.transform = "scale(" + scale + ")";
+            wrapper.style.transformOrigin = "top left";
+            wrapper.style.width = designWidth + "px";
+            wrapper.style.height = "100%";
         }
+
         function autoScale() {
             scaleUItoDesignWidth(1180);
         }
+
         window.addEventListener('DOMContentLoaded', autoScale);
         window.addEventListener('resize', autoScale);
         </script>
-
-
 </body>
 </html>

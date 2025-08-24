@@ -51,7 +51,7 @@
         <link rel="shortcut icon" href="<?php echo escape_output($site_favicon); ?>" type="image/x-icon">
         <link rel="icon" href="<?php echo escape_output($site_favicon); ?>" type="image/x-icon">
         <!-- Tell the browser to be responsive to screen width -->
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="width=1027">
         <!-- jQuery 3.7.1 -->
         <script src="<?php echo base_url(); ?>assets/bower_components/jquery/dist/jquery.min.js"></script>
         <!-- Iconify Font -->
@@ -97,6 +97,9 @@
         <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/userHomeResponsive.css?var=1.6">
 
         <style>
+            body {
+                min-width: 1027px;
+            }
             /* for dynamic language font load, used internal css */
             /* for check change of bangla language font */
             <?php 
