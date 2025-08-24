@@ -94,8 +94,8 @@ class Sale extends Cl_Controller {
 
         $outlet_id = $this->session->userdata('outlet_id');
         $company_id = $this->session->userdata('company_id');
-        $this->session->unset_userdata('register_status');
-        $this->session->unset_userdata('register_content');
+        // $this->session->unset_userdata('register_status');
+        // $this->session->unset_userdata('register_content');
         $register_data = $this->Register_model->getRegisterBalance($outlet_id);
         date_default_timezone_set('Asia/Dubai');
 
@@ -2644,8 +2644,7 @@ class Sale extends Cl_Controller {
      * @return void
      */
     public function closeRegister(){
-        $register_content = $this->session->userdata('register_content') ? json_decode($this->session->userdata('register_content'),true) : '';
-
+        $register_content = $this->session->userdata('register_content') ? json_decode($this->session->userdata('register_content')) : [];
         $register_status = array();
         $register_status['register_status'] = 2;
         $this->session->set_userdata($register_status);
