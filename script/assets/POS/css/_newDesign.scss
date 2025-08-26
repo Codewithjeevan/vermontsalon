@@ -155,7 +155,7 @@ textarea {
     background-color: #fff !important;
     outline: 0;
     border-color: rgba(54, 64, 94, 0.2705882353);
-    box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.2) !important;
+    box-shadow: 0 0 0 0.2rem rgba(92, 246, 100, 0.2) !important;
   }
 }
 
@@ -182,9 +182,9 @@ textarea {
     input {
       display: none;
       &:checked ~ label {
-        color: #8b5cf6 ;
-        background-color: rgba(139, 92, 246, 0.1) !important;
-        border-color: #8b5cf6 ;
+        color: #00592f ;
+        background-color: rgba(96, 246, 92, 0.1) !important;
+        border-color: #00592f ;
       }
     }
     label {
@@ -209,9 +209,9 @@ textarea {
       transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
         border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
       &:hover {
-        color: #8b5cf6 ;
-        background-color: rgba(139, 92, 246, 0.1) !important;
-        border-color: #8b5cf6 ;
+        color: #00592f ;
+        background-color: rgba(96, 246, 92, 0.1) !important;
+        border-color: #00592f ;
       }
       &:focus {
         box-shadow: rgba(48, 126, 243, 0.1) !important;

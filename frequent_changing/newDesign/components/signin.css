@@ -1,5 +1,5 @@
 .bg-blue-color {
-  background-color: #8b5cf6;
+  background-color: #00592f;
   color: white;
 }
 
@@ -14,15 +14,15 @@
 }
 
 .bg-blue-btn {
-  background-color: #8b5cf6;
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: #00592f;
+  background-color: rgba(96, 246, 92, 0.1);
 }
 .bg-blue-btn:hover, .bg-blue-btn:focus {
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  box-shadow: 0 8px 25px -8px #00592f !important;
 }
 
 .bg-blue-btn {
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 
 .bg-blue-btn,
@@ -65,7 +65,7 @@
 }
 
 .txt-color-primary {
-  color: #8b5cf6 !important;
+  color: #00592f !important;
 }
 
 .modal-body .select2-container {
@@ -125,18 +125,18 @@ input:focus {
 }
 
 .sa-button-container .sa-confirm-button-container .confirm {
-  background-color: #8b5cf6 !important;
+  background-color: #00592f !important;
   padding: 0.786rem 1.5rem;
   font-size: 1rem;
   border-radius: 0.358rem;
   transition: all 0.3s;
 }
 .sa-button-container .sa-confirm-button-container .confirm:hover {
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  box-shadow: 0 8px 25px -8px #00592f !important;
 }
 
 .swal2-confirm {
-  background-color: #8b5cf6 !important;
+  background-color: #00592f !important;
   padding: 0.786rem 1.5rem;
   font-size: 1rem;
   border-radius: 0.358rem;
@@ -144,7 +144,7 @@ input:focus {
   transition: all 0.3s;
 }
 .swal2-confirm:hover {
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  box-shadow: 0 8px 25px -8px #00592f !important;
 }
 
 .swal2-deny:hover {
@@ -168,8 +168,8 @@ input:focus {
 }
 .nav-tabs .nav-item.show .nav-link.active,
 .nav-tabs .nav-link.active {
-  color: #8b5cf6;
-  border-color: transparent transparent #8b5cf6 transparent;
+  color: #00592f;
+  border-color: transparent transparent #00592f transparent;
   border-width: 2px;
 }
 
@@ -186,7 +186,7 @@ input:focus {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #8b5cf6;
+  background: #00592f;
   border-radius: 10px;
 }
 

@@ -8,10 +8,10 @@ body {
 }
 
 #bottom_absolute #open_note_modal{
-  color: #8b5cf6;
+  color: #00592f;
 }
 .bottom-iconify-color{
-  color: #8b5cf6;
+  color: #00592f;
 }
 #bottom_absolute .item{
   display: flex;
@@ -37,8 +37,8 @@ body {
   align-items: center;
   gap: 5px;
   padding: 8px 10px;
-  color: #8b5cf6 !important;
-  background-color: rgba(139, 92, 246, 0.1);
+  color: #00592f !important;
+  background-color: rgba(96, 246, 92, 0.1);
   border-radius: 5px;
   font-size: 14px;
   font-weight: 500;
@@ -234,11 +234,11 @@ body {
 }
 
 #add_customer {
-  background-color: #8b5cf6;
+  background-color: #00592f;
   color: white;
 }
 #close_add_customer_modal {
-  background-color: #8b5cf6;
+  background-color: #00592f;
   color: white;
 }
 
@@ -273,7 +273,7 @@ body {
   opacity: 1;
 }
 .add_to_cart {
-  background-color: #8b5cf6;
+  background-color: #00592f;
   height: 28px !important;
   padding: 8px 8px !important;
   font-size: 12px;
@@ -358,7 +358,7 @@ body {
   box-shadow: 0 8px 25px -8px #FF503D !important;
 }
 .bg__blue {
-  background-color: #8b5cf6 !important;
+  background-color: #00592f !important;
   color: #fff !important;
   box-shadow: 0 2px 5px rgb(0 0 0 / 20%) !important;
    font-family: Outfit, sans-serif;
@@ -382,14 +382,14 @@ body {
   box-shadow: 0 8px 25px -8px #e91e63 !important;
 }
 .bg__grey {
-  background-color: #8b5cf6  !important;
+  background-color: #00592f  !important;
   color: #fff !important;
   box-shadow: 0 2px 5px rgb(0 0 0 / 20%) !important;
    font-family: Outfit, sans-serif;
 }
 .bg__grey:hover {
-  box-shadow: 0 8px 25px -8px #8b5cf6  !important;
-  background-color: #8b5cf6  !important;
+  box-shadow: 0 8px 25px -8px #00592f  !important;
+  background-color: #00592f  !important;
 }
 .off-btn {
   border-radius: 3px !important;
@@ -474,7 +474,7 @@ body {
   font-size: 20px;
   font-weight: 400;
   cursor: pointer;
-  color: #8b5cf6;
+  color: #00592f;
 }
 
 .d-flex {
@@ -559,10 +559,10 @@ body {
   font-size: 14px;
   font-weight: 600;
   color: #ffffff;
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 .slimScrollDivCategory .category_button:hover {
-  background-color: #8b5cf6 ;
+  background-color: #00592f ;
 }
 .slimScrollDivCategory {
   overflow-y: auto;
@@ -641,11 +641,11 @@ body {
 }
 .header-outlet {
   font-weight: 600;
-  border-right: 1px solid #8b5cf6;
-  border-left: 1px solid #8b5cf6;
+  border-right: 1px solid #00592f;
+  border-left: 1px solid #00592f;
   padding-left: 7px;
   padding-right: 7px;
-  color: #8b5cf6;
+  color: #00592f;
 }
 @media (min-height: 868px) {
   .main_center {
@@ -719,11 +719,11 @@ table.dataTable thead td {
 }
 .bg__base {
   font-family: Outfit, sans-serif;
-  background-color: #8b5cf6;
+  background-color: #00592f;
   color: white;
 }
 .bg__base:hover {
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  box-shadow: 0 8px 25px -8px #00592f !important;
 }
 
 #finalize_order_modal .key-pad .right-keys .key-list a {
@@ -740,49 +740,49 @@ table.dataTable thead td {
 
 #add_to_cart{
   color: #ffffff;
-  background-color: #8b5cf6;
+  background-color: #00592f;
   font-family: Outfit, sans-serif;
 }
 #add_to_cart:hover{
   color: #ffffff;
-  background-color: #8b5cf6;
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  background-color: #00592f;
+  box-shadow: 0 8px 25px -8px #00592f !important;
 }
 #add_to_cart:focus{
   color: #ffffff;
-  background-color: #8b5cf6;
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  background-color: #00592f;
+  box-shadow: 0 8px 25px -8px #00592f !important;
 }
 #pay_button:hover{
   color: #ffffff;
-  background-color: #8b5cf6;
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  background-color: #00592f;
+  box-shadow: 0 8px 25px -8px #00592f !important;
 }
 #pay_button:focus{
   color: #ffffff;
-  background-color: #8b5cf6;
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  background-color: #00592f;
+  box-shadow: 0 8px 25px -8px #00592f !important;
 }
 #add_payment:hover{
   color: #ffffff;
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 #add_payment:focus{
   color: #ffffff;
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 #open_finalize_discount:focus{
   color: #ffffff;
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 
 #finalize_order_modal .key-pad .right-keys .key-list a:focus{
   color: #ffffff;
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 .set_default_quick_cach:focus{
   color: #ffffff;
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 .clear_quick_data:focus{
   border: 1px solid #f51111;
@@ -803,10 +803,10 @@ table.dataTable thead td {
 }
 
 .active_gm{
-  border: 1px solid #8b5cf6;
+  border: 1px solid #00592f;
 }
 .active_medicine{
-  border: 1px solid #8b5cf6;
+  border: 1px solid #00592f;
 }
 .grocery_single_off .active_gm, .grocery_single_off .active_medicine {
   border: transparent !important;
@@ -870,7 +870,7 @@ div:where(.swal2-container) button:where(.swal2-styled) {
   top: 3px;
 }
 .category_active_design{
-  background-color: #6731e1  !important;
+  background-color: #00592f  !important;
 
 }
 .single_order_column i{
@@ -1049,7 +1049,7 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-deny:focus {
   margin-top: 5px;
 }
 .bg__blue:hover {
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  box-shadow: 0 8px 25px -8px #00592f !important;
 }
 #generate_sale_hold_modal{
   max-width: 400px;
@@ -1363,7 +1363,7 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-deny:focus {
   color: white;
 }
 .payment_btn_toggler .active{
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 .finalize-button-wrap{
   display: none;
@@ -1469,11 +1469,11 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-deny:focus {
 }
 .brand_active{
   background-color: rgba(48, 126, 243, 0.1);
-  color: #8b5cf6 !important;
+  color: #00592f !important;
 }
 .sort_active{
   background-color: rgba(48, 126, 243, 0.1);
-  color: #8b5cf6 !important;
+  color: #00592f !important;
 }
 .imei_serial_note{
   margin-left: 33px;
@@ -1515,12 +1515,12 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-deny:focus {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
   height: 40px;
   display: flex;
   justify-content: start;
   align-items: center;
-  color: #8b5cf6;
+  color: #00592f;
   border-radius: 3px;
   margin-bottom: 10px;
   font-weight: 500;
@@ -1540,7 +1540,7 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-deny:focus {
   left: 7px;
   height: 20px;
   width: 20px;
-  background-color: #8b5cf61f;
+  background-color: #00592f1f;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1565,14 +1565,14 @@ div:where(.swal2-container) button:where(.swal2-styled).swal2-deny:focus {
   width: 14px;
   height: 14px;
   position: absolute;
-  background: #8b5cf6;
+  background: #00592f;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .variationProductHtmlRender .v-active .checkmark::before{
-  background: #8b5cf6  !important;
+  background: #00592f  !important;
 }
 .variationProductHtmlRender .v-active{
   background: #8d5df457 !important;
@@ -1779,7 +1779,7 @@ aside#pos__sidebar .pos__menu__list .active a iconify-icon, aside#pos__sidebar .
 }
 
 .single_order_column .edit_item{
-  color: #8b5cf6;
+  color: #00592f;
   padding-right: 5px;
 }
 .sms-email-mobile .container {
@@ -2071,7 +2071,7 @@ aside#pos__sidebar .pos__menu__list .active a iconify-icon, aside#pos__sidebar .
   padding: 10px;
 }
 #bulk_import_for_sale a, #bulk_import_at_stock a {
-  background-color: #8b5cf6;
+  background-color: #00592f;
   color: white;
   border-color: #ecf0f1;
   display: inline-block;
@@ -2184,7 +2184,7 @@ aside#pos__sidebar .pos__menu__list .active a iconify-icon, aside#pos__sidebar .
 	color: #ff503d;
 }
 .link-color{
-	color: #8b5cf6;
+	color: #00592f;
 }
 
 /*###########  Place the following codes at the bottom of this file for user experience ###########*/
@@ -2229,7 +2229,7 @@ label{
 }
 ::selection {
 	color: white;
-	background-color: #8b5cf6;
+	background-color: #00592f;
 }
 .input-group-text{
   height: 40px;

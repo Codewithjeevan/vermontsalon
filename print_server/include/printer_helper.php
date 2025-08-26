@@ -32,7 +32,7 @@
 
     if(! function_exists('printText')) {
         function printText($text, $size) {
-            $line = wordwrap($text, $size, "\\n");
+            $line = wordwrap($text ?? '', $size, "\\n");
             return $line;
         }
     }
@@ -80,7 +80,7 @@
                 }
             }
 
-            $str = wordwrap($str, $charlim, "\n", FALSE);
+            $str = wordwrap($str ?? '', $charlim, "\n", false);
             $output = '';
             foreach (explode("\n", $str) as $line) {
                 if (mb_strlen($line) <= $charlim) {

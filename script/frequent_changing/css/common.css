@@ -680,7 +680,7 @@
 }
 
 .radio_button_problem a svg {
-  stroke: #8b5cf6 !important;
+  stroke: #00592f !important;
   width: 22px !important;
   position: relative !important;
   top: 7px !important;
@@ -690,13 +690,13 @@
 .user_detail_container {
   background-color: #fff;
   border-radius: 5px;
-  color: #8b5cf6;
+  color: #00592f;
   padding: 5px 5px 5px 15px;
   min-height: 362px;
 }
 
 .user_info_header {
-  background-color: #8b5cf6;
+  background-color: #00592f;
   border-radius: 5px;
   color: white;
   padding: 5px 5px 5px 15px;

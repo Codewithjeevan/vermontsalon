@@ -43,7 +43,7 @@ $(function () {
                 { y: 'Down Payment', a: down_payment },
                 { y: 'Installment Paid Amt', a: installment_paid_amount }
             ],
-            barColors: ['#8b5cf6', '#f56954'],
+            barColors: ['#00592f', '#f56954'],
             xkey: 'y',
             ykeys: ['a'],
             labels: ['Amount'],
@@ -88,7 +88,7 @@ $(function () {
                     data = google.visualization.arrayToDataTable(dataArray);
                     let options = {
                         legend: { position: "none" },
-                        colors: ['#8b5cf6', '#8b5cf6', '#8b5cf6'],
+                        colors: ['#00592f', '#00592f', '#00592f'],
                         axes: {
                             y: {
                                 all: {

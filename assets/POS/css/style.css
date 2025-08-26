@@ -1067,7 +1067,7 @@ select {
 
 #show_sale_hold_modal .hold_sale_modal_info_holder .detail_hold_sale_holder .hold_sale_left .hold_list_holder .header_row .column,
 .last_ten_sales_holder .hold_sale_left .hold_list_holder .header_row .column {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
   color: #495057;
   line-height: 33px;
   font-size: 12px;
@@ -1239,7 +1239,7 @@ select {
 
 .hold_sale_right .top .top_middle .item_modifier_details .modifier_item_header .column_hold,
 .order_detail_modal_info_holder .top .top_middle .item_modifier_details .modifier_item_header .column_hold {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
 }
 
 .hold_sale_right .top .top_middle .item_modifier_details .modifier_item_header,
@@ -1279,7 +1279,7 @@ select {
 #show_sale_hold_modal .hold_sale_modal_info_holder .detail_hold_sale_holder .hold_sale_right .top .top_middle h1,
 .order_detail_modal_info_holder .top .top_middle h1,
 .last_ten_sales_holder .hold_sale_right .top .top_middle h1 {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
   color: #333333;
   font-weight: 600;
   font-size: 14px;
@@ -1787,7 +1787,7 @@ select {
   border-bottom: 1px solid rgba(169, 189, 204, 0.418);
 }
 .order_table_holder .order_table_header_row .single_header_column {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
   padding: 6px 0;
 }
 
@@ -1907,8 +1907,8 @@ select {
   text-overflow: ellipsis;
 }
 .order_table_holder .order_holder .single_order .single_order_column.third_column iconify-icon {
-  background-color: rgba(139, 92, 246, 0.1);
-  color: #8b5cf6;
+  background-color: rgba(96, 246, 92, 0.1);
+  color: #00592f;
   width: 30px;
   height: 30px;
   line-height: 30px;
@@ -1919,7 +1919,7 @@ select {
   align-items: center;
 }
 .order_table_holder .order_holder .single_order .single_order_column.third_column iconify-icon:hover {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
 }
 .order_table_holder .order_holder .single_order .single_order_column.fifth_column i {
   color: rgba(229, 34, 34, 0.6) !important;
@@ -2429,7 +2429,7 @@ select {
   margin: 5px 0;
   padding: 7px 0;
   text-align: center;
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
   color: #5d5d5d;
   font-weight: 600;
   font-size: 20px;
@@ -2593,7 +2593,7 @@ textarea:focus {
   background-color: #fff !important;
   outline: 0;
   border-color: rgba(54, 64, 94, 0.2705882353);
-  box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.2) !important;
+  box-shadow: 0 0 0 0.2rem rgba(92, 246, 100, 0.2) !important;
 }
 
 .single_row.first,
@@ -2621,9 +2621,9 @@ textarea:focus {
   display: none;
 }
 .model_price_list li input:checked ~ label {
-  color: #8b5cf6;
-  background-color: rgba(139, 92, 246, 0.1) !important;
-  border-color: #8b5cf6;
+  color: #00592f;
+  background-color: rgba(96, 246, 92, 0.1) !important;
+  border-color: #00592f;
 }
 .model_price_list li label {
   position: relative;
@@ -2647,9 +2647,9 @@ textarea:focus {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .model_price_list li label:hover {
-  color: #8b5cf6;
-  background-color: rgba(139, 92, 246, 0.1) !important;
-  border-color: #8b5cf6;
+  color: #00592f;
+  background-color: rgba(96, 246, 92, 0.1) !important;
+  border-color: #00592f;
 }
 .model_price_list li label:focus {
   box-shadow: rgba(48, 126, 243, 0.1) !important;
@@ -2766,7 +2766,7 @@ textarea:focus {
   position: relative;
   padding: 10px;
   display: flex;
-  color: #8b5cf6;
+  color: #00592f;
 }
 .top_header_part .header_part_middle .icon__menu li a i {
   font-size: 20px;
@@ -3603,7 +3603,7 @@ aside#pos__sidebar .pos__menu__list > li > a .fa-chevron-left {
   transition: all 0.3s;
 }
 aside#pos__sidebar .pos__menu__list > li > a:hover {
-  color: #8b5cf6;
+  color: #00592f;
   transition: 0s;
 }
 aside#pos__sidebar .pos__menu__list > li > a i {
@@ -3687,7 +3687,7 @@ aside#pos__sidebar .pos__menu__list .sub__menu__list li a i {
   font-size: 13px;
 }
 aside#pos__sidebar .pos__menu__list .sub__menu__list li a:hover {
-  color: #8b5cf6;
+  color: #00592f;
   background-color: rgba(209, 196, 196, 0.168627451);
   border-radius: 8px;
 }
