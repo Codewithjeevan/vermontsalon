@@ -33,7 +33,7 @@
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -100,7 +100,7 @@
 }
 
 #will_login_section .container input:checked ~ .checkmark {
-  background-color: #8b5cf6;
+  background-color: #00592f;
 }
 #will_login_section .header-element {
   border-bottom: 1px solid #80808030;
@@ -114,7 +114,7 @@
 .access-card{
   border-radius: 5px;
   padding: 15px;
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
   margin-bottom: 15px;
 }
 .access-card:hover{

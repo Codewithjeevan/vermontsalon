@@ -39,8 +39,8 @@ input[type=number]::-webkit-inner-spin-button {
 }
 .profit_txt {
   font-weight: bold !important;
-  color: #8b5cf6 !important;
-  background-color: rgba(139, 92, 246, 0.1);
+  color: #00592f !important;
+  background-color: rgba(96, 246, 92, 0.1);
 }
 .new-btn {
   text-decoration: none;
@@ -48,8 +48,8 @@ input[type=number]::-webkit-inner-spin-button {
   align-items: center;
   gap: 5px;
   padding: 8px 10px;
-  color: #8b5cf6;
-  background-color: rgba(139, 92, 246, 0.1);
+  color: #00592f;
+  background-color: rgba(96, 246, 92, 0.1);
   border-radius: 5px;
   font-size: 14px;
   font-weight: 500;
@@ -88,7 +88,7 @@ input[type=number]::-webkit-inner-spin-button {
   padding-right: 10px;
   font-weight: 600;
   color: 307e;
-  color: #8b5cf6;
+  color: #00592f;
   letter-spacing: 1px;
 }
 

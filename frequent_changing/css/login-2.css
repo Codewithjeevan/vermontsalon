@@ -94,7 +94,15 @@ body {
   padding: 20px 30px;
 }
 .logo-area{
+  height: 100px;
+  width: 100px;
   padding-bottom: 20px;
+}
+
+.logo-area img{
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 }
 .img, .login-wrap {
   width: 50%;
@@ -144,7 +152,7 @@ input::placeholder {
 }
 .btn.btn-primary {
   border: 1px solid transparent !important;
-  color: #8b5cf6;
+  color: #00592f;
   background-color: rgba(48, 126, 243, 0.1);
   font-size: 14px;
   font-weight: 500;
@@ -152,10 +160,10 @@ input::placeholder {
   width: 100%;
 }
 .btn.btn-primary:hover {
-  border: 1px solid #8b5cf6 !important;
+  border: 1px solid #00592f !important;
 }
 .checkbox-primary {
-  color: #8b5cf6;
+  color: #00592f;
 }
 .btn-2{
   height: 48px;
@@ -249,7 +257,7 @@ input::placeholder {
 }
 .forgot-pass{
   font-weight: 500;
-  color: #8b5cf6;
+  color: #00592f;
   text-decoration: underline;
 }
 
@@ -269,12 +277,12 @@ input::placeholder {
 }
 
 .select2-container--default .select2-search--dropdown .select2-search__field {
-	border-color: #8b5cf6;
+	border-color: #00592f;
 	border-radius: 5px;
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
   color: #143157 !important;
 }
 
@@ -342,11 +350,11 @@ input::placeholder {
   align-items: center;
   justify-content: center;
   transition: all 0.3s;
-  background-color: #8b5cf6;
+  background-color: #00592f;
   width: 100%;
 }
 .login-button:hover {
-  box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+  box-shadow: 0 8px 25px -8px #00592f !important;
   color: white;
 }
 
@@ -355,8 +363,8 @@ input::placeholder {
 }
 
 .form-control:focus {
-  border-color: rgba(139, 92, 246, 0.2705882353);
-  box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.2) !important;
+  border-color: rgba(107, 246, 92, 0.2705882353);
+  box-shadow: 0 0 0 0.2rem rgba(92, 246, 100, 0.2) !important;
 }
 
 
@@ -366,7 +374,7 @@ input::placeholder {
 }
 .login-as{
   font-size: 14px !important;
-  color: #8b5cf6 !important;
+  color: #00592f !important;
 }
 .login-radio-1{
   margin-right: 20px;
@@ -419,7 +427,7 @@ input::placeholder {
 }
 
 [type="radio"]:checked + label:after {
-    background: #8b5cf6; 
+    background: #00592f; 
     opacity: 1;  
     transform: scale(1);  
 }
@@ -430,7 +438,7 @@ input::placeholder {
 
 /* When the radio button is checked */
 [type="radio"]:checked + label:before {
-  border-color: #8b5cf6; /* Pink border */
+  border-color: #00592f; /* Pink border */
 }
 /*  Tablet PC: 992px.
     Gutters: 24px.

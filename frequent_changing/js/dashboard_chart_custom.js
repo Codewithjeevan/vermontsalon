@@ -53,8 +53,8 @@ const myLineChart = new Chart(ctx, {
             label: '', // Name the series
             data: [], // Specify the data values array
             fill: true,
-            borderColor: '#8b5cf6', // Add custom color border (Line)
-            backgroundColor: '#8b5cf61a',
+            borderColor: '#00592f', // Add custom color border (Line)
+            backgroundColor: '#00592f1a',
             borderWidth: 3, // Specify bar border width
             animations: true
         }]

@@ -1,5 +1,5 @@
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: rgba(139, 92, 246, 0.1) !important;
+    background-color: rgba(96, 246, 92, 0.1) !important;
     color: #143157 !important;
 }
 

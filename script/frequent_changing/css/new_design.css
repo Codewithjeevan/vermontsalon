@@ -1,15 +1,15 @@
 
 .fc .fc-button-primary {
-    background-color: #8b5cf6;
-    border-color: #8b5cf6;
+    background-color: #00592f;
+    border-color: #00592f;
 }
 .fc .fc-button-primary:hover {
-    background-color: #8b5cf6;
-    border-color: #8b5cf6;
+    background-color: #00592f;
+    border-color: #00592f;
 }
 .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active {
-    background-color: #8b5cf6;
-    border-color: #8b5cf6;
+    background-color: #00592f;
+    border-color: #00592f;
 }
 .fc .fc-button-primary:focus {
     box-shadow: rgba(139, 92, 246, 0.5) 0px 0px 0px 0.2rem;
@@ -19,11 +19,11 @@
 }
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
     color: #fff;
-    background-color: #8b5cf6;
-	box-shadow: 0 8px 25px -8px #8b5cf6 !important;
+    background-color: #00592f;
+	box-shadow: 0 8px 25px -8px #00592f !important;
 }
 .booking_management .nav-link {
-    background-color: #8b5cf6 !important;
+    background-color: #00592f !important;
 	margin-left: 5px;
 	color: white;
 }
@@ -141,7 +141,7 @@
 	font-size: 60px;
 }
 .outlet-box:hover .outlet_main_icon iconify-icon{
-	color: #8b5cf6;
+	color: #00592f;
 }
 
 .bg-green-btn {
@@ -159,7 +159,7 @@
 	margin-bottom: 2px;
 }
 .menu-open .treeview-menu li:hover{
-	color: #8b5cf6;
+	color: #00592f;
 	background-color: #d1c4c42b;
     border-radius: 8px;
 }
@@ -186,7 +186,7 @@
 }
 
 .main-sidebar .sidebar-menu li, .main-sidebar2 .sidebar-menu li {
-	color: #8b5cf6;
+	color: #00592f;
 	position: relative;
 }
 
@@ -222,7 +222,7 @@
 	color: #99a1b7;
 }
 .main-sidebar .sidebar-menu li:hover a, .main-sidebar2 .sidebar-menu li:hover a {
-	/* color: #8b5cf6; */
+	/* color: #00592f; */
 	transition: 0s;
 }
 .main-sidebar .sidebar-menu li.active_sub_menu a, .main-sidebar2 .sidebar-menu li.active_sub_menu a {
@@ -309,7 +309,7 @@
 	width: 24px;
 }
 .treeview2.treeMenuActive a iconify-icon, .treeview2.treeMenuActive a span {
-	color: #8b5cf6;
+	color: #00592f;
 }
 .sidebar2_active .navbar-menu-right{
 	flex-direction: row-reverse;
@@ -448,7 +448,7 @@
 
 
 .active_sub_menu .triangle {
-	border-color: transparent transparent #8b5cf6;
+	border-color: transparent transparent #00592f;
 	border-style: solid;
 	border-width: 0 0 20px 20px;
 	bottom: 0;
@@ -486,7 +486,7 @@
 
 ::selection {
 	color: white;
-	background-color: #8b5cf6;
+	background-color: #00592f;
 }
 
 
@@ -538,7 +538,7 @@
 	color: #ff503d;
 }
 .link-color{
-	color: #8b5cf6;
+	color: #00592f;
 }
 .border-dashes_eaeaea{
 	border: 1px dashed #a9a5a5;
@@ -634,7 +634,7 @@
 	border: none;
     padding: 5px 10px;
     border-radius: 5px;
-    background: #8b5cf6;
+    background: #00592f;
     color: white;
 }
 .stock_modal_print_btn .dt-buttons .buttons-copy, .stock_modal_print_btn .dt-buttons .buttons-prin, .stock_modal_print_btn .dt-buttons .buttons-csv, .stock_modal_print_btn .dt-buttons .buttons-pdf {
@@ -684,7 +684,7 @@
 .html_content .dt-buttons button.dt-button {
     outline: 0;
     border: 0;
-    background: #8b5cf6;
+    background: #00592f;
     border-radius: 4px;
     color: white;
     font-size: 15px;

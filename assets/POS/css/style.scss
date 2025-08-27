@@ -1064,7 +1064,7 @@ select {
 
 #show_sale_hold_modal .hold_sale_modal_info_holder .detail_hold_sale_holder .hold_sale_left .hold_list_holder .header_row .column,
 .last_ten_sales_holder .hold_sale_left .hold_list_holder .header_row .column {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
   color: #495057;
   line-height: 33px;
   font-size: 12px;
@@ -1247,7 +1247,7 @@ select {
 .hold_sale_right .top .top_middle .item_modifier_details .modifier_item_header,
 .order_detail_modal_info_holder .top .top_middle .item_modifier_details .modifier_item_header {
   .column_hold {
-    background-color: rgba(139, 92, 246, 0.1);
+    background-color: rgba(96, 246, 92, 0.1);
   }
 }
 
@@ -1291,7 +1291,7 @@ select {
 #show_sale_hold_modal .hold_sale_modal_info_holder .detail_hold_sale_holder .hold_sale_right .top .top_middle h1,
 .order_detail_modal_info_holder .top .top_middle h1,
 .last_ten_sales_holder .hold_sale_right .top .top_middle h1 {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(96, 246, 92, 0.1);
   color: #333333;
   font-weight: 600;
   font-size: 14px;
@@ -1803,7 +1803,7 @@ select {
   border-bottom: 1px solid rgba(169, 189, 204, 0.418);
 
   .single_header_column {
-        background-color: rgba(139, 92, 246, 0.1);
+        background-color: rgba(96, 246, 92, 0.1);
     padding: 6px 0;
   }
 }
@@ -1946,8 +1946,8 @@ select {
 
   &.third_column {
     iconify-icon {
-          background-color: rgba(139, 92, 246, 0.1);
-      color: #8b5cf6;
+          background-color: rgba(96, 246, 92, 0.1);
+      color: #00592f;
       width: 30px;
       height: 30px;
       line-height: 30px;
@@ -1958,7 +1958,7 @@ select {
       align-items: center;
 
       &:hover {
-        background-color: rgba(139, 92, 246, 0.1);
+        background-color: rgba(96, 246, 92, 0.1);
       }
     }
   }
@@ -2545,7 +2545,7 @@ select {
       margin: 5px 0;
       padding: 7px 0;
       text-align: center;
-      background-color: rgba(139, 92, 246, 0.1);
+      background-color: rgba(96, 246, 92, 0.1);
       color: #5d5d5d;
       font-weight: 600;
       font-size: 20px;

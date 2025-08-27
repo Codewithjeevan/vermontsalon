@@ -150,8 +150,8 @@
     }
     .form-control:focus {
       background-color: #fff;
-      border-color: #8b5cf6;
-      // box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.2) !important;
+      border-color: #00592f;
+      // box-shadow: 0 0 0 0.2rem rgba(92, 246, 100, 0.2) !important;
       box-shadow: none;
     }
     .radio {
@@ -230,8 +230,8 @@
   
     /* When the checkbox is checked, add a blue background */
     .container input:checked ~ .checkmark {
-      border-color: #8b5cf6;
-      background-color: #8b5cf6;
+      border-color: #00592f;
+      background-color: #00592f;
       box-shadow: 0 2px 4px 0 rgba(115, 103, 240, 0.4);
     }
   

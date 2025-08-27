@@ -7,7 +7,7 @@ $(function () {
             Swal.fire({
                 title: "Alert !",
                 text: 'This Company under free trial.',
-                confirmButtonColor: "#8b5cf6",
+                confirmButtonColor: "#00592f",
                 confirmButtonText: 'OK',
                 showCancelButton: false,
             });
