@@ -661,11 +661,11 @@ class Authentication extends Cl_Controller {
                 ];
                 
                 // Check register status
-                if ($register_status == '1') {
-                    $counter_id = $this->Common_model->getCounterIdFromRegister($user_information->id);
-                    if ($counter_id) {
-                        $printer_id = $this->Common_model->getPrinterIdByCounterId($counter_id);
-                        $printer_info = $this->Common_model->getPrinterInfoById($printer_id);
+                // if ($register_status == '1') {
+                    // $counter_id = $this->Common_model->getCounterIdFromRegister($user_information->id);
+                    // if ($counter_id) {
+                        // $printer_id = $this->Common_model->getPrinterIdByCounterId($counter_id);
+                        $printer_info = $this->Common_model->getPrinterInfoById($user_information->printer_id);
                         if ($printer_info) {
                             $login_session['print_format'] = $printer_info->print_format;
                             $login_session['characters_per_line'] = $printer_info->characters_per_line;
@@ -678,8 +678,8 @@ class Authentication extends Cl_Controller {
                             $login_session['print_server_url_invoice'] = $printer_info->print_server_url_invoice;
                             $login_session['inv_qr_code_status'] = $printer_info->inv_qr_code_status;
                         }
-                    }
-                }
+                //     }
+                // }
 
 
                 $login_session['invoice_configuration'] = $company_info->invoice_configuration;
@@ -1540,6 +1540,7 @@ class Authentication extends Cl_Controller {
             $outlet = $this->Common_model->getDataById($outlet_id, "tbl_outlets");
             if(isset($printer_id) && $printer_id){
                 $data = array();
+                
                 $data['print_type'] = "invoice";
                 $data['logo'] = $company->invoice_logo;
                 $data['open_cash_drawer_when_printing_invoice'] = $open_cash_drawer;
@@ -1583,17 +1584,48 @@ class Authentication extends Cl_Controller {
                 $count  = 1;
                 $totalItems = 0;
                 $items_object = $this->Common_model->getItemDetailsDataById($sale_id, "sales_id", "tbl_sales_details");
-                foreach($items_object as $r=>$value){
-                    $totalItems++;
-                    $menu_unit_price = getAmtP($value->menu_unit_price);
-                    $items .= printText(("#".$count." ".(getItemNameCodeById($value->food_menu_id ))), $printer->characters_per_line)."\n";
-                    $items .= printLine("   ".($value->qty." x ".$menu_unit_price. ":  ". ((getAmt($value->menu_price_with_discount)))), $printer->characters_per_line, ' ')."\n";
-                    $count++;
-                }
+                $items_by_sales_id = $this->Sale_model->getAllItemsFromSalesDetailBySalesId($sale_id);
+                $data['stylish_name'] = $items_by_sales_id ? implode(', ', array_column($items_by_sales_id, 'seller_name')) : '';
+                
+                // Set header row
+                // Set header row (fits in ~48 chars)
+				$items  = str_pad("S.No", 4);             // 4
+				$items .= str_pad("Name", 20);            // 20
+				$items .= str_pad("Rate", 8, ' ', STR_PAD_LEFT); // 8
+				$items .= str_pad("Qty", 6, ' ', STR_PAD_LEFT);  // 6
+				$items .= str_pad("Net", 10, ' ', STR_PAD_LEFT); // 10
+				$items .= "\n";
 
+				// Divider line
+				$items .= str_repeat("-", 48) . "\n";
+
+				foreach ($items_object as $r => $value) {
+					$totalItems++;
+
+					$itemName = getItemNameCodeById($value->food_menu_id);
+					$rate     = number_format(getAmtP($value->menu_unit_price), 2);
+					$qty      = number_format($value->qty, 3);
+					$net      = number_format(getAmt($value->menu_price_with_discount), 2);
+
+					$items .= str_pad($count, 4);                     // S.No
+					$items .= str_pad(substr($itemName, 0, 20), 20);  // Name trimmed to 20 chars
+					$items .= str_pad($rate, 8, ' ', STR_PAD_LEFT);   // Rate
+					$items .= str_pad($qty, 6, ' ', STR_PAD_LEFT);    // Qty
+					$items .= str_pad($net, 10, ' ', STR_PAD_LEFT);   // Net
+					$items .= "\n";
+
+					$count++;
+				}
+
+				// Bottom divider
+				$items .= str_repeat("-", 48) . "\n";
+
+
+                $data['items'] = $items;
+                
+                $data['items'] = $items;
                 $data['sale_no_p'] = $sale->sale_no;
                 $data['date_format_p'] = $company->date_format;;
-                $data['items'] = $items;
                 $totals = "";
                 $totals.= printLine("".lang("Total_Item_s"). ": " .  $totalItems, $printer->characters_per_line)."\n";
                 if($sale->sub_total && $sale->sub_total!="0.00"):

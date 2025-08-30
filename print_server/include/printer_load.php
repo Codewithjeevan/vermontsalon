@@ -22,7 +22,7 @@ function print_receipt($data) {
     //start printing
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer->setEmphasis(true);
-    $printer->setTextSize(2, 2);
+    $printer->setTextSize(2, 1.5);
     $printer->text(printText($data->store_name,$data->characters_per_line)."\n");
     $printer->setEmphasis(false);
     $printer->setTextSize(1, 1);
@@ -39,8 +39,11 @@ function print_receipt($data) {
     $printer->setEmphasis(false);
     $printer->setJustification(Printer::JUSTIFY_LEFT);
     $printer->text("Date: ".($data->date)." ".($data->time_inv)."\n");
-    $printer->text("Sales Associate: ".($data->sales_associate)."\n");
+    $printer->text("Processed by: ".($data->sales_associate)."\n");
     $printer->text("Customer: ".($data->customer_name)."\n");
+    if(isset($data->stylish_name) && $data->stylish_name!=''){
+        $printer->text("Stylish Name: ".($data->stylish_name)."\n");
+    }
     if($data->customer_address!=NULL  && $data->customer_address!=""){
         $printer->text("Address: ".$data->customer_address."\n");
     }
