@@ -1731,7 +1731,20 @@ class Sale extends Cl_Controller {
     public function get_last_10_sales_ajax(){
         $outlet_id = $this->session->userdata('outlet_id');
         $sales_information = $this->Sale_model->getLastTenSalesByOutletAndUserId($outlet_id);
-        echo json_encode($sales_information);
+        $final_data = [];
+        foreach ($sales_information as $sale) {
+            $encrypted_id = $this->custom->encrypt_decrypt($sale->id, 'encrypt');
+            
+            // Convert object → array so we can add/rename fields
+            $sale_data = (array) $sale;
+            
+            // Add encrypted id as `sale_id`
+            $sale_data['sale_id'] = $encrypted_id;
+            
+            $final_data[] = $sale_data;
+        }
+
+        echo json_encode($final_data);
     }
 
     /**
