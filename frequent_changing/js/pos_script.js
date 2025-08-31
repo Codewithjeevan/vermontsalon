@@ -4283,7 +4283,7 @@ $(function () {
                         last_10_orders += `<div class="op_center op_padding_10">There is no sale found</div>`;
                     } else {
                         for (let key in orders) {
-                            last_10_orders += `<div class="single_last_ten_sale fix" id="last_ten_${orders[key].id}" data-selected="unselected">
+                            last_10_orders += `<div class="single_last_ten_sale fix" id="last_ten_${orders[key].sale_id}" data-selected="unselected">
                                 <div class="first_column column fix">${orders[key].sale_no}</div>
                                 <div class="second_column column fix">${orders[key].seller_names}</div>
                                 <div class="third_column column fix">${opDateFormat(orders[key].sale_date) + ' ' + orders[key].order_time}</div>
