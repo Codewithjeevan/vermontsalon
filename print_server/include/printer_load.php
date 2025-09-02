@@ -22,7 +22,7 @@ function print_receipt($data) {
     //start printing
     $printer->setJustification(Printer::JUSTIFY_CENTER);
     $printer->setEmphasis(true);
-    $printer->setTextSize(2, 1.5);
+    $printer->setTextSize(1, 1);
     $printer->text(printText($data->store_name,$data->characters_per_line)."\n");
     $printer->setEmphasis(false);
     $printer->setTextSize(1, 1);
