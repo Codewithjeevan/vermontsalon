@@ -2727,7 +2727,18 @@ class Sale extends Cl_Controller {
             $total_servicing_all += $servicing;
             $total_downpayment_all += $down_payment;
             $total_installmentcollection_all += $installment_collection;
-            $inline_closing = ($opening_balance - $total_purchase + $total_sale  + $total_due_receive - $total_due_payment - $total_expense + $refund_amount + $down_payment + $servicing + $installment_collection);
+            $inline_closing = $inline_closing = (
+                                        floatval($opening_balance) 
+                                        - floatval($total_purchase) 
+                                        + floatval($total_sale)  
+                                        + floatval($total_due_receive) 
+                                        - floatval($total_due_payment) 
+                                        - floatval($total_expense) 
+                                        + floatval($refund_amount) 
+                                        + floatval($down_payment) 
+                                        + floatval($servicing) 
+                                        + floatval($installment_collection)
+                                    );
             $total_closing += $inline_closing;
             $preview_amount = isset($payment_details[$payments[1]]) && $payment_details[$payments[1]]?$payment_details[$payments[1]]:0;
             $payment_details[$payments[1]] = $preview_amount + $inline_closing;
@@ -2755,7 +2766,6 @@ class Sale extends Cl_Controller {
         $this->db->where('opening_balance_date_time', $opening_date_time);
         $this->db->where('register_status', 1);
         $this->db->update('tbl_register', $changes);
-        $this->session->unset_userdata('print_format');
         $this->session->unset_userdata('characters_per_line');
         $this->session->unset_userdata('printer_ip_address');
         $this->session->unset_userdata('printer_port');

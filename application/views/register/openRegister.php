@@ -46,7 +46,7 @@
                     $totalopenbalance = 0;
                     foreach ($payment_methods as $value):
                         if($value->account_type != 'Loyalty Point'):
-                            $amount = isset($payment_map[$value->id]) ? $payment_map[$value->id] : 0;
+                            $amount = isset($payment_map[$value->id]) ? floatval($payment_map[$value->id]) : 0;
                             $totalopenbalance += $amount;
                     ?>
 
