@@ -681,6 +681,13 @@ class Authentication extends Cl_Controller {
                     }
                 }
 
+                if($company_info->invoice_configuration) {
+                        $invoice_configuration = json_decode($company_info->invoice_configuration);
+                } else {
+                        $invoice_configuration = '';
+                }
+
+                $login_session['print_format'] = $invoice_configuration->invoice_format_or_size ?? $login_session['print_format'];
 
                 $login_session['invoice_configuration'] = $company_info->invoice_configuration;
                 $login_session['inv_logo_is_show'] = $company_info->inv_logo_is_show;

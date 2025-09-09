@@ -2803,14 +2803,6 @@ class Sale extends Cl_Controller {
         $this->db->where('opening_balance_date_time', $opening_date_time);
         $this->db->where('register_status', 1);
         $this->db->update('tbl_register', $changes);
-        $this->session->unset_userdata('print_format');
-        $this->session->unset_userdata('characters_per_line');
-        $this->session->unset_userdata('printer_ip_address');
-        $this->session->unset_userdata('printer_port');
-        $this->session->unset_userdata('qr_code_type');
-        $this->session->unset_userdata('invoice_print');
-        $this->session->unset_userdata('print_server_url_invoice');
-        $this->session->unset_userdata('inv_qr_code_status');
     }
 
 
