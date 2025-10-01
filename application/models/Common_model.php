@@ -1142,11 +1142,14 @@ class Common_model extends CI_Model {
      * @return object
      * Added By Azhar
      */
-    public function getAllByCompanyIdForDropdown($company_id, $table_name) {
+    public function getAllByCompanyIdForDropdown($company_id, $table_name, $where = null) {
 		$this->db->select('*');
 		$this->db->from($table_name);
 		$this->db->where('company_id', $company_id);
 		$this->db->where('del_status', 'Live');
+        if($where){
+            $this->db->where($where);
+        }
 		$this->db->order_by('id', 'DESC');
 		$result = $this->db->get(); 
         if($result != false){
@@ -2031,6 +2034,21 @@ class Common_model extends CI_Model {
         $this->db->where("del_status", 'Live');
         $this->db->order_by("sort_id");
         return $this->db->get()->result();
+    }
+
+    public function getCompanyTaxSettings()
+    {
+        $company_id = $this->session->userdata('company_id');
+        $row = $this->db
+            ->select('tax_setting')
+            ->from('tbl_companies')
+            ->where('id', $company_id)
+            ->get()
+            ->row();
+
+        return $row
+            ? json_decode($row->tax_setting, true)
+            : [];
     }
     
     /**
@@ -3524,6 +3542,7 @@ class Common_model extends CI_Model {
         $code = str_pad($count + 1, 6, '0', STR_PAD_LEFT);
         return $code;
     }
+    
 
 
 

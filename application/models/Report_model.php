@@ -936,65 +936,52 @@ class Report_model extends CI_Model {
         $company_id = $this->session->userdata('company_id');
 
         $this->db->select([
-            's.sale_date',
             's.date_time',
-            's.id',
             's.sale_no',
-            's.sub_total',
-            's.vat',
-            's.delivery_charge',
-            's.total_payable',
-            's.paid_amount',
-            's.due_amount',
             's.total_discount_amount',
-            's.given_amount',
-            's.change_amount',
-            's.grand_total',
-            'c.name   AS customer_name',
-            "GROUP_CONCAT(DISTINCT seller.full_name     SEPARATOR ', ') AS seller_names",
-            "GROUP_CONCAT(DISTINCT pm.name             SEPARATOR ', ') AS payment_methods",
-            "GROUP_CONCAT(DISTINCT i.name             SEPARATOR ', ') AS item_name",
-            "GROUP_CONCAT(DISTINCT CONCAT(pm.name, ' : ', sp_amount.total_amount) SEPARATOR ', ') AS payment_amounts"
-        ], false);
-
-        $this->db->from('tbl_sales AS s');
-        $this->db->join('tbl_customers    AS c',    'c.id          = s.customer_id',    'left');
-        $this->db->join('tbl_sales_details AS sd',   'sd.sales_id   = s.id',             'left');
-        $this->db->join('tbl_users         AS seller','sd.item_seller_id = seller.id',   'left');
-        $this->db->join('tbl_sale_payments AS sp',   'sp.sale_id    = s.id',             'left');
-        $this->db->join('tbl_payment_methods AS pm', 'pm.id         = sp.payment_id',    'left');
-        $this->db->join('(SELECT sale_id, payment_id, SUM(amount) AS total_amount FROM tbl_sale_payments GROUP BY sale_id, payment_id) AS sp_amount', 'sp_amount.sale_id = s.id AND sp_amount.payment_id = pm.id', 'left');
+            'u.commission',
+            'u.full_name AS emp_name',
+            'c.name AS customer_name',
+            'c.phone AS customer_phone',
+            'i.name AS item_name',
+            'i.code',
+            'sd.qty',
+            'sd.menu_unit_price',
+            'sd.menu_price_with_discount AS total_payable',
+            'ut.unit_name',
+            'sd.commission_percent',
+            'concat(pm.name) AS payment_methods'
+        ]);
+        $this->db->from('tbl_sales_details sd');
+        $this->db->join('tbl_sales s', 's.id = sd.sales_id', 'left');
+        $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
+        $this->db->join('tbl_users u', 'u.id = sd.item_seller_id', 'left');
         $this->db->join('tbl_items i', 'i.id = sd.food_menu_id', 'left');
-
-        // date filters
-        if ($startMonth !== '' && $endMonth !== '') {
+        $this->db->join('tbl_units ut', 'ut.id = i.sale_unit_id', 'left');
+        $this->db->join('tbl_sale_payments AS sp',   'sp.sale_id = s.id','left');
+        $this->db->join('tbl_payment_methods AS pm', 'pm.id = sp.payment_id', 'left');
+        if ($startMonth != '' && $endMonth != '') {
             $this->db->where('s.sale_date >=', $startMonth);
             $this->db->where('s.sale_date <=', $endMonth);
-        } elseif ($startMonth !== '') {
+        }
+        if ($startMonth != '' && $endMonth == '') {
             $this->db->where('s.sale_date', $startMonth);
-        } elseif ($endMonth !== '') {
+        }
+        if ($startMonth == '' && $endMonth != '') {
             $this->db->where('s.sale_date', $endMonth);
         }
-
-        // optional filters
-        if ($outlet_id !== '') {
-            $this->db->where('s.outlet_id', $outlet_id);
-        }
-        if ($user_id !== '') {
-            // assuming tipamount flag is boolean stored as 1/0
+        if($user_id != ''){
             $this->db->where('sd.item_seller_id', $user_id);
         }
-
-        // fixed conditions
-        $this->db->where('s.delivery_status', 'Cash Received');
-        $this->db->where('s.company_id',       $company_id);
-        $this->db->where('s.del_status',       'Live');
-
-        // ← crucial: collapse the joined rows back into one row per sale
-        $this->db->group_by('s.id');
-
-        $query = $this->db->get();
-        return $query->result();
+        if($outlet_id != ''){
+            $this->db->where('sd.outlet_id', $outlet_id);
+        }
+        $this->db->where('sd.delivery_status', 'Cash Received');
+        $this->db->where('sd.company_id', $company_id);
+        $this->db->where('s.del_status', 'Live');
+        $this->db->order_by('sd.id', 'DESC');
+        $query_result = $this->db->get();
+        return $query_result->result();
     }
 
     public function stylistSaleReport($startMonth = '', $endMonth = '', $outlet_id = '')
@@ -1042,69 +1029,127 @@ class Report_model extends CI_Model {
 
    public function summarySaleReport($startDate, $endDate, $outlet_id = '')
     {
-        $company_id      = $this->session->userdata('company_id');
-        $payment_methods = $this->Common_model->getAllPaymentMethods();
+        $company_id       = $this->session->userdata('company_id');
+        $tax_settings     = $this->Common_model->getCompanyTaxSettings();
+        $payment_methods  = $this->Common_model->getAllPaymentMethods();
 
-        $pivotSelect = ['sale_id'];
-        foreach ($payment_methods as $method) {
-            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
-            $pivotSelect[] = "
-                SUM(
-                CASE WHEN payment_name = '{$method->name}'
-                    THEN amount ELSE 0 END
-                ) AS total_{$alias}_amount
-            ";
-        }
+        // --- 1) Pull ALL matching sales (one row per sale) ---
+        $this->db->select([
+            'id',
+            'sale_date',
+            'sub_total',
+            'total_payable',
+            'total_discount_amount',
+            'sale_vat_objects'
+        ])->from('tbl_sales')
+        ->where('company_id', $company_id)
+        ->where('delivery_status', 'Cash Received')
+        ->where('del_status', 'Live');
 
-        $pivotSql = $this->db
-            ->select($pivotSelect, FALSE)
-            ->from('tbl_sale_payments')
-            ->group_by('sale_id')
-            ->get_compiled_select();
-
-        $outerSelect = [
-            's.sale_date',
-            'SUM(s.total_payable)         AS total_payable',
-            'SUM(s.total_discount_amount) AS total_discount_amount',
-            "COALESCE(
-            GROUP_CONCAT(s.sale_vat_objects SEPARATOR '|||'),
-            ''
-            ) AS sale_vat_objects_grouped",
-        ];
-        foreach ($payment_methods as $method) {
-            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
-            $outerSelect[] = "SUM(pm.total_{$alias}_amount) AS total_{$alias}_amount";
-        }
-
-        $this->db
-            ->select($outerSelect, FALSE)
-            ->from('tbl_sales AS s')
-            ->join("({$pivotSql}) AS pm", 'pm.sale_id = s.id', 'left')
-            ->where('s.delivery_status', 'Cash Received')
-            ->where('s.company_id',     $company_id)
-            ->where('s.del_status',      'Live');
-
-        // date filters
         if ($startDate && $endDate) {
-            $this->db
-                ->where('s.sale_date >=', $startDate)
-                ->where('s.sale_date <=', $endDate);
+            $this->db->where('sale_date >=', $startDate)
+                    ->where('sale_date <=', $endDate);
         } elseif ($startDate) {
-            $this->db->where('s.sale_date', $startDate);
+            $this->db->where('sale_date', $startDate);
         } elseif ($endDate) {
-            $this->db->where('s.sale_date', $endDate);
+            $this->db->where('sale_date', $endDate);
+        }
+        if (!empty($outlet_id)) {
+            $this->db->where('outlet_id', $outlet_id);
+        }
+        $this->db->order_by('sale_date', 'ASC');
+
+        $sales = $this->db->get()->result_array();
+        if (!$sales) return [];
+
+        // Helper: sluggify payment method to make column name
+        $slug = function($name) {
+            $x = strtolower(preg_replace('/\W+/', '_', $name));
+            return preg_replace('/_+/', '_', trim($x, '_'));
+        };
+
+        // Prepare day-buckets
+        $byDay = [];
+        $taxKeys = array_map(function($t){ return $t['tax']; }, $tax_settings);
+
+        foreach ($sales as $s) {
+            $d = $s['sale_date'];
+            if (!isset($byDay[$d])) {
+                // init structure for this date
+                $byDay[$d] = [
+                    'sale_date'              => $d,
+                    'total_payable'          => 0,
+                    'sub_total'              => 0,
+                    'total_discount_amount'  => 0,
+                    // keep all VAT JSONs to be compatible with your view
+                    '_vat_jsons'             => [],
+                ];
+                // init payment totals (columns your view expects)
+                foreach ($payment_methods as $m) {
+                    $byDay[$d]['total_'.$slug($m->name).'_amount'] = 0;
+                }
+                // (tax totals PHP-side bhi nikalna ho to yahan map banalo;
+                // lekin aapke view JSON se sum kar leta hai, so not required)
+            }
+
+            // accumulate bill/net/discount
+            $byDay[$d]['total_payable']         += (float)$s['total_payable'];
+            $byDay[$d]['sub_total']             += (float)$s['sub_total'];
+            $byDay[$d]['total_discount_amount'] += (float)$s['total_discount_amount'];
+
+            // keep tax JSON as-is (no GROUP_CONCAT)
+            if (!empty($s['sale_vat_objects'])) {
+                $byDay[$d]['_vat_jsons'][] = $s['sale_vat_objects'];
+            }
         }
 
-        // optional outlet filter
-        if ($outlet_id) {
-            $this->db->where('s.outlet_id', $outlet_id);
+        // --- 2) Pull payments once and add to day-buckets ---
+        $saleIds = array_column($sales, 'id');
+        $this->db->select([
+                'sp.sale_id',
+                'pm.name  AS method_name',
+                'sp.amount'
+            ])->from('tbl_sale_payments AS sp')
+            ->join('tbl_payment_methods AS pm', 'pm.id = sp.payment_id', 'left')
+            ->where_in('sp.sale_id', $saleIds);
+        $payments = $this->db->get()->result_array();
+
+        // Map sale_id -> sale_date to drop another join/look-up
+        $saleIdToDate = [];
+        foreach ($sales as $s) {
+            $saleIdToDate[$s['id']] = $s['sale_date'];
         }
 
-        $this->db
-            ->group_by('s.sale_date')
-            ->order_by('s.sale_date', 'asc');
+        foreach ($payments as $p) {
+            $sid   = (int)$p['sale_id'];
+            if (!isset($saleIdToDate[$sid])) continue;
+            $d     = $saleIdToDate[$sid];
+            $col   = 'total_'.$slug($p['method_name']).'_amount';
+            if (!isset($byDay[$d][$col])) {
+                // unseen payment method (rare) -> init column
+                $byDay[$d][$col] = 0;
+            }
+            $byDay[$d][$col] += (float)$p['amount'];
+        }
 
-        return $this->db->get()->result();
+        // --- 3) Finalize rows for the view ---
+        $rows = [];
+        foreach ($byDay as $d => $r) {
+            // build the same field name your view already uses
+            $r['sale_vat_objects_grouped'] = !empty($r['_vat_jsons'])
+                ? implode('|||', $r['_vat_jsons'])
+                : '';
+            unset($r['_vat_jsons']);
+            // convert to object for CI view property access ($row->field)
+            $rows[] = (object)$r;
+        }
+
+        // Sort by date asc just in case
+        usort($rows, function($a, $b){
+            return strcmp($a->sale_date, $b->sale_date);
+        });
+
+        return $rows;
     }
 
 
@@ -1475,6 +1520,7 @@ class Report_model extends CI_Model {
         }
         $this->db->where('s.delivery_status', 'Cash Received');
         $this->db->where('s.company_id', $company_id);
+        $this->db->where('s.del_status', 'Live');
         $this->db->order_by('s.sale_date', 'ASC');
         $query_result = $this->db->get();
         return $query_result->result();
@@ -1519,6 +1565,7 @@ class Report_model extends CI_Model {
             $this->db->where('sd.outlet_id', $outlet_id);
         }
         $this->db->where('sd.delivery_status', 'Cash Received');
+        $this->db->where('s.del_status', 'Live');
         $this->db->where('sd.company_id', $company_id);
         $this->db->order_by('sd.id', 'DESC');
         $query_result = $this->db->get();
@@ -1560,6 +1607,7 @@ class Report_model extends CI_Model {
             $this->db->where('sd.outlet_id', $outlet_id);
         }
         $this->db->where('sd.company_id', $company_id);
+        $this->db->where('s.del_status', 'Live');
         $this->db->group_by('cs.combo_item_id');
         $query_result = $this->db->get();
         return $query_result->result();
@@ -1651,7 +1699,7 @@ class Report_model extends CI_Model {
      */
     public  function expenseReport($startMonth='',$endMonth='',$category_id='', $outlet_id=''){
         $company_id = $this->session->userdata('company_id');
-        $this->db->select('e.date,e.reference_no,e.added_date, e.amount,emp.full_name as EmployeedName,ec.name as categoryName');
+        $this->db->select('e.date,e.reference_no,e.added_date, e.amount,emp.full_name as EmployeedName,ec.name as categoryName,e.note');
         $this->db->from('tbl_expenses e');
         $this->db->join('tbl_users as emp', 'emp.id = e.employee_id','left');
         $this->db->join('tbl_expense_items ec', 'ec.id = e.category_id','left');

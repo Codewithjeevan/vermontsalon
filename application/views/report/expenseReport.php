@@ -90,6 +90,7 @@
                                 <th class="text-center"><?php echo lang('amount'); ?></th>
                                 <th><?php echo lang('category'); ?></th>
                                 <th><?php echo lang('responsible_person'); ?></th>
+                                <th><?php echo lang('note'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -108,6 +109,7 @@
                                         <td class="text-center"><?php echo getAmtCustom($value->amount) ?></td>
                                         <td><?php echo escape_output($value->categoryName) ?></td>
                                         <td><?php echo escape_output($value->EmployeedName); ?></td>
+                                        <td><?php if ($value->note != NULL) echo escape_output($value->note); ?></td>
                                     </tr>
                                     <?php
                                 }
@@ -118,6 +120,7 @@
                                 <th></th>
                                 <th class="op_right"><?php echo lang('total'); ?> </th>
                                 <th class="text-center"><?php echo getAmtCustom($grandTotal) ?></th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                             </tr>

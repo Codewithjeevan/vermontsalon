@@ -183,7 +183,7 @@ class Sale extends Cl_Controller {
         $data['denominations'] = $this->Common_model->getDenomination($company_id);
         $data['item_categories'] = $this->Sale_model->getItemCategoriesBySorted($company_id, 'tbl_item_categories');
         $data['brands'] = $this->Common_model->getAllByCompanyId($company_id, 'tbl_brands');
-        $data['waiters'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id,'tbl_users');
+        $data['waiters'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id,'tbl_users', array('role' => '11'));
         $data['roomdata'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id,'tbl_rooms');
         $data['multipleCurrencies'] = $this->Common_model->getAllByCompanyId($company_id, "tbl_multiple_currencies");
         $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');

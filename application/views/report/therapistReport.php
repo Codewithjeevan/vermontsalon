@@ -106,33 +106,19 @@
                         $chargeTotal = 0;
                         $totalTax = 0;
                         $key = 0;
-                        $totalAmounts = []; // store total per payment method
+                        $totalAmounts = [
+                            'cash' => 0,
+                            'card' => 0
+                        ];
                         if (isset($saleReport)):
                             foreach ($saleReport as $key => $value) {
                                 $key++;
                                 $totalPayable += $value->total_payable;
-                                $paidAmount += $value->paid_amount;
-                                $dueAmount += $value->due_amount;
                                 $disAmount += $value->total_discount_amount;
-                                $subTotal += $value->sub_total;
-                                $totalTax += $value->vat;
-                                $chargeTotal += $value->delivery_charge;
-                                
-                                $payments = $value->payment_amounts ? explode(',', $value->payment_amounts) : [];
-
-                                foreach ($payments as $pay) {
-                                    $pay = trim($pay);
-                                    if (empty($pay)) continue;
-
-                                    list($method, $amount) = explode(':', $pay);
-                                    $method = trim($method);
-                                    $amount = floatval(trim($amount));
-
-                                    // Add amount to total
-                                    if (!isset($totalAmounts[$method])) {
-                                        $totalAmounts[$method] = 0;
-                                    }
-                                    $totalAmounts[$method] += $amount;
+                                if (strtolower($value->payment_methods) == 'cash') {
+                                    $totalAmounts['cash'] += $value->total_payable;
+                                } elseif (strtolower($value->payment_methods) == 'card') {
+                                    $totalAmounts['card'] += $value->total_payable;
                                 }
                                 ?>
                                 <tr>
@@ -152,12 +138,11 @@
                             <th class="text-center" style="border-right: 0px;font-weight: bold"><?php echo lang('total'); ?></th>
                             <th style="border-left: 0px;"></th>
                             <th><?= $key ?></th>
-                            <th><?= getAmtCustom($subTotal) ?></th>
+                            <th><?= getAmtCustom($totalPayable) ?></th>
                             <th><?php echo getAmtCustom($totalPayable); ?></th>
                             <th><?php echo getAmtCustom($disAmount); ?></th>
                             <th></th>
                         </tr>
-
                         
                         <tr>
                             <th></th>
@@ -175,10 +160,11 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th><?= $method ?></th>
-                            <th><?= $amount ?></th>
+                            <th><?= ucfirst($method) ?></th>
+                            <th><?= number_format($amount, 2) ?></th>
                         </tr>
                         <?php } ?>
+
                     </tbody>
                     
                 </table>

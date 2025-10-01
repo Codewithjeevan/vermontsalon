@@ -2258,27 +2258,27 @@ $(function () {
         if(cartItemLength == '0'){
             itemAppentToCart(item_id, item_type, is_promo, 1);
         }else{
-            let current_row = '';
-            let matchRow = '';
-            let item_type_single = '';
-            $('.order_holder .single_order').each(function(){
-                item_type_single = $(this).find('.item_type ').text();
-                current_row = $(this).attr('data_cart_item_id');
-                if(item_type_single != 'IMEI_Product' && item_type_single != 'Serial_Product' && item_type_single != 'Medicine_Product'){
-                    if(item_id == current_row){
-                        $(this).find('.increase_item_table').click();
-                        matchRow = '1';
-                    }
-                }else if(item_type_single == 'Medicine_Product' &&  expiry_date_maintain == 'No'){
-                    if(item_id == current_row){
-                        $(this).find('.increase_item_table').click();
-                        matchRow = '1';
-                    } 
-                }
-            });
-            if(matchRow == ''){
+            // let current_row = '';
+            // let matchRow = '';
+            // let item_type_single = '';
+            // $('.order_holder .single_order').each(function(){
+            //     item_type_single = $(this).find('.item_type ').text();
+            //     current_row = $(this).attr('data_cart_item_id');
+            //     if(item_type_single != 'IMEI_Product' && item_type_single != 'Serial_Product' && item_type_single != 'Medicine_Product'){
+            //         if(item_id == current_row){
+            //             $(this).find('.increase_item_table').click();
+            //             matchRow = '1';
+            //         }
+            //     }else if(item_type_single == 'Medicine_Product' &&  expiry_date_maintain == 'No'){
+            //         if(item_id == current_row){
+            //             $(this).find('.increase_item_table').click();
+            //             matchRow = '1';
+            //         } 
+            //     }
+            // });
+            // if(matchRow == ''){
                 itemAppentToCart(item_id, item_type, is_promo, 1); 
-            }
+            // }
         }
 
         
@@ -2286,6 +2286,7 @@ $(function () {
 
     function itemAppentToCart(item_id, item_type, is_promo, default_qty){
         if(is_offline_system == '1'){
+            
             if(item_type != 'Service_Product' && item_type != 'Combo_Product'){
                 if(item_type == 'Variation_Product'){
                     callAddToCartModal(item_id, item_type, default_qty);
@@ -2337,6 +2338,7 @@ $(function () {
                 generalItemdirectAddToCart(item_id, item_type, default_qty);
             }
         } else {
+            
             if(item_type != 'Service_Product' && item_type != 'Combo_Product'){
                 if(item_type == 'Variation_Product'){
                     callAddToCartModal(item_id, item_type, default_qty);
@@ -2405,6 +2407,7 @@ $(function () {
 
 
     function generalItemdirectAddToCart(item_id, item_type, default_qty){
+
         let customerPrice = 0;
         let cDiscount = 0;
         let qtyItem = default_qty;
