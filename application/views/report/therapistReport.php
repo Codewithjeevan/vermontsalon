@@ -113,7 +113,7 @@
                                 $chargeTotal += $value->delivery_charge;
                                 ?>
                                 <tr>
-                                    <td class="text-center"><?php echo date('d/m/Y',strtotime($value->date_time)); ?></td>
+                                    <td class="text-center"><?php echo date('d/m/Y',strtotime($value->sale_date)); ?></td>
                                     <td class="text-center" style="text-align: center !important;"><?php echo escape_output($value->sale_no); ?></td>
                                     <td class="text-center"><?php echo getAmtCustom($value->total_payable); ?></td>
                                 </tr>
