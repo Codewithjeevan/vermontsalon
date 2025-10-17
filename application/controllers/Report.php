@@ -63,7 +63,7 @@ class Report extends Cl_Controller {
         }elseif($segment_1=="Report" && $segment_2 == "employeeSaleReport"){
             $function = "employee_sale_report";
         }elseif($segment_1=="Report" && $segment_2 == "commissionReport"){
-            $function = "commission_sale_report";
+            $function = "commission_report";
         }elseif($segment_1=="Report" && $segment_2 == "tipReport"){
             $function = "tip_sale_report";
         }elseif($segment_1=="Report" && $segment_2 == "productSaleReport"){
