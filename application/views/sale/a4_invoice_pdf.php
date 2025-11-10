@@ -11,12 +11,6 @@ $rounding_type = $this->session->userdata('pos_total_payable_type');
 $invoice_configuration = $this->session->userdata('invoice_configuration');
 $inv_logo_is_show = $this->session->userdata('inv_logo_is_show');
 $inv_config = json_decode($invoice_configuration);
-
-$subtotal = $sale_object->sub_total;
-if($tax) {
-    $vatAmount = $tax ? array_reduce($tax, fn($carry, $t) => strtolower($t->tax_field_type) === 'vat' ? $carry + $t->tax_field_amount : $carry, 0) : 0;
-    $subtotal = $sale_object->total_payable - $vatAmount;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -144,7 +138,7 @@ if($tax) {
                     </p>
                     <?php } ?>
                     <p class="pb-7 f-w-900 rgb-71">
-                        <?= lang("room_number") ?>: <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
+                        <?= lang('stylish_name') ?>: <?= implode(', ', array_column($sale_object->items, 'seller_name')) ?>
                     </p>
                     <?php if($sale_object->voucher != null) { ?>
                                     <p class="pb-3 color-71">
@@ -398,7 +392,7 @@ if($tax) {
                     </th>
                     <th><?=($ln_text=="bangla"?banglaNumber($totalItems):$totalItems)?> (<?=($ln_text=="bangla"?banglaNumber($qty_sum):$qty_sum)?>)</th>
                     <th><?php echo (getAmtCustom($total_discount_amount)); ?></th>
-                    <th class="text-right pr-10"><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($subtotal):$subtotal)?></th>
+                    <th class="text-right pr-10"><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->sub_total):$sale_object->sub_total)?></th>
                 </tr>
             </tfoot>
         </table>
@@ -480,7 +474,7 @@ if($tax) {
                     <?php } ?>
 
                     <?php 
-                        if($subtotal){
+                        if($sale_object->sub_total){
                     ?>
                     <table>
                         <tr>
@@ -496,7 +490,7 @@ if($tax) {
                                 </p>
                             </td>
                             <td class="w-50 text-right">
-                                <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($subtotal):$subtotal)?></p>
+                                <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->sub_total):$sale_object->sub_total)?></p>
                             </td>
                         </tr>
                     </table>
@@ -505,7 +499,6 @@ if($tax) {
                     <?php if($tax) {
                         $i = 0;
                         foreach($tax as $t){ 
-                            if(strtolower($t->tax_field_type) == 'vat'){
                             if($t->tax_field_amount > 0){  
                                 $i++;
                                 $taxSum += $t->tax_field_amount;
@@ -520,7 +513,7 @@ if($tax) {
                             </td>
                         </tr>
                     </table>
-                    <?php } } } } ?>
+                    <?php } } } ?>
 
 
                     <?php 
@@ -835,12 +828,6 @@ if($tax) {
                                         <span class="font-10"><?php echo $details != '' ? ($key === array_key_last($payment_details) ? $details : $details . ',' ) : '';?>
                                         </span>
                                     <?php } }?>
-
-                                    <?php 
-                                        if($p_name->voucher != null){
-                                        echo "(Voucher- ".@$p_name->voucher.")";
-                                        }
-                                    ?>
                                 </p>
                             </td>
                             <td class="w-50 text-right">
@@ -873,10 +860,6 @@ if($tax) {
             <tr>
                 <td>
                  <div class="d-flex justify-content-between" style="margin-top: 20px">
-                    <div>
-                        <p class="f-w-600 font-size-13"><?= lang('attended_by') ?></p>
-                        <p class="font-size-13"><?= implode(', ', array_column($sale_object->items, 'seller_name')) ?></p>
-                    </div>
                     <div>
                        <p class="f-w-600 font-size-13"><?= lang('processed_by') ?></p>
                         <p class="font-size-13"><?= $sale_object->user_name ?></p>
