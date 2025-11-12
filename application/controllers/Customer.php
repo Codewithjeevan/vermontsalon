@@ -74,6 +74,7 @@ class Customer extends Cl_Controller {
     public function addEditCustomer($encrypted_id = "") {
         $id = $this->custom->encrypt_decrypt($encrypted_id, 'decrypt');
         $company_id = $this->session->userdata('company_id');
+        
         if (htmlspecialcharscustom($this->input->post('submit'))) {
             $add_more = $this->input->post($this->security->xss_clean('add_more'));
             $this->form_validation->set_rules('name', lang('name'), 'required|max_length[50]');
@@ -107,6 +108,7 @@ class Customer extends Cl_Controller {
                 $customer_info['credit_limit'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('credit_limit')));
                 $customer_info['nid'] = escapeQuot($this->input->post($this->security->xss_clean('nid')));
                 $customer_info['group_id'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('group_id')));
+                $customer_info['patient_file_number'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('patient_file_number')));
                 $customer_info['discount'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('discount')));
                 $customer_info['price_type'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('price_type')));
                 if(collectGST()=="Yes"){
@@ -148,6 +150,7 @@ class Customer extends Cl_Controller {
             if ($id == "") {
                 $data = array();
                  $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');
+                $data['last_id'] = $this->Common_model->getCustomerLastId();
                 $data['main_content'] = $this->load->view('master/customer/addCustomer', $data, TRUE);
                 $this->load->view('userHome', $data);
             } else {

@@ -172,6 +172,10 @@ $inv_config = json_decode($invoice_configuration);
                 </div>
                 <div class="text-rigth">
                     <p class="pb-3">
+                        <span class="f-w-600">Patient ID: </span>
+                        <?php echo @$customer_info->patient_file_number ? escape_output($customer_info->patient_file_number) : '-'; ?>
+                    </p>
+                    <p class="pb-3">
                         <span class="f-w-600">
                             <?php
                             if ($s_status == 'Bangladesh') {
@@ -223,7 +227,7 @@ $inv_config = json_decode($invoice_configuration);
                             <?php echo date($this->session->userdata('date_format'), strtotime($sale_object->due_date ?? '')) ?>
                         </p>
                     <?php } ?>
-
+                    
                 </div>
             </div>
         </div>
@@ -847,11 +851,11 @@ $inv_config = json_decode($invoice_configuration);
         </div>
 
 
-        <!-- <div class="d-flex justify-content-end mt-15">
+        <div class="d-flex justify-content-end" style="margin-top: 100px">
             <div>
-                <p class="color-71 d-inline b-t-1p-e4e5ea"><?php echo lang('authorized_signature'); ?></p>
+                <p class="color-71 d-inline b-t-1p-e4e5ea">Customer Signature</p>
             </div>
-        </div> -->
+        </div>
         <div class="d-flex justify-content-center pt-10">
             <div>
                 <p class="font-size-15"><?php echo ($this->session->userdata('invoice_footer')); ?></p>

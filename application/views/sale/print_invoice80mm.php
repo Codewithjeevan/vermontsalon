@@ -153,6 +153,10 @@ $inv_config = json_decode($invoice_configuration);
                 </div>
                 <div class="text-rigth">
                     <p class="f-w-500 color-71 font-size-13">
+                        <span class="f-w-600">Patient ID: </span>
+                        <?php echo @$customer_info->patient_file_number ? escape_output($customer_info->patient_file_number) : '-'; ?>
+                    </p>
+                    <p class="f-w-500 color-71 font-size-13">
                         <span class="f-w-600">
                         <?php 
                             if($s_status == 'Bangladesh'){
@@ -204,6 +208,7 @@ $inv_config = json_decode($invoice_configuration);
                         <?php echo date($this->session->userdata('date_format'), strtotime($sale_object->due_date ?? '')) ?>
                     </p>
                     <?php } ?>
+                    
                     
                 </div>
             </div>
@@ -761,9 +766,13 @@ $inv_config = json_decode($invoice_configuration);
             </div>
         </div>
 
-        
+        <div class="d-flex justify-content-end" style="margin-top: 100px">
+            <div>
+                <p class="color-71 f-w-600 font-size-13 d-inline b-t-1p-e4e5ea">Customer Signature</p>
+            </div>
+        </div>
 
-        <div class="mt-30">
+        <!-- <div class="mt-30">
             <p><?php echo $this->session->userdata('term_conditions'); ?></p>
         </div>
         <?php
@@ -774,7 +783,7 @@ $inv_config = json_decode($invoice_configuration);
                 <img width="80" height="80" src="<?php echo base_url()?>uploads/qr_code/<?php echo escape_output($sale_object->id)?>.png">
             </div>
         </div>
-        <?php } ?>
+        <?php } ?> -->
 
         <div class="d-flex justify-content-center pt-30">
             <div>

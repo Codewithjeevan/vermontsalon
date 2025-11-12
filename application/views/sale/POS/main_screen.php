@@ -1320,6 +1320,12 @@ $company_short_name =  $getCompanyInfo->short_name;
                     <p class="input_level"><?php echo lang('price'); ?></p>
                     <input type="text" class="add_customer_modal_input" id="customer_price_modal" placeholder="<?php echo lang('price'); ?>">
                 </div>
+                
+                <div class="customer_section">
+                    <p class="input_level">Patient ID</p>
+                    <input type="text" class="add_customer_modal_input" id="customer_patient_file_number_modal" placeholder="Patient ID">
+                </div>
+
                 <div class="customer_section">
                     <p class="input_level"><?php echo lang('nationality'); ?></p>
                     <input type="text" class="add_customer_modal_input" id="customer_nationality_modal" placeholder="<?php echo lang('nationality'); ?>">

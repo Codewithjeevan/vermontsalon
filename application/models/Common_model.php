@@ -493,6 +493,14 @@ class Common_model extends CI_Model {
         return $this->db->count_all_results();
     }
 
+    public function getCustomerLastId() {
+        $this->db->select("id");
+        $this->db->from("tbl_customers");
+        $this->db->order_by("id", "DESC");
+        $this->db->limit(1);
+        return $this->db->get()->row()->id;
+    }
+
 
     /**
      * getAllDebitCustomers

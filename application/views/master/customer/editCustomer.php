@@ -154,6 +154,19 @@
                         <?php } ?>
                     </div>
 
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group">
+                            <label>Patient id</label>
+                            <input  name="patient_file_number" class="form-control" placeholder="Patient id" value="<?php echo escape_output(@$customer_information->patient_file_number); ?>">
+                        </div>
+                        <?php if (form_error('patient_file_number')) { ?>
+                            <div class="callout callout-danger my-2">
+                                <?php echo form_error('patient_file_number'); ?>
+                            </div>
+                        <?php } ?>
+                    </div>
+
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
                             <label><?php echo lang('nationality'); ?></label>

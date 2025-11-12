@@ -531,6 +531,18 @@ class Ajax extends Cl_Controller {
         echo $customer_due;
     }
 
+    /**
+     * customer 
+     * @access public
+     * @param no
+     * @return void
+    */
+
+    function getCustomerLastID(){
+        $customer_id = $this->Common_model->getCustomerLastID();
+        echo $customer_id;
+    }
+
 
 
     /**

@@ -4209,7 +4209,16 @@ $(function () {
                 }
             });
         }
-        
+        $.ajax({
+            url: base_url + "Ajax/getCustomerLastID",
+            method: "GET",
+            async: false,
+            dataType: 'json',
+            success: function (response) {
+                var newid = parseInt(response) + 1;
+                $('#customer_patient_file_number_modal').val('10'+newid);
+            }
+        });
     });
 
     // Code optimize by Azhar ** Final **
@@ -7346,6 +7355,7 @@ $(function () {
                     let customer_delivery_address = $('#customer_delivery_address_modal').val();
                     let same_or_diff_state = Number($(".same_or_diff_state_modal").val());
                     let customer_gst_number = $('#customer_gst_number_modal').val();
+                    let customer_patient_file_number = $('#customer_patient_file_number_modal').val();
                     let customer_discount_modal = $('#customer_discount_modal').val();
                     let customer_price_type = $('#customer_price_type').val();
                     let customer_price = $('#customer_price_modal').val();
@@ -7395,6 +7405,7 @@ $(function () {
                                 customer_doa: customer_doa,
                                 customer_delivery_address: customer_delivery_address,
                                 customer_gst_number: customer_gst_number,
+                                patient_file_number: customer_patient_file_number,
                                 opening_balance: opening_balance,
                                 opening_balance_type: opening_balance_type,
                                 credit_limit: customer_credit_limit_modal,
@@ -10003,6 +10014,7 @@ $(function () {
                 $('#customer_email_modal').val(response.email);
                 $('#customer_dob_modal').val(response.date_of_birth);
                 $('#customer_doa_modal').val(response.date_of_anniversary);
+                $('#customer_patient_file_number_modal').val(response.patient_file_number);
                 $('#customer_previous_due_modal').val(response.opening_balance);
                 $('#opening_balance_type').val(response.opening_balance_type);
                 $('#customer_credit_limit_modal').val(response.credit_limit);
