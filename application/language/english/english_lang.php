@@ -2720,6 +2720,12 @@ $lang['technician'] = 'Technician';
 $lang['include_discount'] = '(Incl. Discount)';
 $lang['sale_return_amount'] = 'Sale Return Amount';
 $lang['installment_down_and_collection_register'] = 'Installment Down payment & Collection (+)';
+$lang['session_count'] = 'Session count';
+$lang['package'] = 'Package';
+$lang['list_pacakge_sale'] = 'List Package Sale';
+$lang['add_package_sale'] = 'Add Package Sale';
+$lang['add_edit_sale_package'] = 'Add/Edit Package Sale';
+$lang['select_pacakge'] = 'Select Package';
 
 
 

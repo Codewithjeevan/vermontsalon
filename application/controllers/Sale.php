@@ -889,6 +889,38 @@ class Sale extends Cl_Controller {
     }
 
     /**
+     * sales
+     * @access public
+     * @param no
+     * @return void
+     */
+
+
+    // package sale 
+    public function package() {
+        //end check access function
+        $outlet_id = $this->session->userdata('outlet_id');
+        $data = array();
+        $data['lists'] = $this->Sale_model->getSaleList($outlet_id);
+        $data['payment_methods'] = $this->Sale_model->getAllPaymentMethods();
+        $data['main_content'] = $this->load->view('package/list', $data, TRUE);
+        $this->load->view('userHome', $data);
+    }
+    
+
+    public function addEditSalePackage() {
+        $outlet_id = $this->session->userdata('outlet_id');
+        $data = array();
+        $data['lists'] = $this->Sale_model->getSaleList($outlet_id);
+        $data['payment_methods'] = $this->Sale_model->getAllPaymentMethods();
+        $data['main_content'] = $this->load->view('package/add_edit_package', $data, TRUE);
+        $this->load->view('userHome', $data);
+    }
+
+
+    // end of package sale
+
+    /**
      * getAjaxData
      * @access public
      * @param no

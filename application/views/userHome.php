@@ -542,6 +542,11 @@
                                             <?php echo lang('list_sale'); ?>
                                         </a>
                                     </li>
+                                    <li data-access="list-138" class="menu_assign_class" module-is-hide="Sale-YES">
+                                        <a class="child-menu" href="<?php echo base_url(); ?>Sale/package">
+                                            <?php echo lang('list').' '.lang('package'); ?>
+                                        </a>
+                                    </li>
                                     <li data-access="add-147" class="menu_assign_class" module-is-hide="Customer-YES">
                                         <a class="child-menu" href="<?php echo base_url(); ?>Customer/addEditCustomer">
                                             <?php echo lang('add_customer'); ?>

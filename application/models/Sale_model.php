@@ -134,7 +134,6 @@ class Sale_model extends CI_Model {
   }
 
 
-
    /**
    * getFreeItemBySaleDetailsId
    * @access public
@@ -352,7 +351,15 @@ class Sale_model extends CI_Model {
   }
 
  
-
+  public function getItemsWithCategory($where){
+    $this->db->select("i.*,ic.name as category_name");
+    $this->db->from('tbl_items i');
+    $this->db->join('tbl_item_categories ic', 'ic.id = i.category_id', 'left');
+    $this->db->where($where);
+    $this->db->where("i.del_status", "Live");
+    $this->db->order_by('i.id', 'ASC');
+    return $this->db->get()->result();
+  }
 
    /**
    * saleItemDetails
