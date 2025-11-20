@@ -669,19 +669,20 @@ $(function () {
     // Code optimize by Azhar ** Final **
     $(document).on('keyup', '#search_barcode', function(e){
         let this_value = $(this).val();
+        console.log(this_value);
         let key = e.which;
         let default_unit = 1;
         let p_code = this_value;
         if(key == 13 && this_value != ""){
             let scanned_code = this_value;
             let scanned_code_lenght = scanned_code.length;
-            if(Number(scanned_code_lenght) == 12){
-                p_code = scanned_code.substr(4, 3);
-                let p_unit_1 = Number(scanned_code.substr(7, 2));
-                let p_unit_2 = (scanned_code.substr(9, 3));
-                default_unit = Number(p_unit_1 +"."+ p_unit_2);
-            }
-            let item = findItemInfoByItemCode(p_code);
+            // if(Number(scanned_code_lenght) == 12){
+            //     p_code = scanned_code.substr(4, 3);
+            //     let p_unit_1 = Number(scanned_code.substr(7, 2));
+            //     let p_unit_2 = (scanned_code.substr(9, 3));
+            //     default_unit = Number(p_unit_1 +"."+ p_unit_2);
+            // }
+            let item = findItemInfoByItemCode(scanned_code);
             if(item){
                 if(item.item_type == 'IMEI_Product' || item.item_type == 'Serial_Product' || item.item_type == 'Medicine_Product'){
                     if (window.matchMedia("(min-width: 320px) and (max-width: 575.98px)").matches) {
