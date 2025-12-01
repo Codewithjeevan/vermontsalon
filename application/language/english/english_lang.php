@@ -2726,6 +2726,10 @@ $lang['list_pacakge_sale'] = 'List Package Sale';
 $lang['add_package_sale'] = 'Add Package Sale';
 $lang['add_edit_sale_package'] = 'Add/Edit Package Sale';
 $lang['select_pacakge'] = 'Select Package';
+$lang['session'] = 'Session';
+$lang['in_time'] = 'In Time';
+$lang['out_time'] = 'Out Time';
+$lang['advance_payment'] = 'Advance Payment';
 
 
 

@@ -59,38 +59,50 @@ class Sale extends Cl_Controller {
         $segment_3 = $this->uri->segment(3);
         $controller = "";
         $function = "";
-        if($segment_2=="POS" || $segment_2 == "getAllCustomers" || $segment_2 == "registerDetailCalculationToShowAjax" || $segment_2 == "registerDetailCalculationToShow" || $segment_2 == "findCustomerCreditLimit" || $segment_2 == "get_all_holds_ajax" || $segment_2 == "get_customer_ajax" || $segment_2 == "get_single_hold_info_by_ajax" || $segment_2 == "stockCheckingForThisOutletById" || $segment_2 == "getExpiryByOutlet" || $segment_2 == "getVariationByItemId" || $segment_2 == "getIMEISerial" || $segment_2 == "closeRegister" || $segment_2 == "getOpeningDetails" || $segment_2 == "couponCodeValidate" || $segment_2 == "checUserDiscountPermission" || $segment_2 ==  'stripePayment' || $segment_2 == 'paypalPayment' || $segment_2 == 'get_new_hold_number_ajax' || $segment_2 == 'add_hold_by_ajax' || $segment_2 == 'checkAccess' || $segment_2 == 'add_customer_by_ajax' || $segment_2 == 'getTotalLoyaltyPoint' || $segment_2 == 'checkUniqueCustomerMobile' || $segment_2 == "singleExpiryDateStockCheck" || $segment_2 == 'groceryExperience' || $segment_2 == 'getComboItemCheck' || $segment_2 == 'checkingExisOrNotIMEISerial' || $segment_2 == 'delete_all_information_of_hold_by_ajax' || $segment_2 == 'searchByGenericName' || $segment_2 == 'todaysSummary' || $segment_2 == 'getIMEISerialByOutlet' || $segment_2 == 'getAllHoldComboItems' || $segment_2 == 'iCheck' || $segment_2 == 'setItemStockInIndexDB' || $segment_2 = 'itemInfoSetter' || $segment_2 == 'bulkImportForSale'){
-            $controller = "138";
-            $function = "pos";
-        }elseif($segment_2=="add_sale_by_ajax" || $segment_2=="get_all_information_of_a_sale" || $segment_2 == "get_all_information_of_a_sale_ajax" || $segment_2 == "update_order_status_ajax"){
-            $controller = "138";
-            $function = "add";
-        }elseif($segment_2=="edit_sale"){
-            $controller = "138";
-            $function = "edit";
-        }elseif($segment_2=="deleteSale" || $segment_2 == "delete_all_holds_with_information_by_ajax" || $segment_2 == "cancel_particular_order_ajax"){
-            $controller = "138";
-            $function = "delete";
-        }elseif($segment_2=="sales" || $segment_2 == "getAjaxData" || $segment_2 == "get_last_10_sales_ajax"){
-            $controller = "138";
-            $function = "list";
-        }elseif($segment_2=="print_invoice" || $segment_2 == "a4InvoicePDF"){
-            $controller = "138";
-            $function = "invoice";
-        }elseif($segment_2=="print_challan"){
-            $controller = "138";
-            $function = "challan";
-        }elseif($segment_2=="deliveryStatusChange"){
-            $controller = "138";
-            $function = "delivery_status";
-        }else{
-            $this->session->set_flashdata('exception_1',lang('no_access'));
-            redirect('Authentication/userProfile');
-        }
-        if(!checkAccess($controller,$function)){
-            $this->session->set_flashdata('exception_1',lang('no_access'));
-            redirect('Authentication/userProfile');
-        }
+        // if($segment_2=="POS" || $segment_2 == "getAllCustomers" || $segment_2 == "registerDetailCalculationToShowAjax" || $segment_2 == "registerDetailCalculationToShow" || $segment_2 == "findCustomerCreditLimit" || $segment_2 == "get_all_holds_ajax" || $segment_2 == "get_customer_ajax" || $segment_2 == "get_single_hold_info_by_ajax" || $segment_2 == "stockCheckingForThisOutletById" || $segment_2 == "getExpiryByOutlet" || $segment_2 == "getVariationByItemId" || $segment_2 == "getIMEISerial" || $segment_2 == "closeRegister" || $segment_2 == "getOpeningDetails" || $segment_2 == "couponCodeValidate" || $segment_2 == "checUserDiscountPermission" || $segment_2 ==  'stripePayment' || $segment_2 == 'paypalPayment' || $segment_2 == 'get_new_hold_number_ajax' || $segment_2 == 'add_hold_by_ajax' || $segment_2 == 'checkAccess' || $segment_2 == 'add_customer_by_ajax' || $segment_2 == 'getTotalLoyaltyPoint' || $segment_2 == 'checkUniqueCustomerMobile' || $segment_2 == "singleExpiryDateStockCheck" || $segment_2 == 'groceryExperience' || $segment_2 == 'getComboItemCheck' || $segment_2 == 'checkingExisOrNotIMEISerial' || $segment_2 == 'delete_all_information_of_hold_by_ajax' || $segment_2 == 'searchByGenericName' || $segment_2 == 'todaysSummary' || $segment_2 == 'getIMEISerialByOutlet' || $segment_2 == 'getAllHoldComboItems' || $segment_2 == 'iCheck' || $segment_2 == 'setItemStockInIndexDB' || $segment_2 == 'itemInfoSetter' || $segment_2 == 'bulkImportForSale' || $segment_2 == "cancel_package_sale" || $segment_2  == 'print_advance_invoice' || $segment_2 == "package" || $segment_2 == "getPackageAjaxData" || $segment_2 == "addEditSalePackage" ){
+        //     $controller = "138";
+        //     $function = "pos";
+        // }elseif($segment_2=="add_sale_by_ajax" || $segment_2=="get_all_information_of_a_sale" || $segment_2 == "get_all_information_of_a_sale_ajax" || $segment_2 == "update_order_status_ajax"){
+        //     $controller = "138";
+        //     $function = "add";
+        // }elseif($segment_2=="edit_sale"){
+        //     $controller = "138";
+        //     $function = "edit";
+        // }elseif($segment_2=="deleteSale" || $segment_2 == "delete_all_holds_with_information_by_ajax" || $segment_2 == "cancel_particular_order_ajax"){
+        //     $controller = "138";
+        //     $function = "delete";
+        // }elseif($segment_2=="sales" || $segment_2 == "getAjaxData" || $segment_2 == "getPackageAjaxData" || $segment_2 == "get_last_10_sales_ajax"){
+        //     $controller = "138";
+        //     $function = "list";
+        // }elseif($segment_2=="print_invoice" || $segment_2 == "a4InvoicePDF"){
+        //     $controller = "138";
+        //     $function = "invoice";
+        // }elseif($segment_2=="print_challan"){
+        //     $controller = "138";
+        //     $function = "challan";
+        // }elseif($segment_2=="deliveryStatusChange"){
+        //     $controller = "138";
+        //     $function = "delivery_status";
+        // }elseif($segment_2=="print_advance_invoice"){
+        //     $controller = "138";
+        //     $function = "print_advance_invoice";
+        // }elseif($segment_2=="cancel_package_sale"){
+        //     $controller = "138";
+        //     $function = "cancel_package_sale";
+        // }elseif($segment_2=="package"){
+        //     $controller = "138";
+        //     $function = "package";
+        // }elseif($segment_2=="addEditSalePackage"){
+        //     $controller = "138";
+        //     $function = "addEditSalePackage";
+        // }else{
+        //     $this->session->set_flashdata('exception_1',lang('no_access'));
+        //     redirect('Authentication/userProfile');
+        // }
+        // if(!checkAccess($controller,$function)){
+        //     $this->session->set_flashdata('exception_1',lang('no_access'));
+        //     redirect('Authentication/userProfile');
+        // }
 
         $outlet_id = $this->session->userdata('outlet_id');
         $company_id = $this->session->userdata('company_id');
@@ -133,6 +145,14 @@ class Sale extends Cl_Controller {
             'message' => $message,
         ];
         $this->output->set_content_type('application/json')->set_output(json_encode($response));
+    }
+
+    public function print_advance_invoice($saleid) {
+        $saleid = hex2bin($saleid);
+        $data['packagedata'] = $this->Sale_model->getPackageData($saleid);
+        $data['outlet_info'] = $this->Common_model->getCurrentOutlet();
+
+        $this->load->view('package/print_advance_invoice', $data);
     }
     /**
      * searchByGenericName
@@ -189,6 +209,39 @@ class Sale extends Cl_Controller {
         $data['delivery_partners'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_delivery_partners');
         $data['payment_methods'] = $this->Sale_model->getAllPaymentMethodsForPOS();
         $this->load->view('sale/POS/main_screen', $data);
+    }
+
+
+    public function cancel_package_sale(){
+        $packageid = hex2bin($this->input->post('sale_id'));
+        
+        $this->db->select("
+            COUNT(CASE WHEN status = 0 THEN 1 END) AS remaining_sessions,
+            SUM(CASE WHEN status = 0 THEN price END) AS remaining_amount
+        ");
+        $this->db->where('package_sale_id', $packageid);
+        $query = $this->db->get('package_sessions');
+
+        $result = $query->row();
+        $remaining_sessions = (int) $result->remaining_sessions;
+        $remaining_amount   = (float) $result->remaining_amount;
+
+        $data = array();
+        $data['package_sale_id'] = $packageid;
+        $data['cancelled_by'] = $this->session->userdata('user_id');
+        $data['remaining_session'] = $remaining_sessions;
+        $data['remaining_amount'] = $remaining_amount;
+        $data['note'] = $this->input->post('note') ? $this->input->post('note') : NULL;
+        $data['user_id'] = $this->session->userdata('user_id') ? $this->session->userdata('user_id') : NULL;
+        $data['outlet_id'] = $this->session->userdata('outlet_id') ? $this->session->userdata('outlet_id') : NULL;
+        $this->db->insert('package_sale_cancelation', $data);
+
+        $this->db->where('id', $packageid);
+        $this->db->update('package_sale', array('status' => '2', 'cancelled_at'=>date('Y-m-d h:i:s')));
+
+        $this->output
+        ->set_content_type('application/json')
+        ->set_output(json_encode($data));
     }
 
     public function itemInfoSetter(){
@@ -731,7 +784,7 @@ class Sale extends Cl_Controller {
      * @param int
      * @return void
      */
-    function print_invoice($sale_id){
+    function print_invoice($sale_id, $type= 'sale'){
         $invoice_configuration = $this->session->userdata('invoice_configuration');
         $inv_config = '';
         if($invoice_configuration){
@@ -744,12 +797,13 @@ class Sale extends Cl_Controller {
                 $sale_id = $this->custom->encrypt_decrypt($sale_id, 'decrypt');
             }
             $data = array();
+            $random_code = getRandomCode('15');
             $data['outlet_info'] = $this->Common_model->getCurrentOutlet();
-            $data['sale_object'] = $this->get_all_information_of_a_sale($sale_id);
+            $data['sale_object'] = $this->get_all_information_of_a_sale($sale_id,$type);
             $customer_id = $data['sale_object']->customer_id;
             $data['customer_info'] = $this->Common_model->getCustomerById($customer_id);
             if($inv_config->invoice_format_or_size == '56mm' || $inv_config->invoice_format_or_size == '80mm'){
-                $url_patient = base_url().'authentication/qr_code_invoice/'.$data['sale_object']->random_code;
+                $url_patient = base_url().'authentication/qr_code_invoice/'. @$data['sale_object']->random_code ?:$random_code;
                 if($inv_config->qr_code_option == 'Zatca'){
                     $text_json = json_decode($data['sale_object']->sale_vat_objects);
                     $text_sum = 0;
@@ -872,6 +926,18 @@ class Sale extends Cl_Controller {
         }
     }
 
+    public function deletePackage($id) {
+        $id = $this->custom->encrypt_decrypt($id, 'decrypt');
+        $isDeleted = $this->Common_model->deleteStatusChangeByFieldName($id, 'id', 'package_sale');
+        if($isDeleted){
+            $this->session->set_flashdata('exception', lang('delete_success'));
+            redirect('Sale/sales');
+        }else{
+            $this->session->set_flashdata('exception_2', lang('Something_went_wrong'));
+            redirect('Sale/sales');
+        }
+    }
+
     /**
      * sales
      * @access public
@@ -907,15 +973,144 @@ class Sale extends Cl_Controller {
         $this->load->view('userHome', $data);
     }
     
+    public function addEditSalePackage($id = null)
+    {
+        $editid = $id ? hex2bin($id) : null;
+        $company_id = $this->session->userdata('company_id');
+        // dd($this->input->post());
+        // ---------- SHOW FORM ----------
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                // ---------- HANDLE POST ----------
+                $companydata = $this->Common_model->getByCompanyId($company_id, 'tbl_companies');
+                $taxrate = $companydata ? json_decode($companydata->tax_setting)[0]->tax_rate : 0;
+                $tax_type = $this->session->userdata('tax_type'); // 2= inclusive or 1= exclusive
+                $totalamt = $this->input->post('total_amt');
+                $total_session = $this->input->post('session_count');
+                $eachamt = $totalamt / $total_session;
+                $taxAmt = number_format($eachamt - ($eachamt / (1 + ($taxrate / 100))), 2);
+                $sub_total = $eachamt-$taxAmt;
+                if($tax_type == 1){
+                    // exclusive
+                    $sub_total = $eachamt;
+                    $taxAmt = number_format(($eachamt * $taxrate) / 100, 2); // 4.76
+                    $eachamt = $eachamt + ($eachamt * ($taxrate / 100));
+                }
 
-    public function addEditSalePackage() {
-        $outlet_id = $this->session->userdata('outlet_id');
-        $data = array();
-        $data['lists'] = $this->Sale_model->getSaleList($outlet_id);
-        $data['payment_methods'] = $this->Sale_model->getAllPaymentMethods();
-        $data['main_content'] = $this->load->view('package/add_edit_package', $data, TRUE);
-        $this->load->view('userHome', $data);
+                $input = $this->input->post();
+
+                $sessions = $input['session_id'] ?? [];
+
+                $this->db->trans_start();
+                $saleData = [
+                    'customer_id'     => $this->input->post('customer_id'),
+                    'package_id'      => $this->input->post('package_id'),
+                    'status'          => 0,
+                    'total_amt'       => $this->input->post('total_amt'),
+                    'session_count'   => $this->input->post('session_count'),
+                    'payment_status'  => 1,
+                    'payment_method'  => $this->input->post('payment_method'),
+                    'outlet_id'  => $this->input->post('outlet_id'),
+                    'user_id'  => $this->input->post('user_id'),
+                    'purchase_date'   => $this->input->post('purchase_date')
+                ];
+
+                // ---------- UPDATE ----------
+                if ($this->input->post()['edit_id'] != null) {
+                    $decoded_id = $this->input->post()['edit_id'];
+                    $this->db->where('id', $decoded_id);
+                    $this->db->update('package_sale', $saleData);
+                    $package_sale_id = $decoded_id;
+
+                } else {
+                    // ---------- INSERT ----------
+                    $this->db->insert('package_sale', $saleData);
+                    $package_sale_id = $this->db->insert_id();
+
+                    $this->db->where('id', $package_sale_id);
+                    $this->db->update('package_sale', ['invoice_no' => '00' . $package_sale_id]);
+                }
+
+                // ---------- HANDLE SESSIONS (INSERT + UPDATE BOTH) ----------
+                // Expected:
+                // sessions[0][id]
+                // sessions[0][session_id]
+                // sessions[0][price] etc
+                if (!empty($sessions)) {
+                    foreach ($sessions as $k => $s) {
+                        $vat_obj = json_encode([
+                            [
+                                'tax_field_id' => "",
+                                'tax_field_type' => 'VAT',
+                                'tax_field_rate' => $taxrate,
+                                'tax_field_amount' => $taxAmt,
+                            ]
+                        ]);
+                        $sessionRow = [
+                            'package_sale_id' => $package_sale_id,
+                            'session_id'      => $input['session_id'][$k],
+                            'session_name'    => $input['session_name'][$k],
+                            'price'           => $eachamt,
+                            'sub_total'       => $sub_total,
+                            'vat'             => $taxrate,
+                            'vat_obj'             => $vat_obj,
+                            'vat_type'        => $tax_type,
+                            'tax_amt'         => $taxAmt,
+                            'employee_id'     => $input['employee_id'][$k] ?? NULL,
+                            'in_time'     => $input['in_time'][$k] ?? NULL ?: NULL,
+                            'out_time'        => $input['out_time'][$k] ?? NULL ?: NULL,
+                            'session_time'    => $input['session_time'][$k] ?? NULL,
+                            'status'          => $input['status'][$k],
+                            'sale_date'       => date('Y-m-d H:i:s'),
+                        ];
+
+                        if (!empty($input['pack_session_id'][$k])) {
+                            // -------- UPDATE OLD SESSION --------
+                            $this->db->where('id', $input['pack_session_id'][$k]);
+                            $this->db->update('package_sessions', $sessionRow);
+
+                        } else {
+                            // -------- INSERT NEW SESSION --------
+                            $this->db->insert('package_sessions', $sessionRow);
+
+                            $pack_session_id = $this->db->insert_id();
+                            $this->db->where('id', $pack_session_id);
+                            $this->db->update('package_sessions', ['sale_no' => 'SESSION-INV-' . $pack_session_id]);
+
+                        }
+                    }
+                    
+
+                }
+
+                $this->db->trans_complete();
+                return redirect('Sale/package');
+            }
+
+            if ($id != null) {
+                $id = $this->custom->encrypt_decrypt($id, 'decrypt');
+                $data['package_sale'] = $this->Common_model->getSaleById($id);
+                $data['package_sale_details'] = $this->Common_model->getSaleDetailsBySaleById($id);
+            }
+
+            $outlet_id = $this->session->userdata('outlet_id');
+            $data['packages'] = $this->Sale_model->getItemsWithCategory(['ic.name' => 'Package']);
+            $data['users'] = $this->Common_model->getAllUsersNameMobile();
+            $data['lists'] = $this->Sale_model->getSaleList($outlet_id);
+            $data['payment_methods'] = $this->Sale_model->getAllPaymentMethods();
+            
+            $data['editdata'] = $this->Sale_model->getPackageData($editid);
+            $data['main_content'] = $this->load->view('package/add_edit_package', $data, TRUE);
+            return $this->load->view('userHome', $data);
+        // if ($this->db->trans_status() === FALSE) {
+        //     $this->session->set_flashdata('error', 'Something went wrong.');
+        // } else {
+        //     $msg = ($id != null) ? 'Package updated Successfully!' : 'Package created Successfully!';
+        //     $this->session->set_flashdata('success', $msg);
+        // }
+
+        // return redirect('package-sale-list');
     }
+
 
 
     // end of package sale
@@ -929,7 +1124,7 @@ class Sale extends Cl_Controller {
     public function getAjaxData() {
         $outlet_id = $this->session->userdata('outlet_id');
         $delivery_status = htmlspecialcharscustom($this->input->post('delivery_status'));
-        $sales = $this->Sale_model->make_datatables($outlet_id, $delivery_status);
+        $sales = $this->Sale_model->make_datatables($outlet_id, $delivery_status, 'sale');
         $data = array();
         if ($sales && !empty($sales)) {
             $i = count($sales);
@@ -992,6 +1187,56 @@ class Sale extends Cl_Controller {
             "draw" => intval($this->Sale_model->getDrawData()),
             "recordsTotal" => $this->Sale_model->get_all_data($outlet_id, $delivery_status),
             "recordsFiltered" => $this->Sale_model->get_filtered_data($outlet_id, $delivery_status),
+            "data" => $data
+        );
+        echo json_encode($output);
+    }
+
+    /**
+     * getPackageAjaxData
+     * @access public
+     * @param no
+     * @return json
+     */
+    public function getPackageAjaxData() {
+        $outlet_id = $this->session->userdata('outlet_id');
+        $delivery_status = htmlspecialcharscustom($this->input->post(index: 'delivery_status'));
+        $sales = $this->Sale_model->make_datatables($outlet_id, $delivery_status, 'package');
+        $data = array();
+        if ($sales && !empty($sales)) {
+            $i = count($sales);
+        }
+        foreach ($sales as $value){
+            $html = '';
+            if ($this->session->userdata('role') == '1'||checkAccess(138,'delete')){ 
+                $html .= '<a class="delete btn btn-danger" href="'.base_url().'Sale/deletePackage/'. $this->custom->encrypt_decrypt($value->id, 'encrypt') .'" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="'.lang('delete').'">
+                    <i class="fa-regular fa-trash-can"></i>
+                </a>';
+            }
+
+            $sub_array =  array();
+            $sub_array[] = $i--;
+            $sub_array[] = $value->invoice_no;
+            $sub_array[] = dateFormat($value->purchase_date);
+            $sub_array[] = $value->package_name;
+            $sub_array[] = $value->customer_name;
+            $sub_array[] = $value->total_amt;
+            $sub_array[] = $value->payment_method;
+
+            $sub_array[] =  '
+            <div class="btn_group_wrap">
+                <a class="btn btn-warning edit_sale" href="'.base_url().'Sale/addEditSalePackage/'.bin2hex($value->id).'/"  data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-original-title="'. lang('Edit_Sale') .'">
+                    <i class="far fa-edit"></i>
+                </a>
+                '.$html.'
+            </div>';
+            $data[] = $sub_array;
+        }
+        $output = array(
+            "draw" => intval($this->Sale_model->getDrawData()),
+            "recordsTotal" => $this->Sale_model->get_all_data($outlet_id, $delivery_status, 'package'),
+            "recordsFiltered" => $this->Sale_model->get_filtered_data($outlet_id, $delivery_status,'package'),
             "data" => $data
         );
         echo json_encode($output);
@@ -1558,9 +1803,9 @@ class Sale extends Cl_Controller {
      * @param int
      * @return string
      */
-    function get_all_information_of_a_sale($sales_id){
-        $sales_information = $this->Sale_model->getSaleBySaleId($sales_id);
-        $items_by_sales_id = $this->Sale_model->getAllItemsFromSalesDetailBySalesId($sales_id);
+    function get_all_information_of_a_sale($sales_id, $type = 'sale'){
+        $sales_information = $this->Sale_model->getSaleBySaleId($sales_id, $type);
+        $items_by_sales_id = $this->Sale_model->getAllItemsFromSalesDetailBySalesId($sales_id, $type);
         $sale_object = $sales_information;
         $sale_object->items = $items_by_sales_id;
         return $sale_object;

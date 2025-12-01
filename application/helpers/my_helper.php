@@ -2843,8 +2843,11 @@ if (!function_exists('banglaNumber')) {
  * @return int
  */
 if (!function_exists('salePaymentDetails')) {
-    function salePaymentDetails($id,$outlet_id) {
+    function salePaymentDetails($id,$outlet_id,$sale_type = 'sale') {
         $CI = & get_instance();
+        if($sale_type == 'package'){
+            return array();
+        }
         $CI->db->select('p.name as payment_name,sp.amount,sp.payment_details, sp.multi_currency,sp.multi_currency_rate,sp.payment_id');
         $CI->db->from('tbl_sale_payments sp');
         $CI->db->join('tbl_payment_methods p', 'p.id = sp.payment_id', 'left');
@@ -5628,8 +5631,11 @@ if (!function_exists('getItemParentName')) {
      * @param no
      */
     if (!function_exists('getComboItemByItemSaleId')) {
-        function getComboItemByItemSaleId($sale_item_id) {
+        function getComboItemByItemSaleId($sale_item_id, $sale_type = 'sale') {
             $CI = & get_instance();
+            if($sale_type == 'package'){
+                return array();
+            }
             $CI->db->select("cs.*, i.name as item_name");
             $CI->db->from('tbl_combo_item_sales cs');
             $CI->db->join('tbl_items i', 'i.id = cs.combo_item_id', 'left');

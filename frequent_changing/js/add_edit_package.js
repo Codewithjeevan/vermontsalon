@@ -170,3 +170,129 @@ $(document).ready(function () {
     const $first = $('#walk_in_customer');
     getAllCustomers($first, '10', true);
 });
+
+
+$(document).on('change', '.package_data', function () {
+    let session_count = $('option:selected', this).data('session');
+    let emp_clone = $('#employee_id').prop('outerHTML');
+    let price = $('option:selected', this).data('price');
+    let session_price = parseFloat(price) / parseFloat(session_count);
+    $('#total').val(price.toFixed(2));
+    $('#session_count').val(session_count);
+    let allRows = "";
+
+    for (let i = 1; i <= session_count; i++) {
+        allRows += `<tr>
+                        <td>
+                        <input type="text" name="session_name[]" class="form-control" value="Session ${i}" readonly>
+                        <input type="hidden" name="session_id[]" value="${i}">
+                        </td>
+                        <td><input type="text" name="session_price[]" class="form-control" value="${session_price.toFixed(2)}" readonly></td>
+                        <td>${emp_clone}</td>
+                        <td><input type="datetime-local" name="in_time[]" class="form-control"></td>
+                        <td><input type="datetime-local" name="out_time[]" class="form-control"></td>
+                        <td>
+                            <select name="status[]" class="form-select" style="height: 45px;">
+                                <option value="0">Available</option>
+                                <option value="1">Used</option>
+                            </select>
+                        </td>
+                    </tr>`;
+    }
+
+    $('#session_table tbody').html(allRows);
+
+
+});
+
+
+function printInvoice(sale_id) {
+    var print_format = $('#print_format').val();
+    if (invoice_print == "live_server_print") {
+        $.ajax({
+            url: base_url + "Authentication/callPrintServer",
+            method: "post",
+            dataType: "json",
+            data: {
+                sale_id: sale_id,
+            },
+            success: function (data) {
+                if (data.printer_server_url) {
+                    $.ajax({
+                        url: data.printer_server_url + "print_server/off_pos_printer_server.php",
+                        method: "post",
+                        dataType: "json",
+                        data: {
+                            content_data: JSON.stringify(data.content_data), print_type: data.print_type,
+                        },
+                        success: function (data) { },
+                        error: function () { },
+                    });
+                }
+            }
+        });
+    } else {
+        console.log(print_format);
+        if (print_format == "56mm") {
+            open(base_url + "Sale/print_invoice/" + sale_id + '/package', 'Print Invoice', 'width=480,height=550');
+        } else if (print_format == "80mm") {
+            open(base_url + "Sale/print_invoice/" + sale_id + '/package', 'Print Invoice', 'width=685,height=550');
+        } else if (print_format == "A4 Print") {
+            open(base_url + "Sale/print_invoice/" + sale_id + '/package', 'Print Invoice', 'width=1600,height=550');
+        } else if (print_format == "Half A4 Print") {
+            open(base_url + "Sale/print_invoice/" + sale_id + '/package' , 'Print Invoice', 'width=1600,height=550');
+        } else if (print_format == "Letter Head") {
+            open(base_url + "Sale/print_invoice/" + sale_id + '/package', 'Print Invoice', 'width=1600,height=550');
+        }
+        // $("#finalize_order_cancel_button").click();
+    }
+}
+
+function printAdvanceInvoice(sale_id) {  
+    open(base_url + "Sale/print_advance_invoice/"+ sale_id, 'Print Invoice', 'width=685,height=550');
+}
+
+function cancelnow(id) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You want to cancel this package sale.",
+        icon: "warning",
+        input: "textarea", // <-- Input box
+        inputPlaceholder: "Enter reason for cancellation...",
+        inputAttributes: {
+            "aria-label": "Enter reason for cancellation"
+        },
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Cancel",
+        cancelButtonText: "No",
+        preConfirm: (note) => {
+            if (!note) {
+                Swal.showValidationMessage("Please enter a reason!");
+            }
+            return note;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: base_url + "Sale/cancel_package_sale",
+                method: "post",
+                dataType: "json",
+                data: {
+                    sale_id: id,
+                    note: result.value   // <-- Note is here
+                },
+                success: function (data) {
+                    Swal.fire({
+                        title: "Cancelled!",
+                        text: "The package sale has been cancelled successfully.",
+                        icon: "success"
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
+            });
+        }
+    });
+}
