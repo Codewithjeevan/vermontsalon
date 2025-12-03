@@ -4,8 +4,8 @@ $lng = $this->session->userdata('language');
 $ln_text = (isset($lng) && $lng === "bangla") ? "bangla" : '';
 $tax = '';
 $inv_prev_due = 0;
-if($sale_object->sale_vat_objects != ''){
-    $tax = json_decode($sale_object->sale_vat_objects);
+if(@$sale_object->sale_vat_objects != ''){
+    $tax = json_decode(@$sale_object->sale_vat_objects);
 }
 $rounding_type = $this->session->userdata('pos_total_payable_type');
 $invoice_configuration = $this->session->userdata('invoice_configuration');
@@ -19,7 +19,7 @@ $inv_config = json_decode($invoice_configuration);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo escape_output($sale_object->sale_no); ?></title>
+    <title><?php echo escape_output(@$sale_object->sale_no); ?></title>
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/local/google_font.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/print_invoice_a4.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/inv_common.css">
@@ -91,7 +91,7 @@ $inv_config = json_decode($invoice_configuration);
             </h2>
         </div>
 
-        <?php if($sale_object->total_payable == $sale_object->paid_amount) { ?>
+        <?php if(@$sale_object->total_payable == @$sale_object->paid_amount) { ?>
         <div class="text-center">
             <h2 class="invoice-heading text-underline">
                 <?php 
@@ -116,9 +116,9 @@ $inv_config = json_decode($invoice_configuration);
         <?php } ?>
 
         <div>
-            <?php if($customer_info->name != '') {?>
+            <?php if(@$customer_info->name != '') {?>
             <p class="pb-7 color-71">
-                <span class="f-w-600"><?php echo lang('bill_to');?>:</span> <?php echo escape_output($customer_info->name) ?>
+                <span class="f-w-600"><?php echo lang('bill_to');?>:</span> <?php echo escape_output(@$customer_info->name) ?>
             </p>
             <?php } ?>
             <div class="d-flex justify-content-between">
@@ -144,10 +144,12 @@ $inv_config = json_decode($invoice_configuration);
                         </p>
                     <?php } ?>
 
+                    <?php if(!empty(implode(', ', array_column(@$sale_object->items, 'item_room_id')))) { ?>
                      <p class="pb-7 color-71">
                         <span class="f-w-600"><?= lang("room_number") ?>:</span> <?= implode(', ', array_column($sale_object->items, 'item_room_id')) ?>
                     </p>
-                    <?php if($sale_object->voucher != null) { ?>
+                    <?php } ?>
+                    <?php if(@$sale_object->voucher != null) { ?>
                     <p class="f-w-500 color-71 font-size-13">
                         <span class="f-w-600"><?= lang("voucher") ?>:</span>
                         <?= @$sale_object->voucher ? $sale_object->voucher : 0 ?>
@@ -157,7 +159,7 @@ $inv_config = json_decode($invoice_configuration);
                 <div class="text-rigth">
                     <p class="f-w-500 color-71">
                         <span class="f-w-600">Patient ID: </span>
-                        <?php echo @$customer_info->patient_file_number ? escape_output($customer_info->patient_file_number) : '-'; ?>
+                        <?php echo @$customer_info->patient_file_number ? escape_output(@$customer_info->patient_file_number) : '-'; ?>
                     </p>
                     <p class="pb-7">
                         <span class="f-w-600">
@@ -173,7 +175,7 @@ $inv_config = json_decode($invoice_configuration);
                                 }
                             }?>
                         </span> 
-                        <?php echo escape_output($sale_object->sale_no);?>
+                        <?php echo escape_output(@$sale_object->sale_no);?>
                     </p>
                     <p class="pb-7 f-w-500 color-71"> 
                         <span class="f-w-600">
@@ -189,11 +191,10 @@ $inv_config = json_decode($invoice_configuration);
                                 }
                             }?>
                         </span> 
-                        <?php echo date($this->session->userdata('date_format'), strtotime($sale_object->sale_date ?? '')) ?>
-                        <?php echo $sale_object->order_time ? date('h:i A', strtotime($sale_object->order_time)) : '' ?>
+                        <?php echo dateFormat(@$sale_object->sale_date) ?> <?php echo @$sale_object->order_time ? date('h:i A', strtotime(@$sale_object->order_time)) : '' ?>
                     </p>
 
-                    <?php if($inv_config->invoice_show_due_date == 'Yes' && $sale_object->due_date){?>
+                    <?php if($inv_config->invoice_show_due_date == 'Yes' && @$sale_object->due_date){?>
                     <p class="pb-7 f-w-500 color-71"> 
                         <span class="f-w-600">
                             <?php 
@@ -208,7 +209,7 @@ $inv_config = json_decode($invoice_configuration);
                                 }
                             }?>
                         </span> 
-                        <?php echo date($this->session->userdata('date_format'), strtotime($sale_object->due_date ?? '')) ?>
+                        <?php echo dateFormat(@$sale_object->due_date) ?>
                     </p>
                     <?php } ?>
                     
@@ -286,27 +287,28 @@ $inv_config = json_decode($invoice_configuration);
                         $qty_sum = 0;
                         $taxSum = 0;
                         $total_discount_amount = 0;
-                        foreach ($sale_object->items as $row) :
+                        foreach (@$sale_object->items as $row) :
                             $totalItems++;
-                            $unitprice_sum = $unitprice_sum + $row->menu_unit_price;
-                            $total_discount_amount += $row->discount_amount;
-                            $qty_sum = $qty_sum+=$row->qty;
-                            $combo_items = getComboItemByItemSaleId($row->sales_details_id);
+                            $unitprice_sum = $unitprice_sum + @$row->menu_unit_price;
+                            $discount_sum = $discount_sum + (int)@$row->menu_discount_value;
+                            $total_discount_amount += @$row->discount_amount;
+                            $qty_sum = $qty_sum+@$row->qty;
+                            $combo_items = getComboItemByItemSaleId(@$row->sales_details_id, @$sale_object->sale_type);
                         ?>
                         <tr>
                             <td><?php echo $i++; ?></td>
                             <td>
 
                              <?php if($inv_config->show_product_imei_serial_number == 'Yes'){?>
-                                <?php if(($row->item_type == 'IMEI_Product' || $row->item_type == 'Serial_Product' || $row->item_type == 'Medicine_Product') && $row->expiry_imei_serial){ ?>
-                                <p class="short_note"><?php echo checkItemShortType($row->item_type)  ?>: <?php echo trim($row->expiry_imei_serial); ?></p>
+                                <?php if((@$row->item_type == 'IMEI_Product' || @$row->item_type == 'Serial_Product' || @$row->item_type == 'Medicine_Product') && @$row->expiry_imei_serial){ ?>
+                                <p class="short_note"><?php echo checkItemShortType(@$row->item_type)  ?>: <?php echo trim(@$row->expiry_imei_serial); ?></p>
                                 <?php } } ?>
                                 <?php
-                                    echo getItemAndParntName($row->food_menu_id); echo escape_output($row->alternative_name) ? ' (' . $row->alternative_name . ')' : '';
+                                    echo getItemAndParntName(@$row->food_menu_id); echo escape_output(@$row->alternative_name) ? ' (' . @$row->alternative_name . ')' : '';
                                 ?>
-                                <?php if($row->menu_note){ ?>
+                                <?php if(@$row->menu_note){ ?>
                                 <div class="short_note">
-                                    <?=isset($row->menu_note) && $row->menu_note? lang('note').": " .$row->menu_note.", ":''?>
+                                    <?=isset($row->menu_note) && @$row->menu_note? lang('note').": " .@$row->menu_note.", ":''?>
                                 </div>
                                 <?php } ?>
 
@@ -314,59 +316,59 @@ $inv_config = json_decode($invoice_configuration);
 
                                 <?php 
                                 $warranty_date = '';
-                                if($row->warranty_date == "day"){
+                                if(@$row->warranty_date == "day"){
                                     $warranty_date = "Day";
-                                }elseif($row->warranty_date == "month"){
+                                }elseif(@$row->warranty_date == "month"){
                                     $warranty_date = "Month";
-                                }elseif($row->warranty_date == "year"){
+                                }elseif(@$row->warranty_date == "year"){
                                     $warranty_date = "Year";
                                 }
                                 ?>
-                                <?php if($row->warranty != 0 && $inv_config->show_warranty_expiry_date == 'Yes'){ ?>
+                                <?php if(@$row->warranty != 0 && $inv_config->show_warranty_expiry_date == 'Yes'){ ?>
                                 <p class="text-muted short_note">
-                                    <?php echo lang('warranty');?>: <?php echo escape_output($row->warranty) . ' ' . $row->warranty_date ?><?php echo escape_output($row->warranty) > 3 ? 's' : '' ?>
+                                    <?php echo lang('warranty');?>: <?php echo escape_output(@$row->warranty) . ' ' . @$row->warranty_date ?><?php echo escape_output(@$row->warranty) > 3 ? 's' : '' ?>
                                 </p> 
                                 <p class="text-muted short_note">
-                                    <?php echo lang('will_expire');?> <?= date($this->session->userdata('date_format'), strtotime(dateMonthYearFinder($row->warranty, $warranty_date, $sale_object->sale_date))) ?>
+                                    <?php echo lang('will_expire');?> <?= date($this->session->userdata('date_format'), strtotime(dateMonthYearFinder(@$row->warranty, $warranty_date, $sale_object->sale_date))) ?>
                                 </p>
                                 <?php } ?>
                                 <?php 
                                 $guarantee_date = '';
-                                if($row->guarantee_date == "day"){
+                                if(@$row->guarantee_date == "day"){
                                     $guarantee_date = "Day";
-                                }elseif($row->guarantee_date == "month"){
+                                }elseif(@$row->guarantee_date == "month"){
                                     $guarantee_date = "Month";
-                                }elseif($row->guarantee_date == "year"){
+                                }elseif(@$row->guarantee_date == "year"){
                                     $guarantee_date = "Year";
                                 }
                                 ?>
-                                <?php if($row->guarantee != 0 && $inv_config->show_guarantee_expiry_date == 'Yes'){ ?>
+                                <?php if(@$row->guarantee != 0 && $inv_config->show_guarantee_expiry_date == 'Yes'){ ?>
                                 <p class="text-muted short_note">
-                                    <?php echo lang('guarantee');?>: <?php echo escape_output($row->guarantee) . ' ' . $row->guarantee_date ?><?php echo escape_output($row->guarantee) > 3 ? 's' : '' ?>
+                                    <?php echo lang('guarantee');?>: <?php echo escape_output(@$row->guarantee) . ' ' . @$row->guarantee_date ?><?php echo escape_output(@$row->guarantee) > 3 ? 's' : '' ?>
                                 </p>
                                 <p class="text-muted short_note">
-                                    <?php echo lang('will_expire');?> <?= date($this->session->userdata('date_format'), strtotime(dateMonthYearFinder($row->guarantee, $guarantee_date, $sale_object->sale_date))) ?>
+                                    <?php echo lang('will_expire');?> <?= date($this->session->userdata('date_format'), strtotime(dateMonthYearFinder(@$row->guarantee, $guarantee_date, $sale_object->sale_date))) ?>
                                 </p>
                                 <?php } ?>
 
-                                <?php if($inv_config->show_product_image == 'Yes' && $row->photo){ ?>
-                                    <img src="<?php echo base_url();?>uploads/items/<?php echo $row->photo; ?>" alt="Product Image" width="80" height="80">
+                                <?php if($inv_config->show_product_image == 'Yes' && @$row->photo){ ?>
+                                    <img src="<?php echo base_url();?>uploads/items/<?php echo @$row->photo; ?>" alt="Product Image" width="80" height="80">
                                 <?php } ?>
 
                             </td>
                             <td>
-                                <?=getAmtCustom($ln_text=="bangla"?banglaNumber($row->menu_unit_price):$row->menu_unit_price)?>
+                                <?=getAmtCustom($ln_text=="bangla"?banglaNumber(@$row->menu_unit_price):@$row->menu_unit_price)?>
                             </td>
                             <td>
-                                <?=($ln_text=="bangla"?banglaNumber($row->qty):$row->qty)?> <?=unitName(getSaleUnitIdByIgId($row->food_menu_id))?>
+                                <?=($ln_text=="bangla"?banglaNumber(@$row->qty):@$row->qty)?> <?=unitName(getSaleUnitIdByIgId(@$row->food_menu_id))?>
                             </td>
                             <td>
                                 <?php 
-                                    echo escape_output($row->menu_discount_value). ' (' . getAmtCustom($row->discount_amount) . ')';
+                                    echo escape_output(@$row->menu_discount_value). ' (' . getAmtCustom(@$row->discount_amount) . ')';
                                 ?>
                             </td>
                             <td class="text-right pr-10">
-                                <?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($row->menu_price_with_discount):$row->menu_price_with_discount); ?>
+                                <?php echo getAmtCustom($ln_text=="bangla"?banglaNumber(@$row->menu_price_with_discount):@$row->menu_price_with_discount); ?>
                             </td>
                         </tr>
                         <?php
@@ -402,7 +404,7 @@ $inv_config = json_decode($invoice_configuration);
                         </th>
                         <th><?=($ln_text=="bangla"?banglaNumber($totalItems):$totalItems)?> (<?=($ln_text=="bangla"?banglaNumber($qty_sum):$qty_sum)?>)</th>
                         <th><?php echo (getAmtCustom($total_discount_amount)); ?></th>
-                        <th class="text-right pr-10"><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->sub_total):$sale_object->sub_total)?></th>
+                        <th class="text-right pr-10"><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber(@$sale_object->sub_total):@$sale_object->sub_total)?></th>
                     </tr>
                 </tfoot>
             </table>
@@ -413,7 +415,7 @@ $inv_config = json_decode($invoice_configuration);
                     <h4 class="d-block pb-10"><?php echo lang('note');?></h4>
                     <div class="w-100 bg-240 h-120px p-15 b-1s-240 br-4">
                         <p>
-                            <?php echo escape_output($sale_object->note);?>
+                            <?php echo escape_output(@$sale_object->note);?>
                         </p>
                     </div>
                 </div>
@@ -421,8 +423,8 @@ $inv_config = json_decode($invoice_configuration);
 
             <div>
                 <?php
-                    if($sale_object->previous_due > 0){
-                        $inv_prev_due = absCustom($sale_object->previous_due);
+                    if(@$sale_object->previous_due > 0){
+                        $inv_prev_due = absCustom(@$sale_object->previous_due);
                 ?>
                 <div class="d-flex justify-content-between pt-10">
                     <p class="f-w-600">
@@ -436,8 +438,8 @@ $inv_config = json_decode($invoice_configuration);
                     </p>
                     <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($inv_prev_due):  $inv_prev_due)?> (Debit)</p>
                 </div>
-                <?php } else if ($sale_object->previous_due < 0){ 
-                    $inv_prev_due = absCustom($sale_object->previous_due);
+                <?php } else if (@$sale_object->previous_due < 0){ 
+                    $inv_prev_due = absCustom(@$sale_object->previous_due);
                     
                     ?>
                     <div class="d-flex justify-content-between pt-10">
@@ -463,13 +465,13 @@ $inv_config = json_decode($invoice_configuration);
                                 echo $inv_config->previous_balance_label_arabic;
                             }?>
                         </p>
-                        <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->previous_due):  $sale_object->previous_due)?></p>
+                        <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber(@$sale_object->previous_due):  @$sale_object->previous_due)?></p>
                     </div>
                 <?php } ?>
 
 
                 <?php 
-                    if($sale_object->sub_total){
+                    if(@$sale_object->sub_total){
                 ?>
                 <div class="d-flex justify-content-between pt-10">
                     <p class="f-w-600">
@@ -481,7 +483,7 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->subtotal_label_arabic;
                         }?>
                     </p>
-                    <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->sub_total):$sale_object->sub_total)?></p>
+                    <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber(@$sale_object->sub_total):@$sale_object->sub_total)?></p>
                 </div>
                 <?php 
                     }
@@ -502,7 +504,7 @@ $inv_config = json_decode($invoice_configuration);
 
 
                 <?php 
-                    if($sale_object->charge_type){
+                    if(@$sale_object->charge_type){
                 ?>
                 <div class="d-flex justify-content-between pt-10">
                     <p class="f-w-600">
@@ -521,7 +523,7 @@ $inv_config = json_decode($invoice_configuration);
 
 
                 <?php 
-                    if($sale_object->sub_total_discount_amount){
+                    if(@$sale_object->sub_total_discount_amount){
                 ?>
                 <div class="d-flex justify-content-between pt-10">
                     <p class="f-w-600">
@@ -533,14 +535,14 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->discount_label_arabic;
                         }?>
                     </p>
-                    <p><?php echo (getAmtCustom($sale_object->sub_total_discount_amount));?></p>
+                    <p><?php echo (getAmtCustom(@$sale_object->sub_total_discount_amount));?></p>
                 </div>
                 <?php 
                     }
                 ?>
 
                 <?php 
-                    if($sale_object->rounding){
+                    if(@$sale_object->rounding){
                 ?>
                 <div class="d-flex justify-content-between pt-10">
                     <p class="f-w-600">
@@ -552,10 +554,10 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->rounding_label_arabic;
                         }?>
                     </p>
-                    <?php if($sale_object->rounding < 0){
-                        $rounding_amt = $sale_object->rounding;
-                    } else if($sale_object->rounding > 0){
-                        $rounding_amt = '+ ' . $sale_object->rounding;
+                    <?php if(@$sale_object->rounding < 0){
+                        $rounding_amt = @$sale_object->rounding;
+                    } else if(@$sale_object->rounding > 0){
+                        $rounding_amt = '+ ' . @$sale_object->rounding;
                     }else{
                         $rounding_amt = 0;
                     }
@@ -568,7 +570,7 @@ $inv_config = json_decode($invoice_configuration);
 
 
                 <?php 
-                    if($sale_object->total_payable){
+                    if(@$sale_object->total_payable){
                 ?>
                 <div class="d-flex justify-content-between pt-10 mt-10 p-10 bg-00c53 br-4">
                     <p class="f-w-600">
@@ -581,7 +583,7 @@ $inv_config = json_decode($invoice_configuration);
                         }?>
                     </p>
                     <?php 
-                        $totalpayable = ($sale_object->total_payable);
+                        $totalpayable = (@$sale_object->total_payable);
                     ?>
                     <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($totalpayable):$totalpayable) ?></p>
                 </div>
@@ -600,12 +602,12 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->paid_amount_label_arabic;
                         }?>
                     </p>
-                    <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->paid_amount):$sale_object->paid_amount) ?></p>
+                    <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber(@$sale_object->paid_amount):@$sale_object->paid_amount) ?></p>
                 </div>
 
 
                 <?php
-                    if($sale_object->due_amount > 0) {
+                    if(@$sale_object->due_amount > 0) {
                 ?>
                 <div class="d-flex justify-content-between pt-10">
                     <p class="f-w-600">
@@ -617,7 +619,7 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->due_amount_label_arabic;
                         }?>
                     </p>
-                    <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->due_amount):$sale_object->due_amount) ?></p>
+                    <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber(@$sale_object->due_amount):@$sale_object->due_amount) ?></p>
                 </div>
                 <?php } else { ?>
                     <div class="d-flex justify-content-between pt-10">
@@ -635,7 +637,7 @@ $inv_config = json_decode($invoice_configuration);
                 <?php } ?>
 
                 <?php
-                    if($sale_object->given_amount && $sale_object->change_amount) {
+                    if(@$sale_object->given_amount && @$sale_object->change_amount) {
                 ?>
                 <div class="d-flex justify-content-center">
                     <p class="f-w-600 font-size-13">
@@ -646,11 +648,11 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->given_amount_label . "<br>";
                             echo $inv_config->given_amount_label_arabic;
                         }?>: 
-                        <?php echo getAmtCustom($ln_text=="bangla" ? banglaNumber($sale_object->given_amount) : $sale_object->given_amount) ?></p>
+                        <?php echo getAmtCustom($ln_text=="bangla" ? banglaNumber(@$sale_object->given_amount) : @$sale_object->given_amount) ?></p>
                 </div>
                 <?php }  ?>
                 <?php
-                    if($sale_object->change_amount) {
+                    if(@$sale_object->change_amount) {
                 ?>
                 <div class="d-flex justify-content-between pt-10">
                     <p class="f-w-600">
@@ -662,20 +664,20 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->change_amount_label_arabic;
                         }?>
                     </p>
-                    <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber($sale_object->change_amount):$sale_object->change_amount) ?></p>
+                    <p><?php echo getAmtCustom($ln_text=="bangla"?banglaNumber(@$sale_object->change_amount):@$sale_object->change_amount) ?></p>
                 </div>
                 <?php } ?> 
 
                 <?php
-                if($sale_object->due_amount < 0) {  
+                if(@$sale_object->due_amount < 0) {  
                     $due_reveive  = 0;
                     $advance_receive = 0;
-                    if(absCustom($sale_object->due_amount) <= $inv_prev_due){
-                        $due_reveive  = $sale_object->due_amount;
+                    if(absCustom(@$sale_object->due_amount) <= $inv_prev_due){
+                        $due_reveive  = @$sale_object->due_amount;
                     }
-                    if(absCustom($sale_object->due_amount) > $inv_prev_due){
+                    if(absCustom(@$sale_object->due_amount) > $inv_prev_due){
                         $due_reveive = $inv_prev_due;
-                        $advance_receive = absCustom($sale_object->due_amount) - $inv_prev_due;
+                        $advance_receive = absCustom(@$sale_object->due_amount) - $inv_prev_due;
                     } ?>
                     <div class="d-flex justify-content-between pt-10">
                         <p class="f-w-600">
@@ -704,7 +706,7 @@ $inv_config = json_decode($invoice_configuration);
                 <?php } ?>
 
 
-                <?php if($sale_object->partner_name != ''){ ?>
+                <?php if(@$sale_object->partner_name != ''){ ?>
                 <div class="d-flex justify-content-between pt-10">
                     <p class="f-w-600">
                         <?php 
@@ -715,7 +717,7 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->delivery_partner_label_arabic;
                         }?>
                     </p>
-                    <p><?php echo escape_output($sale_object->partner_name);?></p>
+                    <p><?php echo escape_output(@$sale_object->partner_name);?></p>
                 </div>
                 <?php } ?>
 
@@ -731,12 +733,15 @@ $inv_config = json_decode($invoice_configuration);
                             echo $inv_config->payment_method_label_arabic;
                         }?>
                     </p>
+                    <?php if(@$sale_object->sale_type == "package"){ ?>
+                        <p><?php echo @$sale_object->payment_method; ?></p>
+                    <?php } ?>
                 </div>
                 <?php
                     $outlet_id = $this->session->userdata('outlet_id');
-                    $salePaymentDetails = salePaymentDetails($sale_object->id,$outlet_id);
+                    $salePaymentDetails = salePaymentDetails(@$sale_object->id,$outlet_id);
                     $payment_details = '';
-                    if(isset($salePaymentDetails) && $salePaymentDetails):
+                    if(isset($salePaymentDetails) && $salePaymentDetails && @$sale_object->sale_type != 'package'):
                     foreach($salePaymentDetails as $p_name):
                         if($p_name->payment_details){
                             $payment_details = explode(",",$p_name->payment_details);

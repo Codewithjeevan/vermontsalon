@@ -1727,5 +1727,20 @@ $(function ($) {
         profitMargin();
     });
 
+    function normalizeText(str) {
+        return str.trim().toLowerCase();
+    }
+
+    $('#category_id').change(function() {
+        let selectedText = $('#category_id option:selected').text();
+        $('#session_count_div').css('display','none');
+        $('#session_count').attr('required',false);
+        if(normalizeText(selectedText) == "package"){
+            $('#session_count_div').css('display','block');
+            $('#session_count').attr('required',true);
+        }
+
+    });
+
 
 });

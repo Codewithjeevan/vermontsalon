@@ -392,6 +392,19 @@
                                 <?php } ?>
                             </div>
                         </div>
+                        <div class="col-md-6 col-lg-4 col-xl-3 mb-3" id="session_count_div" <?php echo strtolower($current_category->name) == 'package' ? '':'style="display: none;"' ?> >
+                            <div class="form-group">
+                                <label><?php echo lang('session_count'); ?> <span class="op_color_red">*</span></label>
+                                <input  autocomplete="off" type="text" onfocus="select();" id="session_count"
+                                    name="session_count" class="form-control" placeholder="<?php echo lang('session_count'); ?>" <?php echo strtolower($current_category->name) == 'package' ? 'required':'' ?>
+                                    value="<?php echo escape_output($item_details->session_count); ?>">
+                                <?php if (form_error('session_count')) { ?>
+                                <div class="callout callout-danger my-2">
+                                    <span class="error_paragraph"><?php echo form_error('session_count'); ?></span>
+                                </div>
+                                <?php } ?>
+                            </div>
+                        </div>
                         <div class="col-md-6 col-lg-4 col-xl-3 mb-3 disable_service_field" id="supplier_id_group">
                             <div class="form-group">
                                 <label><?php echo lang('supplier'); ?></label>

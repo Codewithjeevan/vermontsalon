@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
 
-    jQuery(document).on('click', '.fc-event', function(){
+    jQuery(document).on('mouseover', '.fc-event', function(){
         let book_id = $(this).find('.edit_booking_id').attr('data-id');
         $.ajax({
             url: base_url + "Booking/editBooking",

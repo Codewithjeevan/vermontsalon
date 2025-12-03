@@ -250,6 +250,23 @@ class Common_model extends CI_Model {
         }
     }
 
+    public function getSingleData($tbl, $where)
+    {
+        $this->db->select('*');
+        $this->db->from($tbl);
+        $this->db->where($where);
+        $this->db->where("del_status", 'Live');
+
+        $query = $this->db->get();
+
+        if ($query && $query->num_rows() > 0) {
+            return $query->row();   // return only ONE row
+        } else {
+            return false;
+        }
+    }
+
+
     /**
      * getAllAccessMainModule
      * @access public

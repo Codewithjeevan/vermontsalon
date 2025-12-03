@@ -95,7 +95,7 @@ if ($this->session->flashdata('exception')) {
                             <select  class="form-control select2" id="customer_id" name="customer_id">
                                 <option value=""><?php echo lang('select_customer');?></option>
                                 <?php foreach($customers as $key=>$customer){?>
-                                    <option value="<?php echo escape_output($customer->id);?>"><?php echo escape_output($customer->name);?></option>
+                                    <option value="<?php echo escape_output($customer->id);?>"><?php echo escape_output($customer->name);?> <?php echo escape_output($customer->phone) ?></option>
                                 <?php } ?>
                             </select>
                             <div class="alert alert-error error-msg customer_id_err_msg_contnr modal_err_msg">

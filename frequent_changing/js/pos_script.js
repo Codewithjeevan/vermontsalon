@@ -1850,6 +1850,7 @@ $(function () {
             }
         }else{
             const request = indexedDB.open("off_pos", 2);
+
             request.onsuccess = function(event) {
                 const db = event.target.result;
                 const transaction = db.transaction(["sales"], "readonly");
