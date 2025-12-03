@@ -1000,7 +1000,8 @@ class Sale_model extends CI_Model {
             $this->db->or_like("c.name",$_POST["search"]["value"]);
             $this->db->group_end();
           }
-          $this->db->where("sp.del_status", "Live");    
+          $this->db->where("sp.del_status", "Live");
+          $this->db->order_by('sp.id', 'DESC');
       }
   }
 
