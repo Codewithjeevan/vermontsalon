@@ -12,7 +12,9 @@
 <script src="<?php echo base_url(); ?>frequent_changing/newDesign/js/forTable.js"></script>
 
 <!-- Select2 -->
+ 
 <script src="<?php echo base_url(); ?>assets/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/plugins/local/moment.min.js"></script>
 <!-- Select2 -->
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bower_components/select2/dist/css/select2.min.css">
 <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/select2-list.css">
