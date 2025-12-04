@@ -146,7 +146,14 @@ if ($this->session->flashdata('exception')) {
                     <div class="col-md-6 col-12">
                         <div class="form-group">
                             <label >End Date</label>
-                            <input autocomplete="off" type="text" class="form-control customDateTimePicker" id="end_date" placeholder="End Date" readonly>
+                            <div class="d-flex gap-2">
+                                <div>
+                                <input autocomplete="off" name="time_frame" type="number" class="form-control no-arrow" id="time_frame" placeholder="Time Frame Eg. 30 Minutes">
+                                </div>
+                                <div>
+                                <input autocomplete="off" type="text" class="form-control customDateTimePicker" id="end_date" placeholder="End Date" readonly>
+                                </div>
+                            </div>
                             <div class="alert alert-error error-msg end_date_err_msg_contnr modal_err_msg">
                                 <p id="end_date_err_msg"></p>
                             </div>

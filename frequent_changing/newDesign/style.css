@@ -2615,3 +2615,13 @@ tr {
     width: 100%;
   }
 }/*# sourceMappingURL=style.css.map */
+
+
+.no-arrow::-webkit-inner-spin-button,
+.no-arrow::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.no-arrow {
+    -moz-appearance: textfield;
+}
