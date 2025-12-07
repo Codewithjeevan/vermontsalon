@@ -279,6 +279,8 @@ $lang['sale_return_no_inv'] = 'Sale-Return-No';
 $lang['favicon_logo'] = 'Favicon Logo';
 $lang['invoice_no'] = 'Invoice No';
 $lang['receipt_no'] = 'Receipt No';
+$lang['invoice_sr_label'] = 'Invoice Sr Label';
+$lang['invoice_sr_label_arabic'] = 'Invoice Sr Label Arabic';
 $lang['receipt'] = 'Receipt';
 $lang['dashboard'] = 'Dashboard';
 $lang['register'] = 'Register';
@@ -2730,7 +2732,8 @@ $lang['session'] = 'Session';
 $lang['in_time'] = 'In Time';
 $lang['out_time'] = 'Out Time';
 $lang['advance_payment'] = 'Advance Payment';
-
+$lang['patient_name'] = 'Patient Name';
+$lang['summary_sales_package_report'] = 'Summary Sales Package Report';
 
 
 

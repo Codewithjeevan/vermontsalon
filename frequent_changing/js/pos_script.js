@@ -9498,6 +9498,8 @@ $(function () {
                 open(base_url+"Sale/print_invoice/" + sale_id, 'Print Invoice', 'width=1600,height=550');
             }else if (print_format == "Letter Head") {
                 open(base_url+"Sale/print_invoice/" + sale_id, 'Print Invoice', 'width=1600,height=550');
+            }else if (print_format == "TCM") {
+                open(base_url+"Sale/print_invoice/" + sale_id, 'Print Invoice', 'width=1600,height=550');
             }
             $("#finalize_order_cancel_button").click();
         }

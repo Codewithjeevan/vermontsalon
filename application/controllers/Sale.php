@@ -842,6 +842,9 @@ class Sale extends Cl_Controller {
                 $this->load->view('sale/print_invoice_ha4', $data);
             }elseif($inv_config->invoice_format_or_size == 'Letter Head'){
                 $this->load->view('sale/print_letter_head', $data);
+            }elseif($inv_config->invoice_format_or_size == 'TCM'){
+                $this->load->view('sale/print_invoice_tcm', $data);
+
             }
         }
     }

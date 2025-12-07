@@ -100,6 +100,20 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="col-md-2 text-center">
+                        <div class="form-group">
+                            <div class="option-div invoice_format_element <?php echo isset($invoice_configuration) && $invoice_configuration ? ($invoice_configuration->invoice_format_or_size == 'TCM' ? 'active' : '')  : ''?>">
+                                <div class="inv-icon">
+                                    <iconify-icon icon="solar:book-bookmark-broken" width="60"></iconify-icon>
+                                    <i class="fa fa-check-circle pull-right icon"></i>
+                                    <input name="invoice_format_or_size"  type="radio" value="TCM" <?php echo isset($invoice_configuration) && $invoice_configuration ? ($invoice_configuration->invoice_format_or_size == 'TCM' ? 'checked' : '')  : ''?>>
+                                </div>
+                                <h6 class="a_inv_title">A4 Print (2)</h6>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="row option-div-group numbering_wrap">
@@ -375,6 +389,32 @@
                             <?php if (form_error('invoice_no_label_arabic')) { ?>
                                 <div class="callout callout-danger my-2">
                                     <span class="error_paragraph"><?php echo form_error('invoice_no_label_arabic'); ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label><?php echo lang('invoice_sr_label');?> <span class="required_star">*</span></label>
+                            </div>
+                            <input type="text" class="form-control" id="invoice_sr_label" name="invoice_sr_label" placeholder="<?php echo lang('invoice_sr_label');?>" value="<?php echo isset($invoice_configuration) && $invoice_configuration ? @$invoice_configuration->invoice_sr_label  : 'Invoice No'?>">
+                            <?php if (form_error('invoice_sr_label')) { ?>
+                                <div class="callout callout-danger my-2">
+                                    <span class="error_paragraph"><?php echo form_error('invoice_sr_label'); ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label><?php echo lang('invoice_sr_label_arabic');?></label>
+                            </div>
+                            <input type="text" class="form-control" id="invoice_sr_label_arabic" name="invoice_sr_label_arabic" value="<?php echo isset($invoice_configuration) && $invoice_configuration ? @$invoice_configuration->invoice_sr_label_arabic  : ''?>" placeholder="<?php echo lang('invoice_sr_label_arabic');?>">
+                            <?php if (form_error('invoice_sr_label_arabic')) { ?>
+                                <div class="callout callout-danger my-2">
+                                    <span class="error_paragraph"><?php echo form_error('invoice_sr_label_arabic'); ?></span>
                                 </div>
                             <?php } ?>
                         </div>

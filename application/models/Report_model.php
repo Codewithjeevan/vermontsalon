@@ -996,7 +996,7 @@ class Report_model extends CI_Model {
 
 
    public function summarySaleReport($startDate, $endDate, $outlet_id = '')
-    {
+   {
         $company_id      = $this->session->userdata('company_id');
         $payment_methods = $this->Common_model->getAllPaymentMethods();
 
@@ -1058,6 +1058,67 @@ class Report_model extends CI_Model {
         $this->db
             ->group_by('s.sale_date')
             ->order_by('s.sale_date', 'asc');
+
+        return $this->db->get()->result();
+    }
+
+   public function summarySalePackageReport($startDate, $endDate, $outlet_id = '')
+   {
+        $company_id      = $this->session->userdata('company_id');
+        $payment_methods = [
+            (object)['name' => 'Cash'],
+            (object)['name' => 'Card']
+        ];
+
+        // build dynamic PM select
+        $pmSelect = [];
+        foreach ($payment_methods as $method) {
+            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
+
+            $pmSelect[] = "
+                SUM(
+                    CASE WHEN ps.payment_method = '{$method->name}'
+                    THEN s.price ELSE 0 END
+                ) AS total_{$alias}_amount
+            ";
+        }
+        $pmSelectSQL = implode(',', $pmSelect);
+
+
+       $outerSelect = "
+            s.in_time AS sale_date,
+            SUM(s.price) AS total_payable,
+            SUM(s.discount) AS total_discount_amount,
+            SUM(s.tax_amt) AS total_vat,
+            COALESCE(GROUP_CONCAT(s.vat_obj SEPARATOR '|||'), '') AS sale_vat_objects_grouped,
+            $pmSelectSQL
+        ";
+
+        $this->db->select($outerSelect, FALSE)
+            ->from('package_sessions AS s')
+            ->join('package_sale AS ps', 'ps.id = s.package_sale_id', 'left')
+            ->where('ps.del_status', 'Live')
+            ->where('s.status', 1);  // 🔥 Only valid sessions
+
+
+        // date filters
+        if ($startDate && $endDate) {
+            $this->db->where('s.in_time >=', $startDate.' 00:00:00');
+            $this->db->where('s.in_time <=', $endDate.' 23:59:59');
+        } elseif ($startDate) {
+            $this->db->where('s.in_time', $startDate.' 00:00:00');
+        } elseif ($endDate) {
+            $this->db->where('s.in_time', $endDate.' 23:59:59');
+        }
+
+        // outlet filter
+        if ($outlet_id) {
+            $this->db->where('ps.outlet_id', $outlet_id);
+        }
+
+        $this->db->group_by('s.in_time')
+                ->order_by('s.in_time', 'asc');
+
 
         return $this->db->get()->result();
     }
