@@ -336,6 +336,8 @@ class Setting extends Cl_Controller {
 
                 // Invoice heading and label
                 $invoice_arr['invoice_heading'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('invoice_heading')));
+                $invoice_arr['logo_slogan'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('logo_slogan')));
+                $invoice_arr['logo_slogan_arabic'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('logo_slogan_arabic')));
                 $invoice_arr['invoice_sr_label'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('invoice_sr_label')));
                 $invoice_arr['invoice_sr_label_arabic'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('invoice_sr_label_arabic')));
                 $invoice_arr['invoice_heading_arabic'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('invoice_heading_arabic')));

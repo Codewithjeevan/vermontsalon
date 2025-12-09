@@ -42,6 +42,10 @@ $inv_config = json_decode($invoice_configuration);
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+
+            .mt-20 {
+                margin-top: 20px !important;
+            }
         }
     </style>
 </head>
@@ -49,8 +53,8 @@ $inv_config = json_decode($invoice_configuration);
 <body>
     <div id="wrapper" class="m-auto border-2s-e4e5ea br-5 p-30">
         <div class="d-flex justify-content-between">
-            <div class="d-flex">
-                <div class="m-auto" style="height: 80px;">
+            <div class="d-flex" style="flex-direction: column;">
+                <div style="height: 80px;">
                     <?php
                     $invoice_logo = $this->session->userdata('invoice_logo');
                     if ($s_status == 'Bangladesh' && $invoice_logo) {
@@ -63,8 +67,11 @@ $inv_config = json_decode($invoice_configuration);
                         <?php }
                     } ?>
                 </div>
+                <?php if(@$inv_config->logo_slogan != '') { ?>
+                <div class="mt-2" style="font-size: 12px;"><?php echo  @$inv_config->logo_slogan ?></div>
+                <?php } ?>
             </div>
-            <div class="text-right">
+            <div class="text-right w-50">
                 <h3 class="pb-3 shop-name">
                     <?php
                     if ($s_status == 'Bangladesh') {
@@ -76,10 +83,6 @@ $inv_config = json_decode($invoice_configuration);
                         }
                     } ?>
                 </h3>
-
-                <?php if ($outlet_info->outlet_name) { ?>
-                    <p class="pb-3 common-heading"><?php echo escape_output($outlet_info->outlet_name); ?></p>
-                <?php } ?>
                 <?php if ($outlet_info->address) { ?>
                     <p class="pb-3 f-w-500 color-71"><?php echo escape_output($outlet_info->address); ?></p>
                 <?php } ?>
@@ -142,7 +145,7 @@ $inv_config = json_decode($invoice_configuration);
             </div>
         <?php } ?> -->
 
-        <div>
+        <div class="mt-20">
             
 
             <div class="d-flex justify-content-between">
@@ -239,7 +242,7 @@ $inv_config = json_decode($invoice_configuration);
                 </div>
             </div>
         </div>
-        <div>
+        <div class="mt-20">
             <table class="table w-100">
                 <thead class="br-3 bg-00c53">
                     <tr>
@@ -454,7 +457,7 @@ $inv_config = json_decode($invoice_configuration);
                 </tfoot>
             </table>
         </div>
-        <div class="d-flex">
+        <div class="d-flex mt-20">
         <div style="width: 50%">
         </div>
         <div style="width: 50%;display: flex;flex-direction: column;align-content: flex-end;text-align: end;float: right">
@@ -859,7 +862,7 @@ $inv_config = json_decode($invoice_configuration);
         </div>
        
 
-        <div class="d-flex justify-content-between" style="margin-top: 40px">
+        <div class="d-flex justify-content-between" style="margin-top: 60px">
             <div>
                 <p class="f-w-600 "><?= lang('attended_by') ?></p>
                 <p class=""><?= implode(', ', array_column(@$sale_object->items, 'seller_name')) ?></p>

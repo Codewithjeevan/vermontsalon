@@ -341,6 +341,34 @@
                             <?php } ?>
                         </div>
                     </div>
+
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label><?php echo lang('logo_slogan');?></label>
+                            </div>
+                            <input class="form-control" type="text" id="logo_slogan" name="logo_slogan" placeholder="<?php echo lang('logo_slogan');?>" value="<?php echo isset($invoice_configuration) && $invoice_configuration ? @$invoice_configuration->logo_slogan  : 'Invoice'?>">
+                            <?php if (form_error('logo_slogan')) { ?>
+                                <div class="callout callout-danger my-2">
+                                    <span class="error_paragraph"><?php echo form_error('logo_slogan'); ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3 mb-3 d-none" >
+                        <div class="form-group">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label><?php echo lang('logo_slogan_arabic');?></label>
+                            </div>
+                            <input class="form-control" type="text" id="logo_slogan_arabic" name="logo_slogan_arabic" placeholder="<?php echo lang('logo_slogan_arabic');?>" value="<?php echo isset($invoice_configuration) && $invoice_configuration ? @$invoice_configuration->logo_slogan_arabic  : ''?>">
+                            <?php if (form_error('logo_slogan_arabic')) { ?>
+                                <div class="callout callout-danger my-2">
+                                    <span class="error_paragraph"><?php echo form_error('logo_slogan_arabic'); ?></span>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+
                     <div class="col-md-6 col-lg-3 mb-3">
                         <div class="form-group">
                             <div class="d-flex justify-content-between align-items-center">
