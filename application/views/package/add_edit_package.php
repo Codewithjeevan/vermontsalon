@@ -30,6 +30,7 @@ $inv_config = json_decode($invoice_configuration);
     <section class="content-header">
         <div class="row justify-content-between">
             <div class="col-6 p-0">
+                <a href="<?php echo base_url('Sale/package'); ?>" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Back </a>
                 <h3 class="top-left-header mt-2"><?php echo lang('add_edit_sale_package'); ?></h3>
             </div>
             <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('customer'), 'secondSection'=> lang('add_edit_sale_package')])?>
@@ -78,7 +79,12 @@ $inv_config = json_decode($invoice_configuration);
                             <select id="select_pacakge" name="package_id"  class="package_data select2" required tabindex="2">
                                 <option value=""><?php echo lang('select_pacakge'); ?></option>
                                 <?php foreach ($packages as $item) { ?>
-                                    <option value="<?php echo escape_output($item->id) ?>" data-session="<?= $item->session_count ?>" <?= @$editdata->package_id == $item->id ? 'Selected' : '' ?>  data-price="<?= $item->sale_price ?>"><?php echo escape_output($item->name) ?></option>
+                                    <option
+                                        value="<?php echo escape_output($item->id) ?>"
+                                        data-session="<?php echo $item->session_count ?>"
+                                        data-price="<?php echo $item->sale_price ?>"
+                                        <?php if (@$editdata->package_id == $item->id) { echo 'Selected'; } ?>
+                                    ><?php echo escape_output($item->name) ?></option>
                                 <?php } ?>
                             </select>
                         </div>

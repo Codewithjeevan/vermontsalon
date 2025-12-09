@@ -842,6 +842,9 @@ class Sale extends Cl_Controller {
                 $this->load->view('sale/print_invoice_ha4', $data);
             }elseif($inv_config->invoice_format_or_size == 'Letter Head'){
                 $this->load->view('sale/print_letter_head', $data);
+            }elseif($inv_config->invoice_format_or_size == 'TCM'){
+                $this->load->view('sale/print_invoice_tcm', $data);
+
             }
         }
     }
@@ -982,7 +985,8 @@ class Sale extends Cl_Controller {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // ---------- HANDLE POST ----------
                 $companydata = $this->Common_model->getByCompanyId($company_id, 'tbl_companies');
-                $taxrate = $companydata ? json_decode($companydata->tax_setting)[0]->tax_rate : 0;
+                $itemdata = $this->Common_model->getAllByCustomId($this->input->post('package_id'), 'id', 'tbl_items')[0];
+                $taxrate = $itemdata ? json_decode($itemdata->tax_information)[0]->tax_field_percentage : 0;
                 $tax_type = $this->session->userdata('tax_type'); // 2= inclusive or 1= exclusive
                 $totalamt = $this->input->post('total_amt');
                 $total_session = $this->input->post('session_count');
@@ -1061,6 +1065,7 @@ class Sale extends Cl_Controller {
                             'session_time'    => $input['session_time'][$k] ?? NULL,
                             'status'          => $input['status'][$k],
                             'sale_date'       => date('Y-m-d H:i:s'),
+                            'payment_method'  => $input['payment_method'],
                         ];
 
                         if (!empty($input['pack_session_id'][$k])) {

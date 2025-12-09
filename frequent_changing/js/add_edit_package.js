@@ -232,7 +232,6 @@ function printInvoice(sale_id) {
             }
         });
     } else {
-        console.log(print_format);
         if (print_format == "56mm") {
             open(base_url + "Sale/print_invoice/" + sale_id + '/package', 'Print Invoice', 'width=480,height=550');
         } else if (print_format == "80mm") {
@@ -242,6 +241,8 @@ function printInvoice(sale_id) {
         } else if (print_format == "Half A4 Print") {
             open(base_url + "Sale/print_invoice/" + sale_id + '/package' , 'Print Invoice', 'width=1600,height=550');
         } else if (print_format == "Letter Head") {
+            open(base_url + "Sale/print_invoice/" + sale_id + '/package', 'Print Invoice', 'width=1600,height=550');
+        } else if (print_format == "TCM") {
             open(base_url + "Sale/print_invoice/" + sale_id + '/package', 'Print Invoice', 'width=1600,height=550');
         }
         // $("#finalize_order_cancel_button").click();

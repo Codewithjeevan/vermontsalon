@@ -876,6 +876,16 @@
                                             <?php echo lang('summary_sales_report'); ?>
                                         </a>
                                     </li>
+                                    <li data-access="summary_sales_report-249" class="menu_assign_class " module-is-hide="PackageSummary Sales Report-YES">
+                                        <a class="child-menu " href="<?php echo base_url(); ?>Report/summarySalesPackageReport">
+                                            <?php echo lang('summary_sales_package_report'); ?>
+                                        </a>
+                                    </li>
+                                    <li data-access="summary_sales_report-249" class="menu_assign_class " module-is-hide="PackageSummary Sales Report-YES">
+                                        <a class="child-menu " href="<?php echo base_url(); ?>Report/summarySalesWithPackageReport">
+                                            <?php echo lang('all_summary_sales_report'); ?>
+                                        </a>
+                                    </li>
                                     <li data-access="therapist_report-249" class="menu_assign_class " module-is-hide="Therapist Report-YES">
                                         <a class="child-menu " href="<?php echo base_url(); ?>Report/therapistReport">
                                             <?php echo lang('therapist_report'); ?>
