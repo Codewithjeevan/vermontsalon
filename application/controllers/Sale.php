@@ -149,7 +149,8 @@ class Sale extends Cl_Controller {
 
     public function print_advance_invoice($saleid) {
         $saleid = hex2bin($saleid);
-        $data['packagedata'] = $this->Sale_model->getPackageData($saleid);
+        $data['sale_object'] = $this->Sale_model->getPackageData($saleid);
+        $data['customer_info'] = $this->Common_model->getCustomerById($data['sale_object']->customer_id);
         $data['outlet_info'] = $this->Common_model->getCurrentOutlet();
 
         $this->load->view('package/print_advance_invoice', $data);
