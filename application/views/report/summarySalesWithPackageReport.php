@@ -101,17 +101,17 @@
                             <?php foreach($saleReport as $r): ?>
                             <tr>
                                 <td><?= $r->sale_date ?></td>
-                                <td><?= $r->package_advance_cash ?></td>
-                                <td><?= $r->package_advance_card ?></td>
-                                <td><?= $r->used_package_cash ?></td>
-                                <td><?= $r->used_package_card ?></td>
-                                <td><?= $r->general_cash ?></td>
-                                <td><?= $r->general_card ?></td>
-                                <td><?= $r->groupon_amount ?></td>
-                                <td><?= $r->daily_total ?></td>
+                                <td><?= round($r->package_advance_cash,2) ?></td>
+                                <td><?= round($r->package_advance_card,2) ?></td>
+                                <td><?= round($r->used_package_cash,2) ?></td>
+                                <td><?= round($r->used_package_card,2) ?></td>
+                                <td><?= round($r->general_cash,2) ?></td>
+                                <td><?= round($r->general_card,2) ?></td>
+                                <td><?= round($r->groupon_amount,2) ?></td>
+                                <td><?= round($r->daily_total,2) ?></td>
                                 <td><?= round($r->vat_total, 2) ?></td>
-                                <td><?= $r->total_card_on_bank ?></td>
-                                <td><?= $r->total_cash_amount ?></td>
+                                <td><?= round($r->total_card_on_bank,2) ?></td>
+                                <td><?= round($r->total_cash_amount,2) ?></td>
                             </tr>
                             <?php endforeach; ?>
                             <?php endif; ?>

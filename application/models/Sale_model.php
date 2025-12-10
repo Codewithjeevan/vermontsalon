@@ -1102,9 +1102,10 @@ class Sale_model extends CI_Model {
   public function getPackageData($id)
   {
     
-      $this->db->select("ps.*, c.name as customer_name, c.phone as c_phone, c.email as c_email, c.address as c_address, i.name as package_name, psc.remaining_session, psc.remaining_amount, psc.note, ps.cancelled_at, c.name as customer_name, i.name as package_name");
+      $this->db->select("ps.*, c.id as customer_id, c.name as customer_name, c.phone as c_phone, c.email as c_email, c.address as c_address, i.name as package_name, psc.remaining_session, psc.remaining_amount, psc.note, ps.cancelled_at, c.name as customer_name, i.name as package_name, u.full_name as user_name");
       $this->db->from("package_sale ps");
       $this->db->join('package_sale_cancelation psc', 'psc.package_sale_id = ps.id', 'left');
+      $this->db->join("tbl_users u", "u.id = ps.user_id", "left");
       $this->db->join("tbl_customers c", "c.id = ps.customer_id", "left");
       $this->db->join("tbl_items i", "i.id = ps.package_id", "left");
       $this->db->where("ps.id", $id);
