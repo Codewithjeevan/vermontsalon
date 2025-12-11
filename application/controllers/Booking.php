@@ -63,7 +63,7 @@ class Booking extends Cl_Controller {
             $start_time = (new DateTime($startDateTime))->format('H:i');
             $end_time = (new DateTime($endDateTime))->format('H:i');
             $data[] = [
-                "title" => $start_time . '-' . $end_time . ':' . $item->customer_name,
+                "title" => $start_time . '-' . $end_time . ':' . $item->customer_name . ' ' . $item->customer_phone,
                 "start" => $item->start_date,
                 "end" => $item->end_date,
                 "status" => $item->status,

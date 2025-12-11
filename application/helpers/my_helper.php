@@ -621,7 +621,7 @@ if(!function_exists('getBookingData')){
     function getBookingData(){
         $CI = & get_instance();
         $company_id = $CI->session->userdata('company_id');
-        $CI->db->select('b.id, b.start_date, b.end_date, b.status, c.name as customer_name, u.full_name as service_seller_name');
+        $CI->db->select('b.id, b.start_date, b.end_date, b.status, c.name as customer_name, c.phone as customer_phone, u.full_name as service_seller_name');
         $CI->db->from('tbl_bookings b');
         $CI->db->join('tbl_customers c', 'c.id = b.customer_id', 'left');
         $CI->db->join('tbl_users u', 'u.id = b.service_seller_id', 'left');
