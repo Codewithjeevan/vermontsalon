@@ -1021,6 +1021,7 @@ class Report_model extends CI_Model {
             's.sale_date',
             'SUM(s.total_payable)         AS total_payable',
             'SUM(s.total_discount_amount) AS total_discount_amount',
+            'SUM(s.vat) AS total_vat',
             "COALESCE(
             GROUP_CONCAT(s.sale_vat_objects SEPARATOR '|||'),
             ''
