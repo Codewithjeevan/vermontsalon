@@ -128,7 +128,7 @@
                                 </select>
                             </div>
                         </div>
-                        <!-- <div class="mb-3 col-lg-4 col-md-6 hide_show_1">
+                        <div class="mb-3 col-lg-4 col-md-6 hide_show_1">
                             <div class="form-group">
                                 <label><?php echo lang('print_format'); ?> <span class="required_star">*</span></label>
                                 <select name="print_format" id="print_format" class="select2 form-control">
@@ -136,6 +136,7 @@
                                     <option value="56mm"><?php echo lang('p56mm'); ?></option>
                                     <option value="80mm"><?php echo lang('p80mm'); ?></option>
                                     <option value="A4 Print"><?php echo lang('A4_Print'); ?></option>
+                                    <option value="TCM"><?php echo lang('A4_Print_2'); ?></option>
                                     <option value="Half A4 Print"><?php echo lang('Half_A4_Print'); ?></option>
                                     <option value="Letter Head"><?php echo lang('letter_head'); ?></option>
                                 </select>
@@ -158,7 +159,7 @@
                                     <option value="Zatca"><?php echo lang('zatca_qr_code'); ?></option>
                                 </select>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="col-md-6 col-lg-4 mb-3 hide_show_4">
                             <div class="form-group">
                                 <label><?php echo lang('printer_type'); ?> <span class="required_star">*</span></label>

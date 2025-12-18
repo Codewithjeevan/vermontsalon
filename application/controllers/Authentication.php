@@ -661,10 +661,11 @@ class Authentication extends Cl_Controller {
                 ];
                 
                 // Check register status
-                if ($register_status == '1') {
+                // if ($register_status == '1') {
                     $counter_id = $this->Common_model->getCounterIdFromRegister($user_information->id);
                     if ($counter_id) {
                         $printer_id = $this->Common_model->getPrinterIdByCounterId($counter_id);
+                        // dd($printer_info);
                         $printer_info = $this->Common_model->getPrinterInfoById($printer_id);
                         if ($printer_info) {
                             $login_session['print_format'] = $printer_info->print_format;
@@ -679,8 +680,8 @@ class Authentication extends Cl_Controller {
                             $login_session['inv_qr_code_status'] = $printer_info->inv_qr_code_status;
                         }
                     }
-                }
-
+                // }
+                    // dd($login_session);
 
                 $login_session['invoice_configuration'] = $company_info->invoice_configuration;
                 $login_session['inv_logo_is_show'] = $company_info->inv_logo_is_show;
