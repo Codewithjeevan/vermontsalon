@@ -1041,6 +1041,7 @@ $lang['No'] = 'No';
 $lang['No Print'] = 'No Print';
 $lang['Thermal Print'] = 'Thermal Print';
 $lang['A4 Print'] = 'A4 Print';
+$lang['A4_Print_2'] = 'A4 Print (2)';
 $lang['Half A4 Print'] = 'Half A4 Print';
 $lang['Half_A4_Print'] = 'Half A4 Print';
 $lang['Not for login, for showing in print receipt'] = 'Not for login, for showing in print receipt';

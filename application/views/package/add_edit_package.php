@@ -114,7 +114,10 @@ $inv_config = json_decode($invoice_configuration);
                                         <?php 
                                             if(isset($editdata->sessions) && count(@$editdata->sessions) > 0){
                                                 foreach(@$editdata->sessions as $key => $value){ ?>
-                                                    <tr class="<?= $value->status == '1' ? 'disabled-row' : '' ?>">
+                                                    <tr class="<?= $value->status == '1' ? 'disabled-row' : '' ?>"
+                                                        data-employee-id="<?= escape_output($value->employee_id) ?>"
+                                                        data-in-time="<?= escape_output($value->in_time) ?>"
+                                                        data-out-time="<?= escape_output($value->out_time) ?>">
                                                         <td>
                                                             <input type="text" name="session_name[]" class="form-control" value="<?php echo  $value->session_name ? escape_output($value->session_name) : 'Session '.($key+1).''; ?>" readonly>
                                                             <input type="hidden" name="session_id[]" value="<?php echo escape_output($value->session_id); ?>">
@@ -138,7 +141,7 @@ $inv_config = json_decode($invoice_configuration);
                                                             <input type="datetime-local" name="out_time[]" class="form-control" value="<?php echo escape_output($value->out_time); ?>">
                                                         </td>
                                                         <td>
-                                                            <select name="status[]" class="form-select" style="height: 45px;">
+                                                            <select name="status[]" class="form-select" style="height: 45px;" data-current-status="<?php echo escape_output($value->status); ?>">
                                                                 <option value="0" <?= $value->status == '0' ? 'Selected' : '' ?>>Available</option>
                                                                 <option value="1" <?= $value->status == '1' ? 'Selected' : '' ?>>Used</option>
                                                             </select>
