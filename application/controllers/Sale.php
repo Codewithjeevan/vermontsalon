@@ -1117,6 +1117,70 @@ class Sale extends Cl_Controller {
         // return redirect('package-sale-list');
     }
 
+    public function updatePackageSessionStatus()
+    {
+        $packSessionId = htmlspecialcharscustom($this->input->post('pack_session_id'));
+        $status = htmlspecialcharscustom($this->input->post('status'));
+        $employeeId = htmlspecialcharscustom($this->input->post('employee_id'));
+        $inTime = htmlspecialcharscustom($this->input->post('in_time'));
+        $outTime = htmlspecialcharscustom($this->input->post('out_time'));
+        $sessionName = htmlspecialcharscustom($this->input->post('session_name'));
+        $sessionId = htmlspecialcharscustom($this->input->post('session_id'));
+        $paymentMethod = htmlspecialcharscustom($this->input->post('payment_method'));
+
+        $response = [
+            'status' => 'error',
+            'message' => 'Unable to update session status right now.',
+            'csrf_value_' => $this->security->get_csrf_hash()
+        ];
+
+        if (!$packSessionId) {
+            $response['message'] = 'Invalid session identifier.';
+            return $this->output->set_content_type('application/json')->set_output(json_encode($response));
+        }
+
+        $session = $this->db->select('status')->from('package_sessions')->where('id', $packSessionId)->get()->row();
+        if (!$session) {
+            $response['message'] = 'Session not found.';
+            return $this->output->set_content_type('application/json')->set_output(json_encode($response));
+        }
+
+        $updateData = ['status' => $status];
+        if ($status === '1' && $session->status != '1') {
+            $updateData['sale_date'] = date('Y-m-d H:i:s');
+        }
+        if ($employeeId !== null) {
+            $updateData['employee_id'] = $employeeId ?: null;
+        }
+        if ($inTime !== null) {
+            $updateData['in_time'] = $inTime ?: null;
+        }
+        if ($outTime !== null) {
+            $updateData['out_time'] = $outTime ?: null;
+        }
+        if ($sessionName !== null) {
+            $updateData['session_name'] = $sessionName;
+        }
+        if ($sessionId !== null) {
+            $updateData['session_id'] = $sessionId;
+        }
+        if ($paymentMethod !== null) {
+            $updateData['payment_method'] = $paymentMethod;
+        }
+
+        $this->db->where('id', $packSessionId);
+        $result = $this->db->update('package_sessions', $updateData);
+
+        if ($result) {
+            $response['status'] = 'success';
+            $response['message'] = 'Session status updated successfully.';
+        } else {
+            $response['message'] = 'Failed to save session status.';
+        }
+
+        $response['csrf_value_'] = $this->security->get_csrf_hash();
+        return $this->output->set_content_type('application/json')->set_output(json_encode($response));
+    }
 
 
     // end of package sale

@@ -33,6 +33,7 @@ let collect_tax = $('#collect_tax').val();
 let collect_gst = $('#tax_is_gst').val();
 let gst_state_code = $('#gst_state_code').val();
 let csrf_value_ = $("#csrf_value_").val();
+let csrf_name_ = $("#csrf_name_").val();
 let op_precision = $("#op_precision").val();
 let op_decimals_separator = $("#op_decimals_separator").val();
 let op_thousands_separator = $("#op_thousands_separator").val();
@@ -192,7 +193,7 @@ $(document).on('change', '.package_data', function () {
                         <td><input type="datetime-local" name="in_time[]" class="form-control"></td>
                         <td><input type="datetime-local" name="out_time[]" class="form-control"></td>
                         <td>
-                            <select name="status[]" class="form-select" style="height: 45px;">
+                            <select name="status[]" class="form-select" style="height: 45px;" data-current-status="0">
                                 <option value="0">Available</option>
                                 <option value="1">Used</option>
                             </select>
@@ -294,6 +295,78 @@ function cancelnow(id) {
                     });
                 }
             });
+        }
+    });
+}
+
+$(document).on('change', '#session_table_body select[name="status[]"]', function () {
+    const $select = $(this);
+    const newStatus = $select.val();
+    const previousStatus = $select.data('current-status') || $select.attr('data-current-status') || '0';
+    const $row = $select.closest('tr');
+    const packSessionId = $row.find('input[name="pack_session_id[]"]').val();
+    const employeeId = $row.find('select[name="employee_id[]"]').val();
+    const inTime = $row.find('input[name="in_time[]"]').val();
+    const outTime = $row.find('input[name="out_time[]"]').val();
+
+    if (!employeeId || !inTime || !outTime) {
+        $select.val(previousStatus);
+        return;
+    }
+
+    if (!packSessionId) {
+        toggleSessionRowState($row, newStatus);
+        $select.data('current-status', newStatus);
+        return;
+    }
+
+    updatePackageSessionStatus(packSessionId, newStatus, $row, $select, previousStatus);
+});
+
+function toggleSessionRowState($row, status) {
+    if (status === '1') {
+        $row.addClass('disabled-row');
+    } else {
+        $row.removeClass('disabled-row');
+    }
+}
+
+function updatePackageSessionStatus(packSessionId, status, $row, $select, previousStatus) {
+    const payload = {
+        pack_session_id: packSessionId,
+        status: status,
+        session_id: $row.find('input[name="session_id[]"]').val(),
+        session_name: $row.find('input[name="session_name[]"]').val(),
+        employee_id: $row.find('select[name="employee_id[]"]').val(),
+        in_time: $row.find('input[name="in_time[]"]').val(),
+        out_time: $row.find('input[name="out_time[]"]').val(),
+        payment_method: $('#payment_method').val()
+    };
+    payload[csrf_name_] = csrf_value_;
+
+    $.ajax({
+        url: base_url + "Sale/updatePackageSessionStatus",
+        method: "POST",
+        dataType: "json",
+        data: payload,
+        success: function (response) {
+            if (response.status === 'success') {
+                toggleSessionRowState($row, status);
+                $select.data('current-status', status);
+            } else {
+                $select.val(previousStatus);
+                $select.data('current-status', previousStatus);
+                Swal.fire('Oops!', response.message || 'Unable to update session status right now.', 'error');
+            }
+            if (response.csrf_value_) {
+                csrf_value_ = response.csrf_value_;
+                $('#csrf_value_').val(csrf_value_);
+            }
+        },
+        error: function () {
+            $select.val(previousStatus);
+            $select.data('current-status', previousStatus);
+            Swal.fire('Oops!', 'Unable to update session status. Try again later.', 'error');
         }
     });
 }
