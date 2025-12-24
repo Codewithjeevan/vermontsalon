@@ -683,7 +683,6 @@ function toggleSessionRowState($row, status) {
     }
 }
 
-
 function updatePackageSessionStatus(packSessionId, status, $row, $select, previousStatus) {
     const payload = {
         pack_session_id: packSessionId,
