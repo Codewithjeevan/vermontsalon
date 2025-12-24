@@ -1148,12 +1148,21 @@ class Report_model extends CI_Model {
             IFNULL(gp.general_card, 0) AS general_card,
             IFNULL(gp.groupon_amount, 0) AS groupon_amount,
 
+            /* -------- DAILY SUB-TOTAL -------- */
+            (
+                IFNULL(gs.sub_total, 0)
+                + IFNULL(up.sub_total, 0)
+            ) AS sub_total,
+
             /* -------- DAILY TOTAL -------- */
             (
                 IFNULL(gs.general_total, 0)
                 + IFNULL(up.used_package_cash, 0)
                 + IFNULL(up.used_package_card, 0)
             ) AS daily_total,
+
+            /* -------- CANCELLED PACKAGE AMOUNT -------- */
+            IFNULL(pc.cancelled_amount, 0) AS cancelled_amount, 
 
             /* -------- VAT total -------- */
             (
@@ -1198,10 +1207,23 @@ class Report_model extends CI_Model {
                 DATE(in_time) AS date,
                 SUM(CASE WHEN payment_method='Cash' THEN price ELSE 0 END) AS used_package_cash,
                 SUM(CASE WHEN payment_method='Card' THEN price ELSE 0 END) AS used_package_card,
-                SUM(IFNULL(tax_amt, 0)) AS vat_total
+                SUM(IFNULL(tax_amt, 0)) AS vat_total,
+                SUM(IFNULL(sub_total, 0)) AS sub_total
             FROM package_sessions
             GROUP BY DATE(in_time)
         ) up ON up.date = d.sale_date
+
+
+        /* ---------------- PACKAGE CANCELLATION ---------------- */
+        LEFT JOIN (
+            SELECT
+                DATE(created_at) AS date,
+                SUM(remaining_amount) AS cancelled_amount,
+                SUM(remaining_session) AS cancelled_sessions
+            FROM package_sale_cancelation
+            GROUP BY DATE(created_at)
+        ) pc ON pc.date = d.sale_date
+
 
 
         /* ---------------- GENERAL SALE TOTAL ---------------- */
@@ -1209,7 +1231,8 @@ class Report_model extends CI_Model {
             SELECT
                 DATE(sale_date) AS date,
                 SUM(total_payable) AS general_total,
-                SUM(IFNULL(vat, 0)) AS vat_total
+                SUM(IFNULL(vat, 0)) AS vat_total,
+                SUM(IFNULL(sub_total, 0)) AS sub_total
             FROM tbl_sales
             WHERE company_id='$company_id'
             " . ($outlet_id ? "AND outlet_id='$outlet_id'" : "") . "

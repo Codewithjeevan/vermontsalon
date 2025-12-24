@@ -173,37 +173,389 @@ $(document).ready(function () {
 });
 
 
-$(document).on('change', '.package_data', function () {
-    let session_count = $('option:selected', this).data('session');
-    let emp_clone = $('#employee_id').prop('outerHTML');
-    let price = $('option:selected', this).data('price');
-    let session_price = parseFloat(price) / parseFloat(session_count);
-    $('#total').val(price.toFixed(2));
-    $('#session_count').val(session_count);
-    let allRows = "";
+const sessionPriceSelectors = 'input[name="session_price[]"]';
+const sessionTableBody = '#session_table_body';
+const remainingBalanceSelector = '#remaining_balance';
+const packageAssignmentErrorSelector = '#package_assignment_error';
+const isEditMode = $('#edit_id').val() ? true : false;
+let baseSessionCount = parseInt($('#session_count').val(), 10) || 0;
 
-    for (let i = 1; i <= session_count; i++) {
-        allRows += `<tr>
-                        <td>
-                        <input type="text" name="session_name[]" class="form-control" value="Session ${i}" readonly>
-                        <input type="hidden" name="session_id[]" value="${i}">
-                        </td>
-                        <td><input type="text" name="session_price[]" class="form-control" value="${session_price.toFixed(2)}" readonly></td>
-                        <td>${emp_clone}</td>
-                        <td><input type="datetime-local" name="in_time[]" class="form-control"></td>
-                        <td><input type="datetime-local" name="out_time[]" class="form-control"></td>
-                        <td>
-                            <select name="status[]" class="form-select" style="height: 45px;" data-current-status="0">
-                                <option value="0">Available</option>
-                                <option value="1">Used</option>
-                            </select>
-                        </td>
-                    </tr>`;
+function toNumber(value) {
+    if (value === null || value === undefined) return 0;
+    const cleaned = String(value).replace(/,/g, '').trim();
+    const parsed = parseFloat(cleaned);
+    return isNaN(parsed) ? 0 : parsed;
+}
+
+function getTotalPrice() {
+    return toNumber($('#total').val());
+}
+
+function sanitizeSessionPriceInput(element) {
+    const raw = element.value || '';
+    const filtered = raw.replace(/[^0-9.]/g, '');
+    const firstDot = filtered.indexOf('.');
+    const normalized = firstDot === -1
+        ? filtered
+        : filtered.slice(0, firstDot + 1) + filtered.slice(firstDot + 1).replace(/\./g, '');
+
+    if (normalized === raw) {
+        return raw;
     }
 
+    const caret = element.selectionStart || 0;
+    const caretLeft = raw.slice(0, caret).replace(/[^0-9.]/g, '');
+    element.value = normalized;
+    const newPosition = Math.min(normalized.length, caretLeft.length);
+    element.setSelectionRange(newPosition, newPosition);
+    return normalized;
+}
+
+function updateRemainingBalanceDisplay(amount) {
+    if (!isEditMode) return;
+    const value = amount < 0 ? 0 : amount;
+    $(remainingBalanceSelector).val(value.toFixed(2));
+}
+
+function getUsedTotal() {
+    let usedTotal = 0;
+    $(sessionTableBody).find('tr').each(function () {
+        const status = $(this).find('select[name="status[]"]').val();
+        if (status === '1') {
+            const price = toNumber($(this).find(sessionPriceSelectors).val());
+            usedTotal += price;
+        }
+    });
+    return usedTotal;
+}
+
+function getRemainingFromUsed() {
+    const remaining = getTotalPrice() - getUsedTotal();
+    return remaining < 0 ? 0 : remaining;
+}
+
+function getBaseSessionRowCount() {
+    return $(sessionTableBody).find('tr').filter(function () {
+        return !$(this).data('remaining-row');
+    }).length;
+}
+
+function getBaseUsedCount() {
+    let count = 0;
+    $(sessionTableBody).find('tr').each(function () {
+        if ($(this).data('remaining-row')) {
+            return;
+        }
+        const status = $(this).find('select[name="status[]"]').val();
+        if (status === '1') {
+            count++;
+        }
+    });
+    return count;
+}
+
+function markFixedRows() {
+    $(sessionTableBody).find('tr.disabled-row').find(sessionPriceSelectors).each(function () {
+        $(this).data('userEdited', true);
+    });
+    $(sessionTableBody).find('tr[data-remaining-row="1"]').find(sessionPriceSelectors).each(function () {
+        $(this).data('userEdited', true);
+    });
+}
+
+function buildSessionRow(index, priceValue) {
+    const empClone = $('#employee_id').prop('outerHTML');
+    return `<tr>
+                <td>
+                <input type="text" name="session_name[]" class="form-control" value="Session ${index}" readonly>
+                <input type="hidden" name="session_id[]" value="${index}">
+                <input type="hidden" name="pack_session_id[]" value="">
+                </td>
+                <td><input type="text" name="session_price[]" class="form-control" value="${priceValue}"></td>
+                <td>${empClone}</td>
+                <td><input type="datetime-local" name="in_time[]" class="form-control"></td>
+                <td><input type="number" name="time_frame[]" class="form-control time_frame_input" min="0" step="1" placeholder="Minutes"></td>
+                <td><input type="datetime-local" name="out_time[]" class="form-control"></td>
+                <td>
+                    <select name="status[]" class="form-select" style="height: 45px;" data-current-status="0">
+                        <option value="0">Available</option>
+                        <option value="1">Used</option>
+                    </select>
+                </td>
+            </tr>`;
+}
+
+function buildRemainingBalanceRow(priceValue) {
+    const empClone = $('#employee_id').prop('outerHTML');
+    const rowIndex = $(sessionTableBody).find('tr').length + 1;
+    return `<tr data-remaining-row="1">
+                <td>
+                <input type="text" name="session_name[]" class="form-control" value="Remaining Balance" readonly>
+                <input type="hidden" name="session_id[]" value="${rowIndex}">
+                <input type="hidden" name="pack_session_id[]" value="">
+                </td>
+                <td><input type="text" name="session_price[]" class="form-control" value="${priceValue}" data-user-edited="1"></td>
+                <td>${empClone}</td>
+                <td><input type="datetime-local" name="in_time[]" class="form-control"></td>
+                <td><input type="number" name="time_frame[]" class="form-control time_frame_input" min="0" step="1" placeholder="Minutes"></td>
+                <td><input type="datetime-local" name="out_time[]" class="form-control"></td>
+                <td>
+                    <select name="status[]" class="form-select" style="height: 45px;" data-current-status="0">
+                        <option value="0">Available</option>
+                        <option value="1">Used</option>
+                    </select>
+                </td>
+            </tr>`;
+}
+
+function ensureRemainingBalanceRows(remaining) {
+    if (!isEditMode) return;
+    const total = getTotalPrice();
+    if (total <= 0 || remaining <= 0) return;
+
+    const $remainingRows = $(sessionTableBody).find('tr[data-remaining-row="1"]');
+    const hasAvailableRemaining = $remainingRows.filter(function () {
+        return $(this).find('select[name="status[]"]').val() === '0';
+    }).length > 0;
+
+    if (remaining > 0 && !hasAvailableRemaining) {
+        $(sessionTableBody).append(buildRemainingBalanceRow(remaining.toFixed(2)));
+        markFixedRows();
+    }
+}
+
+function rebalanceSessionPrices($changedInput) {
+    const total = getTotalPrice();
+    if (total <= 0) {
+        updateRemainingBalanceDisplay(0);
+        return;
+    }
+
+    if ($changedInput && $changedInput.length) {
+        $changedInput.data('userEdited', true);
+        let currentVal = toNumber($changedInput.val());
+        if (currentVal < 0) currentVal = 0;
+        $changedInput.val(currentVal === 0 ? '0.00' : $changedInput.val());
+    }
+
+    const $inputs = $(sessionTableBody).find(sessionPriceSelectors);
+    let fixedTotal = 0;
+    $inputs.each(function () {
+        const $input = $(this);
+        const status = $input.closest('tr').find('select[name="status[]"]').val();
+        if ($input.data('userEdited') || status === '1') {
+            let value = toNumber($input.val());
+            if (value < 0) {
+                value = 0;
+                $input.val('0.00');
+            }
+            fixedTotal += value;
+        }
+    });
+
+    if ($changedInput && $changedInput.length && fixedTotal > total) {
+        const currentVal = toNumber($changedInput.val());
+        const otherFixed = fixedTotal - currentVal;
+        let adjusted = total - otherFixed;
+        if (adjusted < 0) adjusted = 0;
+        $changedInput.val(adjusted.toFixed(2));
+        fixedTotal = otherFixed + adjusted;
+    }
+
+    let remaining = total - fixedTotal;
+    if (remaining < 0) remaining = 0;
+
+    if (isEditMode) {
+        ensureRemainingBalanceRows(getRemainingFromUsed());
+    }
+
+    const $autoInputs = $(sessionTableBody).find(sessionPriceSelectors).filter(function () {
+        const status = $(this).closest('tr').find('select[name="status[]"]').val();
+        return status === '0' && !$(this).data('userEdited');
+    });
+    const autoCount = $autoInputs.length;
+    if (autoCount > 0) {
+        const per = remaining / autoCount;
+        $autoInputs.each(function () {
+            $(this).val(per.toFixed(2));
+        });
+    }
+
+    const recalculatedTotal = $(sessionTableBody).find(sessionPriceSelectors).toArray().reduce((sum, input) => {
+        return sum + toNumber($(input).val());
+    }, 0);
+    updateRemainingBalanceDisplay(getRemainingFromUsed());
+}
+
+function syncRemainingBalance() {
+    const total = getTotalPrice();
+    if (total <= 0) {
+        updateRemainingBalanceDisplay(0);
+        return;
+    }
+    if (isEditMode) {
+        ensureRemainingBalanceRows(getRemainingFromUsed());
+    }
+    updateRemainingBalanceDisplay(getRemainingFromUsed());
+}
+
+$(document).on('change', '.package_data', function () {
+    const session_count = parseInt($('option:selected', this).data('session'), 10) || 0;
+    const price = toNumber($('option:selected', this).data('price'));
+    const session_price = session_count > 0 ? price / session_count : 0;
+    $('#total').val(price.toFixed(2));
+    $('#session_count').val(session_count);
+    baseSessionCount = session_count;
+
+    let allRows = "";
+    for (let i = 1; i <= session_count; i++) {
+        allRows += buildSessionRow(i, session_price.toFixed(2));
+    }
     $('#session_table tbody').html(allRows);
+    rebalanceSessionPrices();
+});
 
+$(document).on('input', `${sessionTableBody} ${sessionPriceSelectors}`, function () {
+    sanitizeSessionPriceInput(this);
+    rebalanceSessionPrices($(this));
+});
 
+$(document).on('click', '#add_remaining_balance_row_btn', function () {
+    const remaining = getRemainingFromUsed();
+    if (remaining <= 0) {
+        return;
+    }
+    $(sessionTableBody).append(buildRemainingBalanceRow(remaining.toFixed(2)));
+    markFixedRows();
+    rebalanceSessionPrices();
+});
+
+$(document).on('change', `${sessionTableBody} select[name="status[]"]`, function () {
+    rebalanceSessionPrices();
+    const remaining = getRemainingFromUsed();
+    ensureRemainingBalanceRows(remaining);
+    updateRemainingBalanceDisplay(remaining);
+});
+
+$(document).on('change', '#walk_in_customer, #select_pacakge', function () {
+    $(packageAssignmentErrorSelector).hide().text('');
+});
+
+$(document).on('click', '#pay_now_button', function (event) {
+    event.preventDefault();
+    const $button = $(this);
+    if ($button.prop('disabled')) {
+        return;
+    }
+
+    const customerId = $('#walk_in_customer').val();
+    const packageId = $('#select_pacakge').val();
+    const $form = $button.closest('form');
+    const $error = $(packageAssignmentErrorSelector);
+    $error.hide().text('');
+
+    if (!customerId || !packageId) {
+        $form.submit();
+        return;
+    }
+
+    if ($button.data('checking')) {
+        return;
+    }
+
+    const payload = {
+        customer_id: customerId,
+        package_id: packageId
+    };
+    const packageSaleId = $('#edit_id').val();
+    if (packageSaleId) {
+        payload.package_sale_id = packageSaleId;
+    }
+    payload[csrf_name_] = csrf_value_;
+
+    $button.data('checking', true);
+    $button.prop('disabled', true);
+
+    $.ajax({
+        url: base_url + 'Sale/checkCustomerPackageAssignment',
+        method: 'POST',
+        dataType: 'json',
+        data: payload,
+        success: function (response) {
+            if (response.csrf_value_) {
+                csrf_value_ = response.csrf_value_;
+                $('#csrf_value_').val(csrf_value_);
+            }
+
+            if (response.status === 'error') {
+                $error.text(response.message || 'This customer already has an active package assignment.').show();
+                return;
+            }
+
+            $form.submit();
+        },
+        error: function () {
+            $error.text('Unable to verify package assignment right now.').show();
+        },
+        complete: function () {
+            $button.removeData('checking');
+            $button.prop('disabled', false);
+        }
+    });
+});
+
+$(document).ready(function () {
+    if (isEditMode) {
+        baseSessionCount = getBaseSessionRowCount();
+        $('#walk_in_customer, #select_pacakge').prop('disabled', true);
+        $('#walk_in_customer, #select_pacakge').css('cursor', 'not-allowed');
+        $('#walk_in_customer').next('.select2').find('.select2-selection').css('cursor', 'not-allowed');
+    }
+    markFixedRows();
+    syncRemainingBalance();
+});
+
+function parseDateTimeLocal(value) {
+    if (!value || value.indexOf('T') === -1) return null;
+    const parts = value.split('T');
+    const dateParts = parts[0].split('-').map(Number);
+    const timeParts = parts[1].split(':').map(Number);
+    if (dateParts.length !== 3 || timeParts.length < 2) return null;
+    return new Date(dateParts[0], dateParts[1] - 1, dateParts[2], timeParts[0], timeParts[1], 0, 0);
+}
+
+function formatDateTimeLocal(date) {
+    const pad = (n) => String(n).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    const mm = pad(date.getMonth() + 1);
+    const dd = pad(date.getDate());
+    const hh = pad(date.getHours());
+    const min = pad(date.getMinutes());
+    return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+}
+
+function updateOutTimeFromFrame($row) {
+    const inTimeVal = $row.find('input[name="in_time[]"]').val();
+    const frameVal = $row.find('input[name="time_frame[]"]').val();
+    if (!inTimeVal || frameVal === '' || isNaN(frameVal)) return;
+    const minutes = parseInt(frameVal, 10);
+    if (minutes < 0) return;
+    const dt = parseDateTimeLocal(inTimeVal);
+    if (!dt) return;
+    dt.setMinutes(dt.getMinutes() + minutes);
+    $row.find('input[name="out_time[]"]').val(formatDateTimeLocal(dt));
+}
+
+$(document).on('input', '#session_table_body input[name="time_frame[]"]', function () {
+    updateOutTimeFromFrame($(this).closest('tr'));
+});
+
+$(document).on('change', '#session_table_body input[name="in_time[]"]', function () {
+    const $row = $(this).closest('tr');
+    const frameVal = $row.find('input[name="time_frame[]"]').val();
+    if (frameVal !== '' && !isNaN(frameVal)) {
+        updateOutTimeFromFrame($row);
+    }
 });
 
 
@@ -337,13 +689,14 @@ function updatePackageSessionStatus(packSessionId, status, $row, $select, previo
         status: status,
         session_id: $row.find('input[name="session_id[]"]').val(),
         session_name: $row.find('input[name="session_name[]"]').val(),
+        session_price: $row.find('input[name="session_price[]"]').val(),
         employee_id: $row.find('select[name="employee_id[]"]').val(),
+        time_frame: $row.find('input[name="time_frame[]"]').val(),
         in_time: $row.find('input[name="in_time[]"]').val(),
         out_time: $row.find('input[name="out_time[]"]').val(),
         payment_method: $('#payment_method').val()
     };
     payload[csrf_name_] = csrf_value_;
-
     $.ajax({
         url: base_url + "Sale/updatePackageSessionStatus",
         method: "POST",

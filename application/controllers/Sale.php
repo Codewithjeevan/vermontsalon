@@ -989,21 +989,9 @@ class Sale extends Cl_Controller {
                 $itemdata = $this->Common_model->getAllByCustomId($this->input->post('package_id'), 'id', 'tbl_items')[0];
                 $taxrate = $itemdata ? json_decode($itemdata->tax_information)[0]->tax_field_percentage : 0;
                 $tax_type = $this->session->userdata('tax_type'); // 2= inclusive or 1= exclusive
-                $totalamt = $this->input->post('total_amt');
-                $total_session = $this->input->post('session_count');
-                $eachamt = $totalamt / $total_session;
-                $taxAmt = number_format($eachamt - ($eachamt / (1 + ($taxrate / 100))), 2);
-                $sub_total = $eachamt-$taxAmt;
-                if($tax_type == 1){
-                    // exclusive
-                    $sub_total = $eachamt;
-                    $taxAmt = number_format(($eachamt * $taxrate) / 100, 2); // 4.76
-                    $eachamt = $eachamt + ($eachamt * ($taxrate / 100));
-                }
-
                 $input = $this->input->post();
-
                 $sessions = $input['session_id'] ?? [];
+                $sessionCount = count($sessions);
 
                 $this->db->trans_start();
                 $saleData = [
@@ -1011,7 +999,7 @@ class Sale extends Cl_Controller {
                     'package_id'      => $this->input->post('package_id'),
                     'status'          => 0,
                     'total_amt'       => $this->input->post('total_amt'),
-                    'session_count'   => $this->input->post('session_count'),
+                    'session_count'   => $sessionCount,
                     'payment_status'  => 1,
                     'payment_method'  => $this->input->post('payment_method'),
                     'outlet_id'  => $this->input->post('outlet_id'),
@@ -1034,27 +1022,41 @@ class Sale extends Cl_Controller {
                     $this->db->where('id', $package_sale_id);
                     $this->db->update('package_sale', ['invoice_no' => '00' . $package_sale_id]);
                 }
-
                 // ---------- HANDLE SESSIONS (INSERT + UPDATE BOTH) ----------
                 // Expected:
                 // sessions[0][id]
                 // sessions[0][session_id]
                 // sessions[0][price] etc
+                $remaining_amount = 0;
+                $remaining_sessions = 0;
+                $used_total = 0;
                 if (!empty($sessions)) {
                     foreach ($sessions as $k => $s) {
+                        $sessionPrice = isset($input['session_price'][$k]) ? (float) $input['session_price'][$k] : 0;
+                        $taxAmt = $sessionPrice - ($sessionPrice / (1 + ($taxrate / 100)));
+                        $sub_total = $sessionPrice - $taxAmt;
+                        $rowPrice = $sessionPrice;
+                        if ($tax_type == 1) {
+                            // exclusive
+                            $sub_total = $sessionPrice;
+                            $taxAmt = ($sessionPrice * $taxrate) / 100;
+                            $rowPrice = $sessionPrice + $taxAmt;
+                        }
+
                         $vat_obj = json_encode([
                             [
                                 'tax_field_id' => "",
                                 'tax_field_type' => 'VAT',
                                 'tax_field_rate' => $taxrate,
-                                'tax_field_amount' => $taxAmt,
+                                'tax_field_amount' => number_format($taxAmt, 2),
                             ]
                         ]);
                         $sessionRow = [
                             'package_sale_id' => $package_sale_id,
                             'session_id'      => $input['session_id'][$k],
                             'session_name'    => $input['session_name'][$k],
-                            'price'           => $eachamt,
+                            'time_frame'    => $input['time_frame'][$k] ?? NULL,
+                            'price'           => $rowPrice,
                             'sub_total'       => $sub_total,
                             'vat'             => $taxrate,
                             'vat_obj'             => $vat_obj,
@@ -1068,6 +1070,12 @@ class Sale extends Cl_Controller {
                             'sale_date'       => date('Y-m-d H:i:s'),
                             'payment_method'  => $input['payment_method'],
                         ];
+
+                        if ((string)$input['status'][$k] === '0') {
+                            $remaining_sessions++;
+                        } else {
+                            $used_total += $sessionPrice;
+                        }
 
                         if (!empty($input['pack_session_id'][$k])) {
                             // -------- UPDATE OLD SESSION --------
@@ -1086,6 +1094,27 @@ class Sale extends Cl_Controller {
                     }
                     
 
+                }
+
+                $saleUpdate = [];
+                $remaining_amount = (float) $this->input->post('total_amt') - $used_total;
+                if ($remaining_amount < 0) {
+                    $remaining_amount = 0;
+                }
+                if ($this->db->field_exists('remaing_price', 'package_sale')) {
+                    $saleUpdate['remaing_price'] = $remaining_amount;
+                }
+                if ($this->db->field_exists('remaining_session', 'package_sale')) {
+                    $saleUpdate['remaining_session'] = $remaining_sessions;
+                }
+
+                if($remaining_amount == 0){
+                    $saleUpdate['status'] = 1; // paid
+                }
+
+                if (!empty($saleUpdate)) {
+                    $this->db->where('id', $package_sale_id);
+                    $this->db->update('package_sale', $saleUpdate);
                 }
 
                 $this->db->trans_complete();
@@ -1123,10 +1152,12 @@ class Sale extends Cl_Controller {
         $status = htmlspecialcharscustom($this->input->post('status'));
         $employeeId = htmlspecialcharscustom($this->input->post('employee_id'));
         $inTime = htmlspecialcharscustom($this->input->post('in_time'));
+        $time_frame = htmlspecialcharscustom($this->input->post('time_frame'));
         $outTime = htmlspecialcharscustom($this->input->post('out_time'));
         $sessionName = htmlspecialcharscustom($this->input->post('session_name'));
         $sessionId = htmlspecialcharscustom($this->input->post('session_id'));
         $paymentMethod = htmlspecialcharscustom($this->input->post('payment_method'));
+        $sessionPrice = htmlspecialcharscustom($this->input->post('session_price'));
 
         $response = [
             'status' => 'error',
@@ -1139,7 +1170,7 @@ class Sale extends Cl_Controller {
             return $this->output->set_content_type('application/json')->set_output(json_encode($response));
         }
 
-        $session = $this->db->select('status')->from('package_sessions')->where('id', $packSessionId)->get()->row();
+        $session = $this->db->select('status, package_sale_id')->from('package_sessions')->where('id', $packSessionId)->get()->row();
         if (!$session) {
             $response['message'] = 'Session not found.';
             return $this->output->set_content_type('application/json')->set_output(json_encode($response));
@@ -1158,11 +1189,17 @@ class Sale extends Cl_Controller {
         if ($outTime !== null) {
             $updateData['out_time'] = $outTime ?: null;
         }
+        if ($time_frame !== null) {
+            $updateData['time_frame'] = $time_frame ?: null;
+        }
         if ($sessionName !== null) {
             $updateData['session_name'] = $sessionName;
         }
         if ($sessionId !== null) {
             $updateData['session_id'] = $sessionId;
+        }
+        if ($sessionPrice !== null) {
+            $updateData['price'] = (float) $sessionPrice;
         }
         if ($paymentMethod !== null) {
             $updateData['payment_method'] = $paymentMethod;
@@ -1174,6 +1211,41 @@ class Sale extends Cl_Controller {
         if ($result) {
             $response['status'] = 'success';
             $response['message'] = 'Session status updated successfully.';
+            if (!empty($session->package_sale_id)) {
+                $sale = $this->db->select('id, total_amt')->from('package_sale')->where('id', $session->package_sale_id)->get()->row();
+                if ($sale) {
+                    $used_total = $this->db->select('SUM(price) AS used_total')
+                        ->from('package_sessions')
+                        ->where('package_sale_id', $sale->id)
+                        ->where('status', '1')
+                        ->get()
+                        ->row();
+                    $remaining = (float) $sale->total_amt - (float) ($used_total->used_total ?? 0);
+                    if ($remaining < 0) {
+                        $remaining = 0;
+                    }
+                    $saleUpdate = [];
+                    if ($this->db->field_exists('remaing_price', 'package_sale')) {
+                        $saleUpdate['remaing_price'] = $remaining;
+                    }
+                    if ($this->db->field_exists('remaining_session', 'package_sale')) {
+                        $remaining_sessions = $this->db->from('package_sessions')
+                            ->where('package_sale_id', $sale->id)
+                            ->where('status', '0')
+                            ->count_all_results();
+                        $saleUpdate['remaining_session'] = $remaining_sessions;
+                    }
+
+                    if ($remaining == 0) {
+                        $saleUpdate['status'] = 1; // completed
+                    }
+
+                    if (!empty($saleUpdate)) {
+                        $this->db->where('id', $sale->id);
+                        $this->db->update('package_sale', $saleUpdate);
+                    }
+                }
+            }
         } else {
             $response['message'] = 'Failed to save session status.';
         }
@@ -1283,7 +1355,13 @@ class Sale extends Cl_Controller {
                     <i class="fa-regular fa-trash-can"></i>
                 </a>';
             }
-
+            $status = '<span class="badge bg-warning">'.lang('running').'</span>';
+            if($value->status == 1){
+                $status = '<span class="badge bg-success">'.lang('Completed').'</span>';
+            }elseif($value->status == 2){
+                $status = '<span class="badge bg-danger">'.lang('Cancelled').'</span>';
+            }
+                
             $sub_array =  array();
             $sub_array[] = $i--;
             $sub_array[] = $value->invoice_no;
@@ -1292,6 +1370,9 @@ class Sale extends Cl_Controller {
             $sub_array[] = $value->customer_name;
             $sub_array[] = $value->total_amt;
             $sub_array[] = $value->payment_method;
+            $sub_array[] = $value->session_count ?? 0;
+            $sub_array[] = $value->remaing_price ?? 0;
+            $sub_array[] = $status;
 
             $sub_array[] =  '
             <div class="btn_group_wrap">
@@ -1845,6 +1926,25 @@ class Sale extends Cl_Controller {
             'status' => 'success',
             'data' => $number_find,
         ];	
+        $this->output->set_content_type('application/json')->set_output(json_encode($response));
+    }
+
+    public function checkCustomerPackageAssignment() {
+        $customer_id = htmlspecialcharscustom($this->input->post('customer_id'));
+        $package_id = htmlspecialcharscustom($this->input->post('package_id'));
+        $package_sale_id = htmlspecialcharscustom($this->input->post('package_sale_id'));
+        $response = [
+            'status' => 'success',
+            'csrf_value_' => $this->security->get_csrf_hash()
+        ];
+
+        if ($customer_id && $package_id) {
+            if ($this->Sale_model->hasActivePackageAssignment($customer_id, $package_id, $package_sale_id)) {
+                $response['status'] = 'error';
+                $response['message'] = 'This customer is already assigned this package.';
+            }
+        }
+
         $this->output->set_content_type('application/json')->set_output(json_encode($response));
     }
 

@@ -89,10 +89,12 @@
                                 <th>General Cash</th>
                                 <th>General Card</th>
                                 <th>Groupon</th>
-                                <th>Daily Total</th>
+                                <th>Total Without Vat</th>
                                 <th>VAT</th>
+                                <th>Daily Total</th>
                                 <th>Total Card Bank</th>
                                 <th>Total Cash</th>
+                                <th>Cancellation Amount</th>
                             </tr>
                         </thead>
 
@@ -108,10 +110,12 @@
                                 <td><?= round($r->general_cash,2) ?></td>
                                 <td><?= round($r->general_card,2) ?></td>
                                 <td><?= round($r->groupon_amount,2) ?></td>
-                                <td><?= round($r->daily_total,2) ?></td>
+                                <td><?= round($r->sub_total, 2) ?></td>
                                 <td><?= round($r->vat_total, 2) ?></td>
+                                <td><?= round($r->daily_total,2) ?></td>
                                 <td><?= round($r->total_card_on_bank,2) ?></td>
                                 <td><?= round($r->total_cash_amount,2) ?></td>
+                                <td><?= round($r->cancelled_amount, 2) ?></td>
                             </tr>
                             <?php endforeach; ?>
                             <?php endif; ?>
