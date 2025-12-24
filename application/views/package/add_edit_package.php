@@ -61,19 +61,20 @@ $inv_config = json_decode($invoice_configuration);
                 <input type="hidden" id="edit_id" name="edit_id" value="<?= @$editdata->id ? @$editdata->id : NULL ?>">
             </div>
             <div class="box-body">
-                <div class="row">
-                    <div class="col-md-4 mb-3">
+                <div class="row ">
+                    <div class="col-md-4 mb-3" <?= @$editdata ? 'style="pointer-events: none; opacity: 0.6;"' : '' ?>>
                         <div class="form-group">
                             <label><?php echo lang('select_customer'); ?> <span class="required_star">*</span></label>
-                            <select id="walk_in_customer" name="customer_id"  required class="customer_data" tabindex="2"></select>
+                            <select id="walk_in_customer" name="customer_id"  required  class="customer_data" tabindex="2" ></select>
                         </div>
+                        <div id="package_assignment_error" class="text-danger small mt-1" style="display: none;"></div>
                         <?php if (form_error('name')) { ?>
                         <div class="callout callout-danger my-2">
                             <span class="error_paragraph"><?php echo form_error('name'); ?></span>
                         </div>
                         <?php } ?>
                     </div>
-                    <div class="col-md-4 mb-3">
+                    <div class="col-md-4 mb-3" <?= @$editdata ? 'style="pointer-events: none; opacity: 0.6;"' : '' ?>>
                         <div class="form-group">
                             <label><?php echo lang('select_pacakge'); ?> <span class="required_star">*</span></label>
                             <select id="select_pacakge" name="package_id"  class="package_data select2" required tabindex="2">
@@ -105,6 +106,7 @@ $inv_config = json_decode($invoice_configuration);
                                             <th><?php echo lang('price'); ?></th>
                                             <th><?php echo lang('employee'); ?></th>
                                             <th><?php echo lang('in_time'); ?></th>
+                                            <th>Time Frame (min)</th>
                                             <th><?php echo lang('out_time'); ?></th>
                                             <th><?php echo lang('status'); ?></th>
                                             <th><?php echo lang('invoice'); ?></th>
@@ -112,9 +114,10 @@ $inv_config = json_decode($invoice_configuration);
                                     </thead>
                                     <tbody id="session_table_body">
                                         <?php 
-                                            if(isset($editdata->sessions) && count(@$editdata->sessions) > 0){
+                                            if(isset($editdata->sessions) && count(@$editdata->sessions) > 0){  
                                                 foreach(@$editdata->sessions as $key => $value){ ?>
                                                     <tr class="<?= $value->status == '1' ? 'disabled-row' : '' ?>"
+                                                        <?= ($value->session_name === 'Remaining Balance') ? 'data-remaining-row="1"' : '' ?>
                                                         data-employee-id="<?= escape_output($value->employee_id) ?>"
                                                         data-in-time="<?= escape_output($value->in_time) ?>"
                                                         data-out-time="<?= escape_output($value->out_time) ?>">
@@ -124,7 +127,7 @@ $inv_config = json_decode($invoice_configuration);
                                                             <input type="hidden" name="pack_session_id[]" value="<?php echo escape_output($value->id); ?>">
                                                         </td>
                                                         <td>
-                                                            <input type="text" name="session_price[]" class="form-control" value="<?php echo escape_output($value->price); ?>" readonly>
+                                                            <input type="text" name="session_price[]" class="form-control" value="<?php echo escape_output($value->price); ?>" >
                                                         </td>
                                                         <td>
                                                             <select name="employee_id[]" class="form-select employee_select" style="height: 45px;">
@@ -136,6 +139,9 @@ $inv_config = json_decode($invoice_configuration);
                                                         </td>
                                                         <td>
                                                             <input type="datetime-local" name="in_time[]" class="form-control" value="<?php echo escape_output($value->in_time); ?>">
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" name="time_frame[]" class="form-control time_frame_input" min="0" step="1" value="<?php echo escape_output($value->time_frame); ?>" placeholder="Minutes">
                                                         </td>
                                                         <td>
                                                             <input type="datetime-local" name="out_time[]" class="form-control" value="<?php echo escape_output($value->out_time); ?>">
@@ -166,6 +172,21 @@ $inv_config = json_decode($invoice_configuration);
                             <input type="text" readonly id="total" name="total_amt" class="form-control" value="<?= @$editdata->total_amt ?? 0 ?>" readonly/>
                         </div>
                     </div>
+                    <?php if(@$editdata && @$editdata->id) : ?>
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group">
+                            <label>Remaining Balance</label>
+                            <input type="text" readonly id="remaining_balance" class="form-control" value="<?= @$editdata->remaing_price ?? 0 ?>" />
+                            <?php if (@$editdata->remaing_price > 0) : ?>
+                            <div class="mt-2">
+                                <button type="button" id="add_remaining_balance_row_btn" class="btn bg-blue-btn w-100">
+                                    Add Remaining Balance Session
+                                </button>
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
                             <label><?php echo lang('advance_payment'); ?> <span class="required_star">*</span></label>
@@ -178,7 +199,7 @@ $inv_config = json_decode($invoice_configuration);
                     <div class="col-md-4 d-flex gap-3">
                         <div class="form-group">
                             <label for="">&nbsp;</label>
-                            <button class="btn bg-blue-btn" <?= @$editdata->status == 1 || @$editdata->status == 2 ? 'disabled' : '' ?>>Pay Now</button>
+                            <button type="button" id="pay_now_button" class="btn bg-blue-btn" <?= @$editdata->status == 1 || @$editdata->status == 2 ? 'disabled' : '' ?>>Pay Now</button>
                         </div>
                         <?php if(@$editdata && @$editdata->status == 0) : ?>
                         <div class="form-group">
@@ -199,7 +220,7 @@ $inv_config = json_decode($invoice_configuration);
                         <h5 class="text-danger">This package is cancelled</h5>
                         <p class="m-0">Cancelled At: <?= date('d M Y', strtotime(@$editdata->cancelled_at)); ?></p>
                         <p class="m-0">Reason: <?= @$editdata->note ?></p>
-                        <p class="m-0">Remaning Balance: <?= @$editdata->remaining_amount ?></p>
+                        <p class="m-0">Remaning Balance: <?= @$editdata->cancelled_remaining_amount ?></p>
                         <p class="m-0">Remaning Session: <?= @$editdata->remaining_session ?></p>
                     </div>
                     <?php endif; ?>

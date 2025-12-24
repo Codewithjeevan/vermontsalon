@@ -987,6 +987,8 @@ class Sale_model extends CI_Model {
               sp.del_status,
               sp.total_amt,
               sp.payment_method,
+              sp.session_count,
+              sp.remaing_price,
               ti.name as package_name,
               c.name as customer_name
           ");
@@ -1094,15 +1096,30 @@ class Sale_model extends CI_Model {
     $this->db->where("tbl_purchase.added_date>=", $date);
     $this->db->where("tbl_purchase.added_date<=", date('Y-m-d H:i:s'));
     $this->db->where("tbl_purchase_payments.payment_id", $payment_id);
-    $data =  $this->db->get()->row();
-    return (isset($data->total_amount) && $data->total_amount?$data->total_amount:0);
+      $data =  $this->db->get()->row();
+      return (isset($data->total_amount) && $data->total_amount?$data->total_amount:0);
+  }
+
+  public function hasActivePackageAssignment($customer_id, $package_id, $exclude_sale_id = null) {
+    if (!$customer_id || !$package_id) {
+      return false;
+    }
+    $this->db->from('package_sale');
+    $this->db->where('customer_id', $customer_id);
+    $this->db->where('package_id', $package_id);
+    if ($exclude_sale_id) {
+      $this->db->where('id !=', $exclude_sale_id);
+    }
+    $this->db->where('status', '0');
+    $this->db->where('del_status', 'Live');
+    return $this->db->count_all_results() > 0;
   }
 
 
   public function getPackageData($id)
   {
     
-      $this->db->select("ps.*, c.id as customer_id, c.name as customer_name, c.phone as c_phone, c.email as c_email, c.address as c_address, i.name as package_name, psc.remaining_session, psc.remaining_amount, psc.note, ps.cancelled_at, c.name as customer_name, i.name as package_name, u.full_name as user_name");
+      $this->db->select("ps.*, ps.remaing_price as remaing_price, c.id as customer_id, c.name as customer_name, c.phone as c_phone, c.email as c_email, c.address as c_address, i.name as package_name, psc.remaining_session, psc.remaining_amount as cancelled_remaining_amount, psc.note, ps.cancelled_at, c.name as customer_name, i.name as package_name, u.full_name as user_name");
       $this->db->from("package_sale ps");
       $this->db->join('package_sale_cancelation psc', 'psc.package_sale_id = ps.id', 'left');
       $this->db->join("tbl_users u", "u.id = ps.user_id", "left");
@@ -1112,7 +1129,7 @@ class Sale_model extends CI_Model {
       $this->db->where("ps.del_status", "Live");
 
       $package = $this->db->get()->row();
-
+    
       if(!$package){
           return null;
       }
