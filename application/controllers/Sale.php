@@ -1334,6 +1334,14 @@ class Sale extends Cl_Controller {
         echo json_encode($output);
     }
 
+
+    public function getpackageDetails($id) {
+        $id = $this->custom->encrypt_decrypt($id, 'decrypt');
+        $data['package_data'] = $this->Sale_model->getPackageData($id);
+        $data['main_content'] = $this->load->view('package/package_detail', $data, TRUE);
+        $this->load->view('userHome', $data);
+    }
+
     /**
      * getPackageAjaxData
      * @access public
@@ -1350,6 +1358,11 @@ class Sale extends Cl_Controller {
         }
         foreach ($sales as $value){
             $html = '';
+
+            $html .= '<a class="btn btn-cyan" href="' . base_url() . 'Sale/getpackageDetails/' . $this->custom->encrypt_decrypt($value->id, 'encrypt') . '" data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-original-title="' . lang('details') . '">
+                    <i class="far fa-eye"></i>
+                    </a>';
             if ($this->session->userdata('role') == '1'||checkAccess(138,'delete')){ 
                 $html .= '<a class="delete btn btn-danger" href="'.base_url().'Sale/deletePackage/'. $this->custom->encrypt_decrypt($value->id, 'encrypt') .'" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="'.lang('delete').'">
                     <i class="fa-regular fa-trash-can"></i>
