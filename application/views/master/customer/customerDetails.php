@@ -58,6 +58,59 @@
             </div>
         </div>
     </div>
+    <!--  -->
+    <div class="box-wrapper mt-2">
+        <div class="table-box">
+            <div class="box-body" id="printablePackHistoryArea">
+                <div class="row" id="customer_details2">
+                    <div class="col-xl-6 col-lg-6 col-md-10 col-sm-12">
+                        <table class="table view_details_table">
+                            <tr>
+                                <td colspan="5">
+                                    <h4 class="m-0"><?php echo lang('package_buying_history') ?></h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="view_detail_border_right"><strong><?php echo lang('invoice_no');?></strong></th>
+                                <th class="view_detail_border_right"><strong><?php echo lang('date');?></strong></th>
+                                <th class="view_detail_border_right"><strong><?php echo lang('package');?></strong></th>
+                                <th class="view_detail_border_right"><strong><?php echo lang('employee');?></strong></th>
+                                <th class="view_detail_border_right"><strong><?php echo lang('amount');?></strong></th>
+                                <th class="view_detail_border_right"><strong><?php echo lang('session_count');?></strong></th>
+                                <th class="view_detail_border_right"><strong><?php echo lang('remaining_sessions');?></strong></th>
+                                <th class="view_detail_border_right"><strong><?php echo lang('status');?></strong></th>
+                            </tr>
+                            <?php if($customer_package_history){
+                                foreach ($customer_package_history as $history) { ?>
+                                    <tr>
+                                        <td class="view_detail_border_right"><?php echo escape_output(@$history->invoice_no);?></td>
+                                        <td class="view_detail_border_right"><?php echo date($this->session->userdata('date_format'), strtotime(@$history->purchase_date)); ?></td>
+                                        <td class="view_detail_border_right"><?php echo escape_output($history->package_name);?></td>
+                                        <td class="view_detail_border_right"><?php echo escape_output($history->seller_names);?></td>
+                                        <td class="view_detail_border_right"><?php echo getAmtCustom($history->total_amt);?></td>
+                                        <td class="view_detail_border_right"><?php echo escape_output($history->session_count);?></td>
+                                        <td class="view_detail_border_right"><?php echo escape_output($history->remaining_sessions);?></td>
+                                        <td class="view_detail_border_right"><?php if($history->status == 1){ echo lang('Completed'); }elseif($history->status == 2){ echo lang('Cancelled'); }else{ echo lang('running');} ?></td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } ?>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+                <a href="javascript:void(0)" class="btn bg-blue-btn" id="print_pack_history">
+                    <iconify-icon icon="solar:printer-2-broken"></iconify-icon>
+                    <?php echo lang('print'); ?>
+                </a>
+                <a class="btn bg-blue-btn" href="<?php echo base_url() ?>Customer/customers">
+                    <iconify-icon icon="solar:undo-left-round-broken"></iconify-icon>
+                    <?php echo lang('back'); ?>
+                </a>
+            </div>
+        </div>
+    </div>
 
 
     <div class="box-wrapper">

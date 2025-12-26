@@ -241,6 +241,7 @@ class Customer extends Cl_Controller {
         $id = $this->custom->encrypt_decrypt($id, 'decrypt');
         $data['customer_details'] = $this->Common_model->getDataById($id, "tbl_customers");
         $data['customer_history'] = $this->Common_model->getSaleInvoiceByCustomerId($id);
+        $data['customer_package_history'] = $this->Common_model->getSalePackageInvoiceByCustomerId($id);
         $data['main_content'] = $this->load->view('master/customer/customerDetails', $data, TRUE);
         $this->load->view('userHome', $data);
     }

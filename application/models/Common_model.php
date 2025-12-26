@@ -2645,6 +2645,50 @@ class Common_model extends CI_Model {
     }
 
 
+    /**
+     * getSaleInvoiceByCustomerId
+     * @access public
+     * @param int
+     * @return object
+     */
+    public function getSalePackageInvoiceByCustomerId($customer_id) {
+        $company_id = $this->session->userdata('company_id');
+
+        $this->db->select("
+            ps.*,
+            c.id as customer_id,
+            c.name as customer_name,
+            c.phone as c_phone,
+            c.email as c_email,
+            c.address as c_address,
+            i.name as package_name,
+            psc.remaining_session,
+            psc.remaining_amount as cancelled_remaining_amount,
+            psc.note,
+            ps.cancelled_at,
+
+            SUM(CASE WHEN pack_s.status = 0 THEN 1 ELSE 0 END) AS remaining_sessions,
+
+            GROUP_CONCAT(DISTINCT u.full_name ORDER BY u.full_name SEPARATOR ', ') AS seller_names
+        ");
+
+        $this->db->from("package_sale ps");
+        $this->db->join('package_sale_cancelation psc', 'psc.package_sale_id = ps.id', 'left');
+        $this->db->join("package_sessions pack_s", "pack_s.package_sale_id = ps.id", "left");
+        $this->db->join("tbl_users u", "u.id = pack_s.employee_id", "left");
+        $this->db->join("tbl_customers c", "c.id = ps.customer_id", "left");
+        $this->db->join("tbl_items i", "i.id = ps.package_id", "left");
+
+        $this->db->where("ps.customer_id", $customer_id);
+        $this->db->where("ps.del_status", "Live");
+        $this->db->group_by("ps.id");
+
+        $result = $this->db->get()->result();
+        return $result;
+
+    }
+
+
 
     /**
      * getSaleInfoByUserId
