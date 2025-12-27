@@ -421,6 +421,14 @@ $(document).on('input', `${sessionTableBody} ${sessionPriceSelectors}`, function
 });
 
 $(document).on('click', '#add_remaining_balance_row_btn', function () {
+    if($('#remaining_balance').val() <= 0){
+        return;
+    }
+
+    let sum = $('input[name="session_price[]"]').toArray().reduce((a, e) => a + (parseFloat(e.value) || 0), 0);
+    if (parseFloat($('#total').val()) <= sum) return;
+
+
     const remaining = getRemainingFromUsed();
     if (remaining <= 0) {
         return;

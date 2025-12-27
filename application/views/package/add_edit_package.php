@@ -113,9 +113,9 @@ $inv_config = json_decode($invoice_configuration);
                                         </tr>
                                     </thead>
                                     <tbody id="session_table_body">
-                                        <?php 
+                                        <?php $remain_session = 0;
                                             if(isset($editdata->sessions) && count(@$editdata->sessions) > 0){  
-                                                foreach(@$editdata->sessions as $key => $value){ ?>
+                                                foreach(@$editdata->sessions as $key => $value){ if($value->status == '0') { $remain_session++; } ?>
                                                     <tr class="<?= $value->status == '1' ? 'disabled-row' : '' ?>"
                                                         <?= ($value->session_name === 'Remaining Balance') ? 'data-remaining-row="1"' : '' ?>
                                                         data-employee-id="<?= escape_output($value->employee_id) ?>"
@@ -177,7 +177,7 @@ $inv_config = json_decode($invoice_configuration);
                         <div class="form-group">
                             <label>Remaining Balance</label>
                             <input type="text" readonly id="remaining_balance" class="form-control" value="<?= @$editdata->remaing_price ?? 0 ?>" />
-                            <?php if (@$editdata->remaing_price > 0) : ?>
+                            <?php if (@$editdata->remaing_price > 0 && $remain_session == 0) : ?>
                             <div class="mt-2">
                                 <button type="button" id="add_remaining_balance_row_btn" class="btn bg-blue-btn w-100">
                                     Add Remaining Balance Session
