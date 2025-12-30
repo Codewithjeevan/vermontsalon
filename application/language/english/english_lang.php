@@ -2717,6 +2717,7 @@ $lang['service_center_code'] = 'Service Senter Code';
 $lang['service_center_name'] = 'Service Center Name';
 $lang['list_activated_warranty'] = 'List Activated Warranty';
 $lang['item_information'] = 'Item Information';
+$lang['created_date'] = 'Created Date';
 $lang['customer_information'] = 'Customer Information';
 $lang['list_activated_warranty_product'] = 'List Activated Warranty Product';
 $lang['current_service_center'] = 'Current Service Center';
