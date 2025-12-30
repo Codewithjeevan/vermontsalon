@@ -1296,6 +1296,7 @@ class Sale extends Cl_Controller {
             $sub_array[] = $i--;
             $sub_array[] = $value->sale_no;
             $sub_array[] = dateFormat($value->date_time);
+            $sub_array[] = dateFormat($value->sale_date);
             $sub_array[] = $value->customer_name;
             $sub_array[] = getAmtCustom($value->total_payable);
             // $sub_array[] = $delivery_html;

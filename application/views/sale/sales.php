@@ -46,7 +46,8 @@
                         <tr>
                             <th class="op_width_1_p op_center"><?php echo lang('sn'); ?></th>
                             <th class="w-10"><?php echo lang('ref_no'); ?></th>
-                            <th class="w-15"><?php echo lang('date'); ?>(<?php echo lang('time'); ?>)</th>
+                            <th class="w-15"><?php echo lang('created_date'); ?></th>
+                            <th class="w-15"><?php echo lang('sale_date'); ?></th>
                             <th class="w-13"><?php echo lang('customer'); ?></th>
                             <th class="w-12 text-center"><?php echo lang('total_payable'); ?></th>
                             <!-- <th class="w-20"><php echo lang('delivery_status'); ?></th> -->

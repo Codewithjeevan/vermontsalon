@@ -5452,17 +5452,18 @@ $(function () {
 
     $('.icon_pick_date').datepicker({
         format: 'yyyy-mm-dd',
-        autoclose: true
-    }).on('changeDate', function(selected) {
-        let startDate = new Date(selected.date.valueOf());
-        let date = new Date(startDate);
-        let formattedDate = date.getFullYear() + '-' + 
-                            ('0' + (date.getMonth() + 1)).slice(-2) + '-' + 
-                            ('0' + date.getDate()).slice(-2);
+        autoclose: true,
+        endDate: new Date()   // 🚫 future dates disabled
+    }).on('changeDate', function (selected) {
+        let date = new Date(selected.date.valueOf());
+
+        let formattedDate = date.getFullYear() + '-' +
+            ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+            ('0' + date.getDate()).slice(-2);
+
         $(this).attr('data-get-date', formattedDate);
         $('#invoice_date_show').text(formattedDate);
     });
-    
 
 
 
