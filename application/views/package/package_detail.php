@@ -167,7 +167,6 @@
                     <th style="width:40px;">S#</th>
                     <th>ITEM DESCRIPTION</th>
                     <th style="width:60px;">QTY</th>
-                    <th style="width:90px;">GROSS</th>
                     <th style="width:90px;">DISCOUNT</th>
                     <th style="width:70px;">VAT</th>
                     <th style="width:90px;">NET</th>
@@ -179,12 +178,11 @@
                     <td><?= $package_data->package_name ?></td>
                     <td class="center"><?= $package_data->session_count ?></td>
                     <td class="right"><?= $package_data->total_amt ?></td>
-                    <td class="right"><?= $package_data->total_amt ?></td>
                     <td class="right">0.00</td>
                     <td class="right"><?= $package_data->total_amt ?></td>
                 </tr>
                 <tr class="total-row">
-                    <td colspan="6" class="right">TOTAL</td>
+                    <td colspan="5" class="right">TOTAL</td>
                     <td class="right"><?= $package_data->total_amt ?> AED</td>
                 </tr>
             </tbody>
@@ -195,29 +193,25 @@
         <table class="grid">
             <thead>
                 <tr>
-                    <th style="width:40px;">S#</th>
-                    <th style="width:120px;">In Time</th>
-                    <th style="width:120px;">Out Time</th>
-                    <th style="width:60px;">QTY</th>
-                    <th style="width:90px;">GROSS</th>
-                    <th style="width:90px;">DISCOUNT</th>
-                    <th style="width:70px;">VAT</th>
-                    <th style="width:90px;">NET</th>
-                    <th style="width:90px;">Employe</th>
+                    <th style="width:40px;">Sr.</th>
+                    <th style="width:120px;">Date</th>
+                    <th style="width:120px;">Time</th>
+                    <th style="width:120px;">Duration</th>
+                    <th style="width:60px;">Quantity</th>
+                    <th style="width:90px;">Amount per session</th>
+                    <th style="width:90px;">Doctor Attended</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($package_data->sessions as $key => $session) { ?>
                     <tr>
                         <td class="center"><?= $key + 1 ?></td>
-                        <td><?= $session->in_time ? date('d/m/Y h:i A', strtotime($session->in_time)) : '-' ?></td>
-                        <td><?= $session->out_time ? date('d/m/Y h:i A', strtotime($session->out_time)) : '-' ?></td>
+                        <td class="center"><?= $session->in_time ? date('d/m/Y', strtotime($session->in_time)) : '-' ?></td>
+                        <td class="center"><?= $session->in_time ? date('h:i A', strtotime($session->in_time)) : '-' ?></td>
+                        <td class="center"><?= $session->time_frame ? $session->time_frame : '-' ?></td>
                         <td class="center">1</td>
-                        <td class="right"><?= number_format((float) $session->sub_total, 2) ?></td>
-                        <td class="right"><?= number_format((float) $session->discount, 2) ?></td>
-                        <td class="center"><?= $session->vat ?></td>
-                        <td class="right"><?= number_format((float) $session->price, 2) ?></td>
-                        <td class="right"><?= $session->employee_name ?? '-' ?></td>
+                        <td class="center"><?= number_format((float) $session->price, 2) ?></td>
+                        <td class="center"><?= $session->employee_name ?? '-' ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
