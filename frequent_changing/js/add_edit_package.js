@@ -108,7 +108,7 @@ function getAllCustomers($sel, customer_id = '', if_ignore = false) {
     return $.ajax({
         url: base_url + "Sale/getCustomersAjax",
         method: "GET",
-        data: { search: '', page: 1 }
+        data: { search: '', customer_id: customer_id , page: 1 }
     })
         .done(function (response) {
             if (customer_id) {
