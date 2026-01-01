@@ -156,16 +156,6 @@
                 <td class="value">: <?= $package_data->invoice_no ?></td>
             </tr>
             <tr>
-                <td class="label">VALIDITY</td>
-                <td class="value">:
-                    <?= date('d/m/Y', strtotime($package_data->purchase_date)) ?>
-                    -
-                    <?= date('d/m/Y', strtotime($package_data->purchase_date)) ?>
-                </td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
                 <td class="label">PACKAGE CODE/NAME</td>
                 <td colspan="3">: <?= $package_data->package_name ?></td>
             </tr>
@@ -206,24 +196,28 @@
             <thead>
                 <tr>
                     <th style="width:40px;">S#</th>
-                    <th style="width:120px;">DATE</th>
+                    <th style="width:120px;">In Time</th>
+                    <th style="width:120px;">Out Time</th>
                     <th style="width:60px;">QTY</th>
                     <th style="width:90px;">GROSS</th>
                     <th style="width:90px;">DISCOUNT</th>
                     <th style="width:70px;">VAT</th>
                     <th style="width:90px;">NET</th>
+                    <th style="width:90px;">Employe</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($package_data->sessions as $key => $session) { ?>
                     <tr>
                         <td class="center"><?= $key + 1 ?></td>
-                        <td><?= $session->in_time ? date('d/m/Y', strtotime($session->in_time)) : '-' ?></td>
+                        <td><?= $session->in_time ? date('d/m/Y h:i A', strtotime($session->in_time)) : '-' ?></td>
+                        <td><?= $session->out_time ? date('d/m/Y h:i A', strtotime($session->out_time)) : '-' ?></td>
                         <td class="center">1</td>
                         <td class="right"><?= number_format((float) $session->sub_total, 2) ?></td>
                         <td class="right"><?= number_format((float) $session->discount, 2) ?></td>
                         <td class="center"><?= $session->vat ?></td>
                         <td class="right"><?= number_format((float) $session->price, 2) ?></td>
+                        <td class="right"><?= $session->employee_name ?? '-' ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
