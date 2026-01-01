@@ -89,6 +89,7 @@ $inv_config = json_decode($invoice_configuration);
                                 <?php } ?>
                             </select>
                         </div>
+                        <div id="package_error" class="text-danger small mt-1" style="display: none;"></div>
                         <?php if (form_error('name')) { ?>
                         <div class="callout callout-danger my-2">
                             <span class="error_paragraph"><?php echo form_error('name'); ?></span>

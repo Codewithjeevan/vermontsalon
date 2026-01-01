@@ -462,10 +462,18 @@ $(document).on('click', '#pay_now_button', function (event) {
     const $error = $(packageAssignmentErrorSelector);
     $error.hide().text('');
 
-    if (!customerId || !packageId) {
-        $form.submit();
+
+    
+    if(!customerId) {
+        $('#package_assignment_error').text('Please select customer.').show();
         return;
     }
+
+    if (!packageId) {
+        $('#package_error').text('Please select package.').show();
+        return;
+    }
+
 
     if ($button.data('checking')) {
         return;

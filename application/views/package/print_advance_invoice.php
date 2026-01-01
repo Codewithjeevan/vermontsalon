@@ -57,20 +57,20 @@ $inv_config = json_decode($invoice_configuration);
                     } ?>
                 </h3>
 
-                <?php if ($outlet_info->outlet_name) { ?>
-                    <p class="pb-3 common-heading"><?php echo escape_output($outlet_info->outlet_name); ?></p>
+                <?php if (@$outlet_info->outlet_name) { ?>
+                    <p class="pb-3 common-heading"><?php echo escape_output(@$outlet_info->outlet_name); ?></p>
                 <?php } ?>
-                <?php if ($outlet_info->address) { ?>
-                    <p class="pb-3 f-w-500 color-71"><?php echo escape_output($outlet_info->address); ?></p>
+                <?php if (@$outlet_info->address) { ?>
+                    <p class="pb-3 f-w-500 color-71"><?php echo escape_output(@$outlet_info->address); ?></p>
                 <?php } ?>
-                <?php if ($outlet_info->email) { ?>
+                <?php if (@$outlet_info->email) { ?>
                     <p class="pb-3 f-w-500 color-71"><?php echo lang('email'); ?>:
-                        <?php echo escape_output($outlet_info->email); ?>
+                        <?php echo escape_output(@$outlet_info->email); ?>
                     </p>
                 <?php } ?>
-                <?php if ($outlet_info->phone) { ?>
+                <?php if (@$outlet_info->phone) { ?>
                     <p class="pb-3 f-w-500 color-71"><?php echo lang('phone'); ?>:
-                        <?php echo escape_output($outlet_info->phone); ?>
+                        <?php echo escape_output(@$outlet_info->phone); ?>
                     </p>
                 <?php } ?>
                 <?php if ($this->session->userdata('collect_tax') == 'Yes' && $inv_config->show_business_tax_number == 'Yes' && $this->session->userdata('tax_registration_no')) { ?>
@@ -79,9 +79,9 @@ $inv_config = json_decode($invoice_configuration);
                         <?php echo $this->session->userdata('tax_registration_no'); ?>
                     </p>
                 <?php } ?>
-                <?php if ($outlet_info->additional_information) { ?>
+                <?php if (@$outlet_info->additional_information) { ?>
                     <p class="pb-7 f-w-900 rgb-71">
-                        <?php echo html_entity_decode(escape_output($outlet_info->additional_information)); ?>
+                        <?php echo html_entity_decode(escape_output(@$outlet_info->additional_information)); ?>
                     </p>
                 <?php } ?>
 
