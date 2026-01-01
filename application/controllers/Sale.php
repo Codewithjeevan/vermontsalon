@@ -1610,11 +1610,12 @@ class Sale extends Cl_Controller {
 
     public function getCustomersAjax() {
         $search = $this->input->get('search');
+        $customer_id = $this->input->get('customer_id') ?? null;
         $page = (int) $this->input->get('page');
         $perPage = 100;
         $offset = ($page - 1) * $perPage;
 
-        $result = $this->Common_model->getCustomersPaginated($search, $perPage, $offset);
+        $result = $this->Common_model->getCustomersPaginated($search, $customer_id, $perPage, $offset);
         $totalCount = $this->Common_model->getCustomersCount($search);
 
         $response = [

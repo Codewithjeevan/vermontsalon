@@ -473,7 +473,7 @@ class Common_model extends CI_Model {
         return $result;  
     }
 
-    public function getCustomersPaginated($search = '', $limit = 100, $offset = 0) {
+    public function getCustomersPaginated($search = '' , $customer_id = "", $limit = 100, $offset = 0) {
         $company_id = $this->session->userdata('company_id');
 
         $this->db->select("c.id, c.name, c.phone, c.price as customer_price");
@@ -481,6 +481,10 @@ class Common_model extends CI_Model {
         $this->db->where("c.company_id", $company_id);
         $this->db->where("c.del_status", "Live");
 
+        if($customer_id != ""){
+            $this->db->where("c.id", $customer_id);
+        }
+        
         if ($search) {
             $this->db->group_start();
             $this->db->like("c.name", $search);
