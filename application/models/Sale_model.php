@@ -1135,12 +1135,15 @@ class Sale_model extends CI_Model {
       }
 
       // 2) Now fetch sessions (SECOND fast small query)
-      $sessions = $this->db->select("*")
-          ->from("package_sessions")
-          ->where("package_sale_id", $id)
-          ->order_by("id", "ASC")
-          ->get()
-          ->result();
+      $sessions = $this->db
+        ->select('package_sessions.*, tbl_users.full_name AS employee_name')
+        ->from('package_sessions')
+        ->join('tbl_users', 'tbl_users.id = package_sessions.employee_id', 'left')
+        ->where('package_sale_id', $id)
+        ->order_by('package_sessions.id', 'ASC')
+        ->get()
+        ->result();
+
 
       // Attach sessions to package
       $package->sessions = $sessions;
