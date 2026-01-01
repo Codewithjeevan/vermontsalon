@@ -164,7 +164,7 @@
         <table class="grid">
             <thead>
                 <tr>
-                    <th style="width:40px;">S#</th>
+                    <th style="width:40px;">Sr.</th>
                     <th>ITEM DESCRIPTION</th>
                     <th style="width:60px;">QTY</th>
                     <th style="width:90px;">DISCOUNT</th>
