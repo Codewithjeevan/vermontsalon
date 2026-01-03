@@ -935,10 +935,10 @@ class Sale extends Cl_Controller {
         $isDeleted = $this->Common_model->deleteStatusChangeByFieldName($id, 'id', 'package_sale');
         if($isDeleted){
             $this->session->set_flashdata('exception', lang('delete_success'));
-            redirect('Sale/sales');
+            redirect('Sale/package');
         }else{
             $this->session->set_flashdata('exception_2', lang('Something_went_wrong'));
-            redirect('Sale/sales');
+            redirect('Sale/package');
         }
     }
 
