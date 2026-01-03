@@ -1196,6 +1196,7 @@ class Report_model extends CI_Model {
             FROM package_sale
             WHERE payment_status=1
             AND company_id='$company_id'
+            AND del_status='Live'
             " . ($outlet_id ? "AND outlet_id='$outlet_id'" : "") . "
             GROUP BY DATE(purchase_date)
         ) pa ON pa.date = d.sale_date
@@ -1204,23 +1205,27 @@ class Report_model extends CI_Model {
         /* ---------------- USED PACKAGE ---------------- */
         LEFT JOIN (
             SELECT
-                DATE(in_time) AS date,
-                SUM(CASE WHEN payment_method='Cash' THEN price ELSE 0 END) AS used_package_cash,
-                SUM(CASE WHEN payment_method='Card' THEN price ELSE 0 END) AS used_package_card,
-                SUM(IFNULL(tax_amt, 0)) AS vat_total,
-                SUM(IFNULL(sub_total, 0)) AS sub_total
-            FROM package_sessions
-            GROUP BY DATE(in_time)
+                DATE(ps.in_time) AS date,
+                SUM(CASE WHEN ps.payment_method='Cash' THEN ps.price ELSE 0 END) AS used_package_cash,
+                SUM(CASE WHEN ps.payment_method='Card' THEN ps.price ELSE 0 END) AS used_package_card,
+                SUM(IFNULL(ps.tax_amt, 0)) AS vat_total,
+                SUM(IFNULL(ps.sub_total, 0)) AS sub_total
+            FROM package_sessions ps
+            JOIN package_sale psa ON psa.id = ps.package_sale_id
+            WHERE psa.del_status='Live'
+            GROUP BY DATE(ps.in_time)
         ) up ON up.date = d.sale_date
 
 
         /* ---------------- PACKAGE CANCELLATION ---------------- */
         LEFT JOIN (
             SELECT
-                DATE(created_at) AS date,
-                SUM(remaining_amount) AS cancelled_amount,
-                SUM(remaining_session) AS cancelled_sessions
-            FROM package_sale_cancelation
+                DATE(psc.created_at) AS date,
+                SUM(psc.remaining_amount) AS cancelled_amount,
+                SUM(psc.remaining_session) AS cancelled_sessions
+            FROM package_sale_cancelation psc
+            JOIN package_sale ps ON ps.id = psc.package_sale_id
+            WHERE ps.del_status='Live'
             GROUP BY DATE(created_at)
         ) pc ON pc.date = d.sale_date
 
@@ -1235,6 +1240,7 @@ class Report_model extends CI_Model {
                 SUM(IFNULL(sub_total, 0)) AS sub_total
             FROM tbl_sales
             WHERE company_id='$company_id'
+            AND del_status='Live'
             " . ($outlet_id ? "AND outlet_id='$outlet_id'" : "") . "
             GROUP BY DATE(sale_date)
         ) gs ON gs.date = d.sale_date
@@ -1251,6 +1257,7 @@ class Report_model extends CI_Model {
                 SELECT id, DATE(sale_date) AS date
                 FROM tbl_sales
                 WHERE company_id='$company_id'
+                AND del_status='Live'
                 " . ($outlet_id ? "AND outlet_id='$outlet_id'" : "") . "
             ) ts
             LEFT JOIN tbl_sale_payments sp ON sp.sale_id = ts.id
