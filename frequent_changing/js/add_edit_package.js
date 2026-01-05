@@ -191,6 +191,237 @@ function getTotalPrice() {
     return toNumber($('#total').val());
 }
 
+const paymentMethodSelect = '#payment_method_select';
+const paymentMethodAmount = '#payment_method_amount';
+const paymentMethodAddButton = '#add_payment_method_btn';
+const paymentMethodError = '#payment_method_error';
+const paymentMethodTable = '#payment_method_table';
+const paymentMethodTableBody = '#payment_method_table tbody';
+const paymentMethodHidden = '#payment_method';
+const paymentMethodClearButton = '#clear_payment_methods_btn';
+let paymentMethodItems = [];
+
+function showPaymentMethodError(message) {
+    $(paymentMethodError).text(message).show();
+}
+
+function clearPaymentMethodError() {
+    $(paymentMethodError).hide().text('');
+}
+
+function formatPaymentAmount(amount) {
+    return amount.toFixed(2);
+}
+
+function getPaymentMethodTotal() {
+    return paymentMethodItems.reduce((sum, item) => sum + toNumber(item.amount), 0);
+}
+
+function getPaymentMethodRemaining() {
+    const remaining = getTotalPrice() - getPaymentMethodTotal();
+    return remaining < 0 ? 0 : remaining;
+}
+
+function setPaymentMethodHidden() {
+    $(paymentMethodHidden).val(JSON.stringify(paymentMethodItems));
+}
+
+function getSelectedPaymentMethod() {
+    return $(paymentMethodSelect).val() || '';
+}
+
+function getPaymentMethodInputAmount() {
+    return toNumber($(paymentMethodAmount).val());
+}
+
+function getAvailablePaymentMethods() {
+    return $(paymentMethodSelect).find('option').map(function () {
+        return $(this).val();
+    }).get().filter(Boolean);
+}
+
+function updatePaymentMethodOptions() {
+    const used = new Set(paymentMethodItems.map(item => item.payment_method));
+    $(paymentMethodSelect).find('option').each(function () {
+        const value = $(this).val();
+        $(this).prop('disabled', value ? used.has(value) : false);
+    });
+
+    const current = getSelectedPaymentMethod();
+    if (!current || used.has(current)) {
+        const nextAvailable = getAvailablePaymentMethods().find(method => !used.has(method));
+        if (nextAvailable) {
+            $(paymentMethodSelect).val(nextAvailable).trigger('change');
+        }
+    }
+}
+
+function renderPaymentMethodTable() {
+    const $table = $(paymentMethodTable);
+    const $tbody = $(paymentMethodTableBody);
+    $tbody.empty();
+
+    if (paymentMethodItems.length === 0) {
+        $table.hide();
+        $(paymentMethodClearButton).hide();
+        return;
+    }
+
+    paymentMethodItems.forEach((item, index) => {
+        const row = `
+            <tr>
+                <td>${item.payment_method}</td>
+                <td>${formatPaymentAmount(toNumber(item.amount))}</td>
+                <td>
+                    <button type="button" class="btn bg-red-btn remove_payment_method_btn" data-index="${index}">Delete</button>
+                </td>
+            </tr>
+        `;
+        $tbody.append(row);
+    });
+
+    $table.show();
+    $(paymentMethodClearButton).show();
+}
+
+function updatePaymentMethodControls() {
+    updatePaymentMethodOptions();
+    const remaining = getPaymentMethodRemaining();
+    const hasRemaining = remaining > 0;
+    const hasAvailableMethod = getAvailablePaymentMethods().some(method => {
+        return !paymentMethodItems.find(item => item.payment_method === method);
+    });
+    $(paymentMethodAddButton).prop('disabled', !hasRemaining || !hasAvailableMethod);
+    $(paymentMethodAmount).prop('disabled', !hasRemaining || !hasAvailableMethod);
+
+    if (hasRemaining) {
+        const currentAmount = getPaymentMethodInputAmount();
+        if (!currentAmount || currentAmount > remaining) {
+            $(paymentMethodAmount).val(formatPaymentAmount(remaining));
+        }
+    } else {
+        $(paymentMethodAmount).val(formatPaymentAmount(0));
+    }
+}
+
+function addPaymentMethodItem() {
+    clearPaymentMethodError();
+    const method = getSelectedPaymentMethod();
+    if (!method) {
+        showPaymentMethodError('Please select a payment method.');
+        return;
+    }
+
+    if (paymentMethodItems.some(item => item.payment_method === method)) {
+        showPaymentMethodError('This payment method is already added.');
+        return;
+    }
+
+    const remaining = getPaymentMethodRemaining();
+    if (remaining <= 0) {
+        showPaymentMethodError('No remaining amount to add.');
+        return;
+    }
+
+    let amount = getPaymentMethodInputAmount();
+    if (amount <= 0) {
+        showPaymentMethodError('Please enter a valid amount.');
+        return;
+    }
+
+    if (amount > remaining) {
+        showPaymentMethodError(`Amount cannot exceed remaining ${formatPaymentAmount(remaining)}.`);
+        return;
+    }
+
+    paymentMethodItems.push({
+        payment_method: method,
+        amount: amount
+    });
+    setPaymentMethodHidden();
+    renderPaymentMethodTable();
+    $(paymentMethodAmount).val('');
+    updatePaymentMethodControls();
+}
+
+function loadPaymentMethodItemsFromHidden() {
+    const raw = $(paymentMethodHidden).val();
+    if (!raw) {
+        return;
+    }
+    try {
+        const decoded = JSON.parse(raw);
+        if (!Array.isArray(decoded)) {
+            return;
+        }
+        paymentMethodItems = decoded.map(entry => {
+            if (!entry || typeof entry !== 'object') {
+                return null;
+            }
+            const method = entry.payment_method || entry.method;
+            if (!method) {
+                return null;
+            }
+            return {
+                payment_method: method,
+                amount: toNumber(entry.amount)
+            };
+        }).filter(Boolean);
+    } catch (error) {
+        paymentMethodItems = [];
+    }
+}
+
+function clearPaymentMethodItems() {
+    paymentMethodItems = [];
+    setPaymentMethodHidden();
+    renderPaymentMethodTable();
+    $(paymentMethodAmount).val('');
+    clearPaymentMethodError();
+    updatePaymentMethodControls();
+}
+
+function ensurePaymentMethodItemsBeforeSubmit() {
+    if (paymentMethodItems.length > 0) {
+        const remaining = getPaymentMethodRemaining();
+        if (remaining > 0) {
+            showPaymentMethodError(`Please add remaining ${formatPaymentAmount(remaining)} before saving.`);
+            return false;
+        }
+        return true;
+    }
+    const remaining = getPaymentMethodRemaining();
+    if (remaining <= 0) {
+        return false;
+    }
+    const method = getSelectedPaymentMethod();
+    if (!method) {
+        showPaymentMethodError('Please select a payment method.');
+        return false;
+    }
+    let amountToUse = getPaymentMethodInputAmount();
+    if (!amountToUse) {
+        amountToUse = remaining;
+    }
+    if (amountToUse > remaining) {
+        showPaymentMethodError(`Amount cannot exceed remaining ${formatPaymentAmount(remaining)}.`);
+        return false;
+    }
+    paymentMethodItems.push({
+        payment_method: method,
+        amount: amountToUse
+    });
+    setPaymentMethodHidden();
+    renderPaymentMethodTable();
+    updatePaymentMethodControls();
+    const remainingAfter = getPaymentMethodRemaining();
+    if (remainingAfter > 0) {
+        showPaymentMethodError(`Please add remaining ${formatPaymentAmount(remainingAfter)} before saving.`);
+        return false;
+    }
+    return true;
+}
+
 function sanitizeSessionPriceInput(element) {
     const raw = element.value || '';
     const filtered = raw.replace(/[^0-9.]/g, '');
@@ -413,11 +644,41 @@ $(document).on('change', '.package_data', function () {
     }
     $('#session_table tbody').html(allRows);
     rebalanceSessionPrices();
+    clearPaymentMethodItems();
 });
 
 $(document).on('input', `${sessionTableBody} ${sessionPriceSelectors}`, function () {
     sanitizeSessionPriceInput(this);
     rebalanceSessionPrices($(this));
+});
+
+$(document).on('input', paymentMethodAmount, function () {
+    sanitizeSessionPriceInput(this);
+    clearPaymentMethodError();
+});
+
+$(document).on('change', paymentMethodSelect, function () {
+    clearPaymentMethodError();
+    updatePaymentMethodControls();
+});
+
+$(document).on('click', paymentMethodAddButton, function () {
+    addPaymentMethodItem();
+});
+
+$(document).on('click', '.remove_payment_method_btn', function () {
+    const index = parseInt($(this).data('index'), 10);
+    if (isNaN(index)) {
+        return;
+    }
+    paymentMethodItems.splice(index, 1);
+    setPaymentMethodHidden();
+    renderPaymentMethodTable();
+    updatePaymentMethodControls();
+});
+
+$(document).on('click', paymentMethodClearButton, function () {
+    clearPaymentMethodItems();
 });
 
 $(document).on('click', '#add_remaining_balance_row_btn', function () {
@@ -508,6 +769,9 @@ $(document).on('click', '#pay_now_button', function (event) {
                 return;
             }
 
+            if (!ensurePaymentMethodItemsBeforeSubmit()) {
+                return;
+            }
             $form.submit();
         },
         error: function () {
@@ -529,6 +793,17 @@ $(document).ready(function () {
     }
     markFixedRows();
     syncRemainingBalance();
+    loadPaymentMethodItemsFromHidden();
+    if (paymentMethodItems.length === 0) {
+        const total = getTotalPrice();
+        if (total > 0) {
+            $(paymentMethodAmount).val(formatPaymentAmount(total));
+        }
+    } else {
+        setPaymentMethodHidden();
+        renderPaymentMethodTable();
+    }
+    updatePaymentMethodControls();
 });
 
 function parseDateTimeLocal(value) {

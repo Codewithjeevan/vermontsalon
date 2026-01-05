@@ -267,7 +267,31 @@ $inv_config = json_decode($invoice_configuration);
                                     echo $inv_config->payment_method_label_arabic;
                                 } ?>
                             </p>
-                            <p><?php echo @$sale_object->payment_method; ?></p>
+                            <?php
+                                $payment_method_text = @$sale_object->payment_method;
+                                $payment_method_decoded = json_decode($payment_method_text, true);
+                                if (json_last_error() === JSON_ERROR_NONE && is_array($payment_method_decoded)) {
+                                    $payment_parts = [];
+                                    foreach ($payment_method_decoded as $payment_entry) {
+                                        if (!is_array($payment_entry)) {
+                                            continue;
+                                        }
+                                        $method_name = $payment_entry['payment_method'] ?? $payment_entry['method'] ?? '';
+                                        if ($method_name === '') {
+                                            continue;
+                                        }
+                                        if (isset($payment_entry['amount'])) {
+                                            $payment_parts[] = $method_name . ' (' . getAmtCustom($payment_entry['amount']) . ')';
+                                        } else {
+                                            $payment_parts[] = $method_name;
+                                        }
+                                    }
+                                    if (!empty($payment_parts)) {
+                                        $payment_method_text = implode(', ', $payment_parts);
+                                    }
+                                }
+                            ?>
+                            <p><?php echo $payment_method_text; ?></p>
                         </div>
                         <p class="f-w-600">Advance Payment</p>
                     </div>

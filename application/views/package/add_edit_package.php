@@ -1,6 +1,32 @@
 <?php 
 $invoice_configuration = $this->session->userdata('invoice_configuration');
 $inv_config = json_decode($invoice_configuration);
+$payment_method_items = [];
+if (!empty($editdata->payment_method)) {
+    $decoded_payment_methods = json_decode($editdata->payment_method, true);
+    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded_payment_methods)) {
+        foreach ($decoded_payment_methods as $entry) {
+            if (!is_array($entry)) {
+                continue;
+            }
+            $method_name = $entry['payment_method'] ?? $entry['method'] ?? '';
+            if ($method_name === '') {
+                continue;
+            }
+            $amount_value = isset($entry['amount']) ? (float) $entry['amount'] : (float) (@$editdata->total_amt ?? 0);
+            $payment_method_items[] = [
+                'payment_method' => $method_name,
+                'amount' => $amount_value
+            ];
+        }
+    } else {
+        $payment_method_items[] = [
+            'payment_method' => $editdata->payment_method,
+            'amount' => (float) (@$editdata->total_amt ?? 0)
+        ];
+    }
+}
+$payment_method_json = htmlspecialchars(json_encode($payment_method_items), ENT_QUOTES, 'UTF-8');
 ?>
 
 <style>
@@ -187,15 +213,42 @@ $inv_config = json_decode($invoice_configuration);
                             <?php endif; ?>
                         </div>
                     </div>
+                    <div class="col-md-12"></div>
                     <?php endif; ?>
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
                             <label><?php echo lang('advance_payment'); ?> <span class="required_star">*</span></label>
-                            <select id="payment_method" name="payment_method"  class="select2" tabindex="2">
-                                <option value="Cash" <?= @$editdata->payment_method == "Cash" || @$editdata->payment_method == "" ? 'Selected' : '' ?>>Cash</option>
-                                <option value="Card" <?= @$editdata->payment_method == "Card" ? 'Selected' : '' ?>>Card</option>
+                            <select id="payment_method_select" class="select2" tabindex="2">
+                                <option value="Card" selected>Card</option>
+                                <option value="Cash">Cash</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="form-group">
+                            <label><?php echo lang('price'); ?></label>
+                            <input type="text" id="payment_method_amount" class="form-control" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-2 mb-3 d-flex align-items-end">
+                        <button type="button" id="add_payment_method_btn" class="btn bg-blue-btn w-100">Add</button>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div id="payment_method_error" class="text-danger small" style="display: none;"></div>
+                        <input type="hidden" id="payment_method" name="payment_method" value="<?= $payment_method_json; ?>">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="payment_method_table" style="display: none;">
+                                <thead>
+                                    <tr>
+                                        <th><?php echo lang('payment_method'); ?></th>
+                                        <th><?php echo lang('price'); ?></th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <button type="button" id="clear_payment_methods_btn" class="btn bg-red-btn" style="display: none;">Clear</button>
                     </div>
                     <div class="col-md-4 d-flex gap-3">
                         <div class="form-group">

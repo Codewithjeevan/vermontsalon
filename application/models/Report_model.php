@@ -1066,24 +1066,52 @@ class Report_model extends CI_Model {
    public function summarySalePackageReport($startDate, $endDate, $outlet_id = '')
    {
         $company_id      = $this->session->userdata('company_id');
-        $payment_methods = [
-            (object)['name' => 'Cash'],
-            (object)['name' => 'Card']
-        ];
-
-        // build dynamic PM select
-        $pmSelect = [];
-        foreach ($payment_methods as $method) {
-            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
-
-            $pmSelect[] = "
-                SUM(
-                    CASE WHEN ps.payment_method = '{$method->name}'
-                    THEN s.price ELSE 0 END
-                ) AS total_{$alias}_amount
-            ";
-        }
-        $pmSelectSQL = implode(',', $pmSelect);
+        $cashRatioSQL = "
+            CASE
+                WHEN JSON_VALID(ps.payment_method) THEN
+                    (
+                        (
+                            CASE
+                                WHEN JSON_UNQUOTE(JSON_EXTRACT(ps.payment_method, '$[0].payment_method')) = 'Cash'
+                                    THEN CAST(JSON_EXTRACT(ps.payment_method, '$[0].amount') AS DECIMAL(18,2))
+                                ELSE 0
+                            END
+                            +
+                            CASE
+                                WHEN JSON_UNQUOTE(JSON_EXTRACT(ps.payment_method, '$[1].payment_method')) = 'Cash'
+                                    THEN CAST(JSON_EXTRACT(ps.payment_method, '$[1].amount') AS DECIMAL(18,2))
+                                ELSE 0
+                            END
+                        ) / NULLIF(ps.total_amt, 0)
+                    )
+                ELSE CASE WHEN ps.payment_method = 'Cash' THEN 1 ELSE 0 END
+            END
+        ";
+        $cardRatioSQL = "
+            CASE
+                WHEN JSON_VALID(ps.payment_method) THEN
+                    (
+                        (
+                            CASE
+                                WHEN JSON_UNQUOTE(JSON_EXTRACT(ps.payment_method, '$[0].payment_method')) = 'Card'
+                                    THEN CAST(JSON_EXTRACT(ps.payment_method, '$[0].amount') AS DECIMAL(18,2))
+                                ELSE 0
+                            END
+                            +
+                            CASE
+                                WHEN JSON_UNQUOTE(JSON_EXTRACT(ps.payment_method, '$[1].payment_method')) = 'Card'
+                                    THEN CAST(JSON_EXTRACT(ps.payment_method, '$[1].amount') AS DECIMAL(18,2))
+                                ELSE 0
+                            END
+                        ) / NULLIF(ps.total_amt, 0)
+                    )
+                ELSE CASE WHEN ps.payment_method = 'Card' THEN 1 ELSE 0 END
+            END
+        ";
+        $pmSelectSQL = "
+            SUM(s.price * IFNULL(($cashRatioSQL), 0)) AS total_cash_amount,
+            SUM(s.price * IFNULL(($cardRatioSQL), 0)) AS total_card_amount
+        ";
 
 
        $outerSelect = "
@@ -1191,8 +1219,44 @@ class Report_model extends CI_Model {
         LEFT JOIN (
             SELECT 
                 DATE(purchase_date) AS date,
-                SUM(CASE WHEN payment_method='Cash' THEN total_amt ELSE 0 END) AS package_advance_cash,
-                SUM(CASE WHEN payment_method='Card' THEN total_amt ELSE 0 END) AS package_advance_card
+                SUM(
+                    CASE
+                        WHEN JSON_VALID(payment_method) THEN
+                            (
+                                CASE
+                                    WHEN JSON_UNQUOTE(JSON_EXTRACT(payment_method, '$[0].payment_method')) = 'Cash'
+                                        THEN CAST(JSON_EXTRACT(payment_method, '$[0].amount') AS DECIMAL(18,2))
+                                    ELSE 0
+                                END
+                                +
+                                CASE
+                                    WHEN JSON_UNQUOTE(JSON_EXTRACT(payment_method, '$[1].payment_method')) = 'Cash'
+                                        THEN CAST(JSON_EXTRACT(payment_method, '$[1].amount') AS DECIMAL(18,2))
+                                    ELSE 0
+                                END
+                            )
+                        ELSE CASE WHEN payment_method='Cash' THEN total_amt ELSE 0 END
+                    END
+                ) AS package_advance_cash,
+                SUM(
+                    CASE
+                        WHEN JSON_VALID(payment_method) THEN
+                            (
+                                CASE
+                                    WHEN JSON_UNQUOTE(JSON_EXTRACT(payment_method, '$[0].payment_method')) = 'Card'
+                                        THEN CAST(JSON_EXTRACT(payment_method, '$[0].amount') AS DECIMAL(18,2))
+                                    ELSE 0
+                                END
+                                +
+                                CASE
+                                    WHEN JSON_UNQUOTE(JSON_EXTRACT(payment_method, '$[1].payment_method')) = 'Card'
+                                        THEN CAST(JSON_EXTRACT(payment_method, '$[1].amount') AS DECIMAL(18,2))
+                                    ELSE 0
+                                END
+                            )
+                        ELSE CASE WHEN payment_method='Card' THEN total_amt ELSE 0 END
+                    END
+                ) AS package_advance_card
             FROM package_sale
             WHERE payment_status=1
             AND company_id='$company_id'
@@ -1206,8 +1270,56 @@ class Report_model extends CI_Model {
         LEFT JOIN (
             SELECT
                 DATE(ps.in_time) AS date,
-                SUM(CASE WHEN ps.payment_method='Cash' THEN ps.price ELSE 0 END) AS used_package_cash,
-                SUM(CASE WHEN ps.payment_method='Card' THEN ps.price ELSE 0 END) AS used_package_card,
+                SUM(
+                    CASE
+                        WHEN JSON_VALID(psa.payment_method) THEN
+                            ps.price * IFNULL(
+                                (
+                                    (
+                                        CASE
+                                            WHEN JSON_UNQUOTE(JSON_EXTRACT(psa.payment_method, '$[0].payment_method')) = 'Cash'
+                                                THEN CAST(JSON_EXTRACT(psa.payment_method, '$[0].amount') AS DECIMAL(18,2))
+                                            ELSE 0
+                                        END
+                                        +
+                                        CASE
+                                            WHEN JSON_UNQUOTE(JSON_EXTRACT(psa.payment_method, '$[1].payment_method')) = 'Cash'
+                                                THEN CAST(JSON_EXTRACT(psa.payment_method, '$[1].amount') AS DECIMAL(18,2))
+                                            ELSE 0
+                                        END
+                                    )
+                                    / NULLIF(psa.total_amt, 0)
+                                ),
+                                0
+                            )
+                        ELSE CASE WHEN psa.payment_method='Cash' THEN ps.price ELSE 0 END
+                    END
+                ) AS used_package_cash,
+                SUM(
+                    CASE
+                        WHEN JSON_VALID(psa.payment_method) THEN
+                            ps.price * IFNULL(
+                                (
+                                    (
+                                        CASE
+                                            WHEN JSON_UNQUOTE(JSON_EXTRACT(psa.payment_method, '$[0].payment_method')) = 'Card'
+                                                THEN CAST(JSON_EXTRACT(psa.payment_method, '$[0].amount') AS DECIMAL(18,2))
+                                            ELSE 0
+                                        END
+                                        +
+                                        CASE
+                                            WHEN JSON_UNQUOTE(JSON_EXTRACT(psa.payment_method, '$[1].payment_method')) = 'Card'
+                                                THEN CAST(JSON_EXTRACT(psa.payment_method, '$[1].amount') AS DECIMAL(18,2))
+                                            ELSE 0
+                                        END
+                                    )
+                                    / NULLIF(psa.total_amt, 0)
+                                ),
+                                0
+                            )
+                        ELSE CASE WHEN psa.payment_method='Card' THEN ps.price ELSE 0 END
+                    END
+                ) AS used_package_card,
                 SUM(IFNULL(ps.tax_amt, 0)) AS vat_total,
                 SUM(IFNULL(ps.sub_total, 0)) AS sub_total
             FROM package_sessions ps

@@ -992,6 +992,16 @@ class Sale extends Cl_Controller {
                 $input = $this->input->post();
                 $sessions = $input['session_id'] ?? [];
                 $sessionCount = count($sessions);
+                $paymentMethodRaw = $this->input->post('payment_method');
+                $paymentMethodJson = $paymentMethodRaw;
+                $decodedPaymentMethods = json_decode($paymentMethodRaw, true);
+                if (json_last_error() !== JSON_ERROR_NONE || !is_array($decodedPaymentMethods) || empty($decodedPaymentMethods)) {
+                    $fallbackMethod = $paymentMethodRaw ? $paymentMethodRaw : 'Card';
+                    $paymentMethodJson = json_encode([[
+                        'payment_method' => $fallbackMethod,
+                        'amount' => (float) $this->input->post('total_amt')
+                    ]]);
+                }
 
                 $this->db->trans_start();
                 $saleData = [
@@ -1001,7 +1011,7 @@ class Sale extends Cl_Controller {
                     'total_amt'       => $this->input->post('total_amt'),
                     'session_count'   => $sessionCount,
                     'payment_status'  => 1,
-                    'payment_method'  => $this->input->post('payment_method'),
+                    'payment_method'  => $paymentMethodJson,
                     'outlet_id'  => $this->input->post('outlet_id'),
                     'user_id'  => $this->input->post('user_id'),
                     'purchase_date'   => $this->input->post('purchase_date')
@@ -1068,7 +1078,7 @@ class Sale extends Cl_Controller {
                             'session_time'    => $input['session_time'][$k] ?? NULL,
                             'status'          => $input['status'][$k],
                             'sale_date'       => date('Y-m-d H:i:s'),
-                            'payment_method'  => $input['payment_method'],
+                            'payment_method'  => $paymentMethodJson,
                         ];
 
                         if ((string)$input['status'][$k] === '0') {
@@ -1156,7 +1166,7 @@ class Sale extends Cl_Controller {
         $outTime = htmlspecialcharscustom($this->input->post('out_time'));
         $sessionName = htmlspecialcharscustom($this->input->post('session_name'));
         $sessionId = htmlspecialcharscustom($this->input->post('session_id'));
-        $paymentMethod = htmlspecialcharscustom($this->input->post('payment_method'));
+        $paymentMethod = $this->input->post('payment_method');
         $sessionPrice = htmlspecialcharscustom($this->input->post('session_price'));
 
         $response = [
@@ -1383,7 +1393,29 @@ class Sale extends Cl_Controller {
             $sub_array[] = $value->package_name;
             $sub_array[] = $value->customer_name;
             $sub_array[] = $value->total_amt;
-            $sub_array[] = $value->payment_method;
+            $payment_method_text = $value->payment_method;
+            $payment_method_decoded = json_decode($payment_method_text, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($payment_method_decoded)) {
+                $payment_parts = [];
+                foreach ($payment_method_decoded as $payment_entry) {
+                    if (!is_array($payment_entry)) {
+                        continue;
+                    }
+                    $method_name = $payment_entry['payment_method'] ?? $payment_entry['method'] ?? '';
+                    if ($method_name === '') {
+                        continue;
+                    }
+                    if (isset($payment_entry['amount'])) {
+                        $payment_parts[] = $method_name . ' (' . (float) $payment_entry['amount'] . ')';
+                    } else {
+                        $payment_parts[] = $method_name;
+                    }
+                }
+                if (!empty($payment_parts)) {
+                    $payment_method_text = implode(', ', $payment_parts);
+                }
+            }
+            $sub_array[] = $payment_method_text;
             $sub_array[] = $value->session_count ?? 0;
             $sub_array[] = $value->remaing_price ?? 0;
             $sub_array[] = $status;
