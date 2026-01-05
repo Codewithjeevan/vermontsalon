@@ -54,7 +54,6 @@ $inv_config = json_decode($invoice_configuration);
             <?php echo form_open(base_url('Sale/addEditSalePackage')); ?>
 
             <div style="display: none;">
-                <input type="date" id="purchase_date" name="purchase_date" value="<?php echo date('Y-m-d'); ?>">
                 <input type="hidden" id="session_count" name="session_count" value="<?= @$editdata->session_count ? @$editdata->session_count : 0 ?>">
                 <input type="hidden" id="outlet_id" name="outlet_id" value="<?= $this->session->userdata('outlet_id'); ?>">
                 <input type="hidden" id="user_id" name="user_id" value="<?= $this->session->userdata('user_id'); ?>">
@@ -95,6 +94,12 @@ $inv_config = json_decode($invoice_configuration);
                             <span class="error_paragraph"><?php echo form_error('name'); ?></span>
                         </div>
                         <?php } ?>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="form-group">
+                            <label><?php echo lang('purchase_date'); ?></label>
+                            <input type="date" id="purchase_date" name="purchase_date" value="<?php echo @$editdata ? date('Y-m-d', strtotime($editdata->purchase_date)) : date('Y-m-d'); ?>" class="form-control" max="<?php echo date('Y-m-d'); ?>" />
+                        </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
