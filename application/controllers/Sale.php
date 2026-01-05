@@ -1004,7 +1004,7 @@ class Sale extends Cl_Controller {
                     'payment_method'  => $this->input->post('payment_method'),
                     'outlet_id'  => $this->input->post('outlet_id'),
                     'user_id'  => $this->input->post('user_id'),
-                    'purchase_date'   => $this->input->post('purchase_date')
+                    'purchase_date'   => date('Y-m-d', strtotime($this->input->post('purchase_date'))) . ' ' . date('H:i:s'),
                 ];
 
                 // ---------- UPDATE ----------
