@@ -48,6 +48,8 @@ class Customer extends Cl_Controller {
             $function = "view";
         }elseif($segment_2=="deleteCustomer"){
             $function = "delete";
+        }elseif($segment_2=="deleteCustomerDocument"){
+            $function = "delete";
         }elseif($segment_2=="customers" || $segment_2 == "creditCustomers" || $segment_2 == "debitCustomers" || $segment_2 == "sendSMSToDueCustomer" || $segment_2 == "sendSMSForAllDueCustomer" || $segment_2 == "getAjaxData"){
             $function = "list";
         }elseif($segment_2=="uploadCustomer" || $segment_2=="ExcelDataAddCustomers" ){
@@ -74,6 +76,10 @@ class Customer extends Cl_Controller {
     public function addEditCustomer($encrypted_id = "") {
         $id = $this->custom->encrypt_decrypt($encrypted_id, 'decrypt');
         $company_id = $this->session->userdata('company_id');
+        $customer_documents = array();
+        if ($id) {
+            $customer_documents = $this->Common_model->getAllByCustomId($id, 'customer_id', 'tbl_customer_files');
+        }
         
         if (htmlspecialcharscustom($this->input->post('submit'))) {
             $add_more = $this->input->post($this->security->xss_clean('add_more'));
@@ -119,12 +125,14 @@ class Customer extends Cl_Controller {
                 $customer_info['company_id'] = $this->session->userdata('company_id');
                 if ($id == "") {
                     $customer_info['added_date'] = date('Y-m-d H:i:s');
-                    $this->Common_model->insertInformation($customer_info, "tbl_customers");
+                    $customer_id = $this->Common_model->insertInformation($customer_info, "tbl_customers");
                     $this->session->set_flashdata('exception', lang('insertion_success'));
                 } else {
+                    $customer_id = $id;
                     $this->Common_model->updateInformation($customer_info, $id, "tbl_customers");
                     $this->session->set_flashdata('exception',lang('update_success'));
                 }
+                $this->_saveCustomerDocuments($customer_id);
                 if($add_more == 'add_more'){
                     redirect('Customer/addEditCustomer');
                 }else{
@@ -134,14 +142,16 @@ class Customer extends Cl_Controller {
             } else {
                 if ($id == "") {
                     $data = array();
-                     $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');
+                    $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');
+                    $data['customer_documents'] = $customer_documents;
                     $data['main_content'] = $this->load->view('master/customer/addCustomer', $data, TRUE);
                     $this->load->view('userHome', $data);
                 } else {
                     $data = array();
                     $data['encrypted_id'] = $encrypted_id;
-                     $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');
+                    $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');
                     $data['customer_information'] = $this->Common_model->getDataById($id, "tbl_customers");
+                    $data['customer_documents'] = $customer_documents;
                     $data['main_content'] = $this->load->view('master/customer/editCustomer', $data, TRUE);
                     $this->load->view('userHome', $data);
                 }
@@ -149,7 +159,8 @@ class Customer extends Cl_Controller {
         } else {
             if ($id == "") {
                 $data = array();
-                 $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');
+                $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');
+                $data['customer_documents'] = $customer_documents;
                 $data['last_id'] = $this->Common_model->getCustomerLastId();
                 $data['main_content'] = $this->load->view('master/customer/addCustomer', $data, TRUE);
                 $this->load->view('userHome', $data);
@@ -158,16 +169,142 @@ class Customer extends Cl_Controller {
                 $data['encrypted_id'] = $encrypted_id;
                 $data['groups'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_customer_groups');
                 $data['customer_information'] = $this->Common_model->getDataById($id, "tbl_customers");
+                $data['customer_documents'] = $customer_documents;
                 $data['main_content'] = $this->load->view('master/customer/editCustomer', $data, TRUE);
                 $this->load->view('userHome', $data);
             }
         }
     }
 
+    
+    /**
+     * saveCustomerDocuments
+     * @access private
+     * @param int
+     * @return void
+     */
+    private function _saveCustomerDocuments($customer_id) {
+        if (!$customer_id) {
+            return;
+        }
+        $company_id = $this->session->userdata('company_id');
+        $user_id = $this->session->userdata('user_id');
+
+        $delete_ids = $this->input->post('delete_document_ids');
+        if (!empty($delete_ids)) {
+            foreach ($delete_ids as $document_id) {
+                $document_id = (int) $document_id;
+                if (! $document_id) {
+                    continue;
+                }
+                $file_info = $this->Common_model->getDataById($document_id, 'tbl_customer_files');
+                if ($file_info) {
+                    $file_path = $file_info->file_path ? FCPATH . $file_info->file_path : '';
+                    if ($file_path && file_exists($file_path)) {
+                        unlink($file_path);
+                    }
+                    $this->Common_model->updateInformation(['del_status' => 'Deleted'], $document_id, 'tbl_customer_files');
+                }
+            }
+        }
+
+        $existing_labels = $this->input->post('existing_document_label');
+        if (!empty($existing_labels)) {
+            foreach ($existing_labels as $document_id => $label) {
+                $document_id = (int) $document_id;
+                if (! $document_id) {
+                    continue;
+                }
+                $label_value = htmlspecialcharscustom(escapeQuot($label));
+                $this->Common_model->updateInformation(['file_label' => $label_value], $document_id, 'tbl_customer_files');
+            }
+        }
+
+        $document_labels = $this->input->post('document_label');
+        if (isset($document_labels) && isset($_FILES['document_file'])) {
+            $files = $_FILES['document_file'];
+            $upload_path = FCPATH . 'uploads/customer_files/';
+            if (!is_dir($upload_path)) {
+                mkdir($upload_path, 0755, true);
+            }
+            $this->load->library('upload');
+            foreach ($document_labels as $index => $label) {
+                $label = trim($label);
+                if ($label === '') {
+                    continue;
+                }
+                if (empty($files['name'][$index])) {
+                    continue;
+                }
+                $_FILES['document_file_single']['name'] = $files['name'][$index];
+                $_FILES['document_file_single']['type'] = $files['type'][$index];
+                $_FILES['document_file_single']['tmp_name'] = $files['tmp_name'][$index];
+                $_FILES['document_file_single']['error'] = $files['error'][$index];
+                $_FILES['document_file_single']['size'] = $files['size'][$index];
+
+                $config = array(
+                    'upload_path' => $upload_path,
+                    'allowed_types' => '*',
+                    'max_size' => 0,
+                    'encrypt_name' => true,
+                    'overwrite' => false,
+                );
+                $this->upload->initialize($config);
+                if ($this->upload->do_upload('document_file_single')) {
+                    $upload_data = $this->upload->data();
+                    $file_path = 'uploads/customer_files/' . $upload_data['file_name'];
+                    $document_data = array(
+                        'customer_id' => $customer_id,
+                        'company_id' => $company_id,
+                        'user_id' => $user_id,
+                        'file_label' => htmlspecialcharscustom(escapeQuot($label)),
+                        'file_path' => $file_path,
+                        'added_date' => date('Y-m-d H:i:s'),
+                        'del_status' => 'Live',
+                    );
+                    $this->Common_model->insertInformation($document_data, 'tbl_customer_files');
+                }
+            }
+            unset($_FILES['document_file_single']);
+        }
+    }
+
+    /**
+     * deleteCustomerDocument
+     * @access public
+     * @return void
+     */
+    public function deleteCustomerDocument() {
+        $document_id = (int) $this->input->post('document_id');
+        $company_id = $this->session->userdata('company_id');
+        if (!$document_id) {
+            echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
+            return;
+        }
+        $document = $this->db->select('*')
+            ->from('tbl_customer_files')
+            ->where('id', $document_id)
+            ->where('company_id', $company_id)
+            ->where('del_status', 'Live')
+            ->get()
+            ->row();
+        if (!$document) {
+            echo json_encode(['status' => 'error', 'message' => 'Document not found']);
+            return;
+        }
+        if ($document->file_path) {
+            $file_path = FCPATH . $document->file_path;
+            if (file_exists($file_path)) {
+                @unlink($file_path);
+            }
+        }
+        $this->Common_model->updateInformation(['del_status' => 'Deleted'], $document_id, 'tbl_customer_files');
+        echo json_encode(['status' => 'success']);
+    }
 
     
     /**
-     * getAjaxData
+    * getAjaxData
      * @access public
      * @param no
      * @return json

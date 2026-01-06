@@ -125,4 +125,78 @@ $(function () {
     
 
 
+    const newDocumentRowContainer = $('#newCustomerDocumentRows');
+
+    const appendDocumentRow = () => {
+        const row = `<div class="document-row row g-2 align-items-end mb-2">
+            <div class="col-md-5">
+                <input type="text" name="document_label[]" class="form-control form-control-sm" placeholder="Label">
+            </div>
+            <div class="col-md-5">
+                <input type="file" name="document_file[]" class="form-control form-control-sm">
+            </div>
+            <div class="col-md-2 text-end">
+                <button type="button" class="btn btn-outline-danger btn-sm remove-document-row">
+                    <iconify-icon icon="solar:trash-bin-trash-bold"></iconify-icon>
+                </button>
+            </div>
+        </div>`;
+        newDocumentRowContainer.append(row);
+    };
+
+    $(document).on('click', '#addCustomerDocumentRow', function () {
+        appendDocumentRow();
+    });
+
+    $(document).on('click', '.remove-document-row', function () {
+        $(this).closest('.document-row').remove();
+    });
+
+    $(document).on('click', '.delete-existing-document', function () {
+        const documentId = $(this).data('id');
+        const documentRow = $(this).closest('.document-existing-row');
+        if (!documentId) {
+            return;
+        }
+        Swal.fire({
+            title: 'Delete document?',
+            text: 'This will permanently remove the file for this customer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                return;
+            }
+            $.ajax({
+                url: base_url + 'Customer/deleteCustomerDocument',
+                method: 'POST',
+                dataType: 'json',
+                data: { document_id: documentId },
+                success: function (response) {
+                    if (response && response.status === 'success') {
+                        documentRow.remove();
+                    } else {
+                        Swal.fire({
+                            title: warning + ' !',
+                            text: response && response.message ? response.message : 'Unable to delete document',
+                            icon: 'warning'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: warning + ' !',
+                        text: 'Server error while deleting document',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+
+    if (newDocumentRowContainer.length && !newDocumentRowContainer.children('.document-row').length) {
+        appendDocumentRow();
+    }
 });
