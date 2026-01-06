@@ -542,6 +542,11 @@
                                             <?php echo lang('list_sale'); ?>
                                         </a>
                                     </li>
+                                    <li data-access="list-138" class="menu_assign_class" module-is-hide="Sale-YES">
+                                        <a class="child-menu" href="<?php echo base_url(); ?>Sale/package">
+                                            <?php echo lang('list').' '.lang('package'); ?>
+                                        </a>
+                                    </li>
                                     <li data-access="add-147" class="menu_assign_class" module-is-hide="Customer-YES">
                                         <a class="child-menu" href="<?php echo base_url(); ?>Customer/addEditCustomer">
                                             <?php echo lang('add_customer'); ?>
@@ -869,6 +874,16 @@
                                     <li data-access="summary_sales_report-249" class="menu_assign_class " module-is-hide="Summary Sales Report-YES">
                                         <a class="child-menu " href="<?php echo base_url(); ?>Report/summarySalesReport">
                                             <?php echo lang('summary_sales_report'); ?>
+                                        </a>
+                                    </li>
+                                    <li data-access="summary_sales_report-249" class="menu_assign_class " module-is-hide="PackageSummary Sales Report-YES">
+                                        <a class="child-menu " href="<?php echo base_url(); ?>Report/summarySalesPackageReport">
+                                            <?php echo lang('summary_sales_package_report'); ?>
+                                        </a>
+                                    </li>
+                                    <li data-access="summary_sales_report-249" class="menu_assign_class " module-is-hide="PackageSummary Sales Report-YES">
+                                        <a class="child-menu " href="<?php echo base_url(); ?>Report/summarySalesWithPackageReport">
+                                            <?php echo lang('all_summary_sales_report'); ?>
                                         </a>
                                     </li>
                                     <li data-access="therapist_report-249" class="menu_assign_class " module-is-hide="Therapist Report-YES">

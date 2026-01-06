@@ -467,6 +467,11 @@ $company_short_name =  $getCompanyInfo->short_name;
                             <iconify-icon icon="solar:bookmark-broken" width="22"></iconify-icon>
                             </a>
                         </li>
+                        <li>
+                            <a tabindex="-1" href="<?php echo base_url()?>Sale/package" class="header_menu_icon offline_prevent" target="_blank" data-tippy-content="<?php echo lang('package');?>">
+                            <iconify-icon icon="solar:bill-check-linear" width="22"></iconify-icon>
+                            </a>
+                        </li>
                     </ul>
                     <ul class="icon__menu">
                         <li>
