@@ -18,11 +18,11 @@
     <section class="content-header">
         <div class="row justify-content-between">
             <div class="col-6 p-0">
-                <h3 class="top-left-header"><?php echo lang('list_sale'); ?> </h3>
-                <input type="hidden" class="datatable_name" data-title="<?php echo lang('list_sale'); ?>" data-id_name="datatable">
+                <h3 class="top-left-header"><?php echo lang('list_pacakge_sale'); ?> </h3>
+                <input type="hidden" class="datatable_name" data-title="<?php echo lang('list_pacakge_sale'); ?>" data-id_name="datatable">
                 <div class="btn_list m-right d-flex">
-                    <a class="new-btn me-1" href="<?php echo base_url() ?>Sale/POS">
-                    <iconify-icon icon="solar:add-circle-broken" width="22"></iconify-icon> <?php echo lang('add_sale'); ?>
+                    <a class="new-btn me-1" href="<?php echo base_url() ?>Sale/addEditSalePackage">
+                    <iconify-icon icon="solar:add-circle-broken" width="22"></iconify-icon> <?php echo lang('add_package_sale'); ?>
                     </a>
                     <button type="button" class="dataFilterBy new-btn">
                         <iconify-icon icon="solar:filter-broken"  width="22"></iconify-icon> 
@@ -30,7 +30,7 @@
                     </button>
                 </div>
             </div>
-            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('sale'), 'secondSection'=> lang('list_sale')])?>
+            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('sale'), 'secondSection'=> lang('list_pacakge_sale')])?>
         </div>
     </section>
 
@@ -45,16 +45,15 @@
                     <thead>
                         <tr>
                             <th class="op_width_1_p op_center"><?php echo lang('sn'); ?></th>
-                            <th class="w-10"><?php echo lang('ref_no'); ?></th>
-                            <th class="w-15"><?php echo lang('created_date'); ?></th>
-                            <th class="w-15"><?php echo lang('sale_date'); ?></th>
+                            <th class="w-13"><?php echo lang('invoice'); ?></th>
+                            <th class="w-15"><?php echo lang('date'); ?></th>
+                            <th class="w-13"><?php echo lang('package'); ?></th>
                             <th class="w-13"><?php echo lang('customer'); ?></th>
                             <th class="w-12 text-center"><?php echo lang('total_payable'); ?></th>
-                            <!-- <th class="w-20"><php echo lang('delivery_status'); ?></th> -->
                             <th class="w-20"><?php echo lang('mode_of_payment') ?></th>
-                            <th class="w-20"><?php echo lang('employee') ?></th>
-                            <th class="w-10"><?php echo lang('added_by'); ?></th>
-                            <!-- <th class="w-10"><?php echo lang('added_date'); ?></th> -->
+                            <th class="w-20"><?php echo lang('sessions') ?></th>
+                            <th class="w-20"><?php echo lang('remaining_amount') ?></th>
+                            <th class="w-20"><?php echo lang('status') ?></th>
                             <th class="w-5"><?php echo lang('actions'); ?></th>
                         </tr>
                     </thead>
@@ -106,4 +105,4 @@
 
 <!-- DataTables -->
 <?php $this->load->view('updater/reuseJs2')?>
-<script src="<?php echo base_url(); ?>frequent_changing/js/sales.js"></script>
+<script src="<?php echo base_url(); ?>frequent_changing/js/package.js"></script>

@@ -134,7 +134,6 @@ class Sale_model extends CI_Model {
   }
 
 
-
    /**
    * getFreeItemBySaleDetailsId
    * @access public
@@ -252,17 +251,53 @@ class Sale_model extends CI_Model {
    * @param int
    * @return object
    */
-  public function getSaleBySaleId($sales_id){
-    $this->db->select("s.*,s.id as sales_id,c.name as customer_name,c.gst_number,c.phone as c_phone,c.email as c_email,c.address as c_address,u.full_name as user_name, d.partner_name as partner_name, s.due_date as due_date"); #outlet invoice footer is removed we use companies invoice footer
-    $this->db->from('tbl_sales s');
-    $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
-    $this->db->join('tbl_users u', 'u.id = s.user_id', 'left');
-    $this->db->join('tbl_outlets o', 'o.id = s.outlet_id', 'left');
-    $this->db->join('tbl_delivery_partners d', 'd.id = s.delivery_partner_id', 'left');
-    $this->db->where("s.id", $sales_id);
-    $this->db->order_by('s.id', 'ASC');
-    return $this->db->get()->row();
+  public function getSaleBySaleId($sales_id, $type = 'sale'){
+
+    if($type == "sale"){
+        $this->db->select("s.*,s.id as sales_id,c.name as customer_name,c.gst_number,c.phone as c_phone,c.email as c_email,c.address as c_address,u.full_name as user_name, d.partner_name as partner_name, s.due_date as due_date, 'sale' as sale_type"); #outlet invoice footer is removed we use companies invoice footer
+        $this->db->from('tbl_sales s');
+        $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
+        $this->db->join('tbl_users u', 'u.id = s.user_id', 'left');
+        $this->db->join('tbl_outlets o', 'o.id = s.outlet_id', 'left');
+        $this->db->join('tbl_delivery_partners d', 'd.id = s.delivery_partner_id', 'left');
+        $this->db->where("s.id", $sales_id);
+        $this->db->order_by('s.id', 'ASC');
+        return $this->db->get()->row();
+    }elseif($type == "package"){
+        $this->db->select(
+            "s.*,
+            s.id as sales_id,
+            sd.sale_no as sale_no,
+            sd.sub_total,
+            sd.discount as sub_total_discount_amount,
+            sd.price as total_payable,
+            sd.price as paid_amount,
+            sd.vat_obj as sale_vat_objects,
+            sd.sale_date as sale_date,
+            sd.in_time as order_time,
+            c.name as customer_name,
+            c.gst_number,
+            c.phone as c_phone,
+            c.email as c_email,
+            c.address as c_address,
+            u.full_name as user_name,
+            'package' as sale_type
+            "
+            
+        );
+        $this->db->from('package_sale s');
+        $this->db->join('package_sessions sd', 'sd.package_sale_id = s.id');
+        $this->db->join('tbl_users u', 'u.id = s.user_id', 'left');
+        $this->db->join('tbl_outlets o', 'o.id = s.outlet_id', 'left');
+        $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
+        $this->db->where("sd.id", $sales_id);
+        $this->db->order_by('sd.id', 'ASC');
+        return $this->db->get()->row();
+    }
+    
   }
+
+  
 
 
    /**
@@ -339,20 +374,49 @@ class Sale_model extends CI_Model {
    * @param int
    * @return object
    */
-  public function getAllItemsFromSalesDetailBySalesId($sales_id){
-    $this->db->select("s.sale_date,sd.*,sd.id as sales_details_id,i.code as code,i.warranty,i.warranty_date,i.guarantee,i.guarantee_date,b.name as brand_name, i.name as item_name, i.alternative_name, i.code, i.type as item_type, i.photo, seller.full_name as seller_name");
-    $this->db->from('tbl_sales_details sd');
-    $this->db->join('tbl_sales s', 's.id = sd.sales_id', 'left');
-    $this->db->join('tbl_items i', 'i.id = sd.food_menu_id', 'left');
-    $this->db->join('tbl_brands b', 'b.id = i.brand_id', 'left');
-    $this->db->join('tbl_users seller', 'seller.id = sd.item_seller_id', 'left');
-    $this->db->where("sd.sales_id", $sales_id);
-    $this->db->order_by('sd.id', 'ASC');
-    return $this->db->get()->result();
+  public function getAllItemsFromSalesDetailBySalesId($sales_id, $type = 'sale'){
+    if($type == 'sale'){
+      $this->db->select("s.sale_date,sd.*,sd.id as sales_details_id,i.code as code,i.warranty,i.warranty_date,i.guarantee,i.guarantee_date,b.name as brand_name, i.name as item_name, i.alternative_name, i.code, i.type as item_type, i.photo, seller.full_name as seller_name");
+      $this->db->from('tbl_sales_details sd');
+      $this->db->join('tbl_sales s', 's.id = sd.sales_id', 'left');
+      $this->db->join('tbl_items i', 'i.id = sd.food_menu_id', 'left');
+      $this->db->join('tbl_brands b', 'b.id = i.brand_id', 'left');
+      $this->db->join('tbl_users seller', 'seller.id = sd.item_seller_id', 'left');
+      $this->db->where("sd.sales_id", $sales_id);
+      $this->db->order_by('sd.id', 'ASC');
+      return $this->db->get()->result();
+    }elseif($type == 'package'){
+       $this->db->select(
+          "s.purchase_date as sale_date,
+          sd.*,
+          sd.id as sales_details_id,
+          sd.sub_total as menu_unit_price,
+          sd.price as menu_price_with_discount,
+          sd.discount as menu_discount_value,
+          sd.discount as discount_amount,
+          sd.qty as qty,
+          sd.session_name as item_name,
+          sd.session_name as alternative_name,
+          seller.full_name as seller_name");
+      $this->db->from('package_sessions sd');
+      $this->db->join('package_sale s', 's.id = sd.package_sale_id', 'left');
+      $this->db->join('tbl_users seller', 'seller.id = sd.employee_id', 'left');
+      $this->db->where("sd.id", $sales_id);
+      $this->db->order_by('sd.id', 'ASC');
+      return $this->db->get()->result();
+    }
   }
 
  
-
+  public function getItemsWithCategory($where){
+    $this->db->select("i.*,ic.name as category_name");
+    $this->db->from('tbl_items i');
+    $this->db->join('tbl_item_categories ic', 'ic.id = i.category_id', 'left');
+    $this->db->where($where);
+    $this->db->where("i.del_status", "Live");
+    $this->db->order_by('i.id', 'ASC');
+    return $this->db->get()->result();
+  }
 
    /**
    * saleItemDetails
@@ -870,47 +934,77 @@ class Sale_model extends CI_Model {
    * @param string
    * @return object
    */
-  public function make_query($outlet_id, $delivery_status=""){
-    $company_id = $this->session->userdata('company_id');
-    $this->db->select("
-        s.id,
-        s.sale_no,
-        s.sale_date,
-        s.date_time,
-        s.total_payable,
-        s.delivery_status,
-        s.added_date,
-        s.online_yes_no,
-        u.full_name,
-        c.name as customer_name,
-        GROUP_CONCAT(DISTINCT seller.full_name SEPARATOR ', ') as seller_names
-    ");
-    $this->db->from('tbl_sales s');
-    $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
-    $this->db->join('tbl_users u', 'u.id = s.user_id', 'left');
-    $this->db->join('tbl_sale_payments sp', 'sp.sale_id = s.id', 'left');
-    $this->db->join('tbl_payment_methods pm', 'pm.id = sp.payment_id', 'left');
-    $this->db->join('tbl_sales_details sd', 'sd.sales_id = s.id', 'left');
-    $this->db->join('tbl_users seller', 'sd.item_seller_id = seller.id', 'left');
-    if($_POST["search"]["value"]) {
-      $this->db->group_start();
-      $this->db->like("sale_no",$_POST["search"]["value"]);
-      $this->db->or_like("sale_date",$_POST["search"]["value"]);
-      $this->db->or_like("date_time",$_POST["search"]["value"]);
-      $this->db->or_like("order_time",$_POST["search"]["value"]);
-      $this->db->or_like("c.name",$_POST["search"]["value"]);
-      $this->db->or_like("pm.name",$_POST["search"]["value"]);
-      $this->db->or_like("u.full_name",$_POST["search"]["value"]);
-      $this->db->group_end();
-    }
-    if($delivery_status){
-      $this->db->where("s.delivery_status", $delivery_status);
-    }
-    $this->db->where("s.outlet_id", $outlet_id);
-    $this->db->where("s.company_id", $company_id);
-    $this->db->where("s.del_status", "Live");
-    $this->db->order_by('s.id', 'DESC');
-    $this->db->group_by('s.id');
+  public function make_query($outlet_id, $delivery_status="" , $query_type="sale"){
+
+        $company_id = $this->session->userdata('company_id');
+        if($query_type == "sale"){
+            $this->db->select("
+                s.id,
+                s.sale_no,
+                s.sale_date,
+                s.date_time,
+                s.total_payable,
+                s.delivery_status,
+                s.added_date,
+                s.online_yes_no,
+                u.full_name,
+                c.name as customer_name,
+                GROUP_CONCAT(DISTINCT seller.full_name SEPARATOR ', ') as seller_names
+            ");
+            $this->db->from('tbl_sales s');
+            $this->db->join('tbl_customers c', 'c.id = s.customer_id', 'left');
+            $this->db->join('tbl_users u', 'u.id = s.user_id', 'left');
+            $this->db->join('tbl_sale_payments sp', 'sp.sale_id = s.id', 'left');
+            $this->db->join('tbl_payment_methods pm', 'pm.id = sp.payment_id', 'left');
+            $this->db->join('tbl_sales_details sd', 'sd.sales_id = s.id', 'left');
+            $this->db->join('tbl_users seller', 'sd.item_seller_id = seller.id', 'left');
+            if($_POST["search"]["value"]) {
+              $this->db->group_start();
+              $this->db->like("sale_no",$_POST["search"]["value"]);
+              $this->db->or_like("sale_date",$_POST["search"]["value"]);
+              $this->db->or_like("date_time",$_POST["search"]["value"]);
+              $this->db->or_like("order_time",$_POST["search"]["value"]);
+              $this->db->or_like("c.name",$_POST["search"]["value"]);
+              $this->db->or_like("pm.name",$_POST["search"]["value"]);
+              $this->db->or_like("u.full_name",$_POST["search"]["value"]);
+              $this->db->group_end();
+            }
+            if($delivery_status){
+              $this->db->where("s.delivery_status", $delivery_status);
+            }
+            $this->db->where("s.outlet_id", $outlet_id);
+            $this->db->where("s.company_id", $company_id);
+            $this->db->where("s.del_status", "Live");
+            $this->db->order_by('s.id', 'DESC');
+            $this->db->group_by('s.id');
+      }elseif($query_type == "package"){
+          $this->db->select("
+              sp.id,
+              sp.invoice_no,
+              sp.session_count,
+              sp.purchase_date,
+              sp.status,
+              sp.del_status,
+              sp.total_amt,
+              sp.payment_method,
+              sp.session_count,
+              sp.remaing_price,
+              ti.name as package_name,
+              c.name as customer_name
+          ");
+          $this->db->from('package_sale sp');
+          $this->db->join('tbl_customers c', 'c.id = sp.customer_id', 'left');
+          $this->db->join('tbl_items ti', 'ti.id = sp.package_id', 'left');
+          if($_POST["search"]["value"]) {
+            $this->db->group_start();
+            $this->db->like("sp.invoice_no",$_POST["search"]["value"]);
+            $this->db->or_like("ti.name",$_POST["search"]["value"]);
+            $this->db->or_like("c.name",$_POST["search"]["value"]);
+            $this->db->group_end();
+          }
+          $this->db->where("sp.del_status", "Live");
+          $this->db->order_by('sp.id', 'DESC');
+      }
   }
 
   /**
@@ -920,8 +1014,12 @@ class Sale_model extends CI_Model {
    * @param string
    * @return object
    */
-  public function make_datatables($outlet_id, $delivery_status=""){
-      $this->make_query($outlet_id, $delivery_status);
+  public function make_datatables($outlet_id, $delivery_status="", $query_type=""){
+      if($query_type == "sale"){
+        $this->make_query($outlet_id, $delivery_status, $query_type);
+      }elseif($query_type == "package"){
+        $this->make_query($outlet_id, $delivery_status, $query_type);
+      }
       if($_POST["length"]!=-1){
           $this->db->limit($_POST["length"],$_POST["start"]);
       }
@@ -944,8 +1042,8 @@ class Sale_model extends CI_Model {
    * @param string
    * @return object
    */
-  public function get_filtered_data($outlet_id, $delivery_status=""){
-      $this->make_query($outlet_id, $delivery_status);
+  public function get_filtered_data($outlet_id, $delivery_status="", $query_type="sale"){
+      $this->make_query($outlet_id, $delivery_status, $query_type);
       $result = $this->db->get();
       return $result->num_rows();
   }
@@ -957,17 +1055,24 @@ class Sale_model extends CI_Model {
    * @param string
    * @return object
    */
-  public function get_all_data($outlet_id, $delivery_status=""){
-      $company_id = $this->session->userdata('company_id');
-      $this->db->select("*");
-      $this->db->from('tbl_sales');
-      if($delivery_status){
-        $this->db->where("tbl_sales.delivery_status", $delivery_status);
+  public function get_all_data($outlet_id, $delivery_status="", $defaultdata = 'sale'){
+      if($defaultdata == "sale"){
+        $company_id = $this->session->userdata('company_id');
+        $this->db->select("*");
+        $this->db->from('tbl_sales');
+        if($delivery_status){
+          $this->db->where("tbl_sales.delivery_status", $delivery_status);
+        }
+        $this->db->where("tbl_sales.outlet_id", $outlet_id);
+        $this->db->where("tbl_sales.company_id", $company_id);
+        $this->db->where("tbl_sales.del_status", "Live");
+        return $this->db->count_all_results();
+      }elseif('package'){
+          $this->db->select("*");
+          $this->db->from('package_sale sp');
+          $this->db->where("sp.del_status", "Live");    
+          return $this->db->count_all_results();
       }
-      $this->db->where("tbl_sales.outlet_id", $outlet_id);
-      $this->db->where("tbl_sales.company_id", $company_id);
-      $this->db->where("tbl_sales.del_status", "Live");
-      return $this->db->count_all_results();
   }
   /**
    * getAllPurchaseByPayment
@@ -991,9 +1096,61 @@ class Sale_model extends CI_Model {
     $this->db->where("tbl_purchase.added_date>=", $date);
     $this->db->where("tbl_purchase.added_date<=", date('Y-m-d H:i:s'));
     $this->db->where("tbl_purchase_payments.payment_id", $payment_id);
-    $data =  $this->db->get()->row();
-    return (isset($data->total_amount) && $data->total_amount?$data->total_amount:0);
+      $data =  $this->db->get()->row();
+      return (isset($data->total_amount) && $data->total_amount?$data->total_amount:0);
   }
+
+  public function hasActivePackageAssignment($customer_id, $package_id, $exclude_sale_id = null) {
+    if (!$customer_id || !$package_id) {
+      return false;
+    }
+    $this->db->from('package_sale');
+    $this->db->where('customer_id', $customer_id);
+    $this->db->where('package_id', $package_id);
+    if ($exclude_sale_id) {
+      $this->db->where('id !=', $exclude_sale_id);
+    }
+    $this->db->where('status', '0');
+    $this->db->where('del_status', 'Live');
+    return $this->db->count_all_results() > 0;
+  }
+
+
+  public function getPackageData($id)
+  {
+    
+      $this->db->select("ps.*, ps.remaing_price as remaing_price, c.id as customer_id, c.name as customer_name, c.phone as c_phone, c.email as c_email, c.address as c_address, i.name as package_name, psc.remaining_session, psc.remaining_amount as cancelled_remaining_amount, psc.note, ps.cancelled_at, c.name as customer_name, i.name as package_name, u.full_name as user_name");
+      $this->db->from("package_sale ps");
+      $this->db->join('package_sale_cancelation psc', 'psc.package_sale_id = ps.id', 'left');
+      $this->db->join("tbl_users u", "u.id = ps.user_id", "left");
+      $this->db->join("tbl_customers c", "c.id = ps.customer_id", "left");
+      $this->db->join("tbl_items i", "i.id = ps.package_id", "left");
+      $this->db->where("ps.id", $id);
+      $this->db->where("ps.del_status", "Live");
+
+      $package = $this->db->get()->row();
+    
+      if(!$package){
+          return null;
+      }
+
+      // 2) Now fetch sessions (SECOND fast small query)
+      $sessions = $this->db
+        ->select('package_sessions.*, tbl_users.full_name AS employee_name')
+        ->from('package_sessions')
+        ->join('tbl_users', 'tbl_users.id = package_sessions.employee_id', 'left')
+        ->where('package_sale_id', $id)
+        ->order_by('package_sessions.id', 'ASC')
+        ->get()
+        ->result();
+
+
+      // Attach sessions to package
+      $package->sessions = $sessions;
+
+      return $package;
+  }
+
 
 
   /**

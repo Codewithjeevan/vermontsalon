@@ -1850,6 +1850,7 @@ $(function () {
             }
         }else{
             const request = indexedDB.open("off_pos", 2);
+
             request.onsuccess = function(event) {
                 const db = event.target.result;
                 const transaction = db.transaction(["sales"], "readonly");
@@ -5451,17 +5452,18 @@ $(function () {
 
     $('.icon_pick_date').datepicker({
         format: 'yyyy-mm-dd',
-        autoclose: true
-    }).on('changeDate', function(selected) {
-        let startDate = new Date(selected.date.valueOf());
-        let date = new Date(startDate);
-        let formattedDate = date.getFullYear() + '-' + 
-                            ('0' + (date.getMonth() + 1)).slice(-2) + '-' + 
-                            ('0' + date.getDate()).slice(-2);
+        autoclose: true,
+        endDate: new Date()   // 🚫 future dates disabled
+    }).on('changeDate', function (selected) {
+        let date = new Date(selected.date.valueOf());
+
+        let formattedDate = date.getFullYear() + '-' +
+            ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+            ('0' + date.getDate()).slice(-2);
+
         $(this).attr('data-get-date', formattedDate);
         $('#invoice_date_show').text(formattedDate);
     });
-    
 
 
 
@@ -7245,7 +7247,7 @@ $(function () {
         return $.ajax({
             url: base_url + "Sale/getCustomersAjax",
             method: "GET",
-            data: { search: '', page: 1 }
+            data: { search: '', customer_id: customer_id , page: 1 }
         })
         .done(function (response) {
             if (customer_id) {
@@ -9496,6 +9498,8 @@ $(function () {
             } else if (print_format == "Half A4 Print") {
                 open(base_url+"Sale/print_invoice/" + sale_id, 'Print Invoice', 'width=1600,height=550');
             }else if (print_format == "Letter Head") {
+                open(base_url+"Sale/print_invoice/" + sale_id, 'Print Invoice', 'width=1600,height=550');
+            }else if (print_format == "TCM") {
                 open(base_url+"Sale/print_invoice/" + sale_id, 'Print Invoice', 'width=1600,height=550');
             }
             $("#finalize_order_cancel_button").click();

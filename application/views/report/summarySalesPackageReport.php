@@ -1,10 +1,9 @@
 <input type="hidden" value="<?php echo lang('The_date_field_is_required');?>" id="The_date_field_is_required">
 <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/report.css">
 <style>
-    .dataTable thead tr th:last-child{
-        text-align: center !important;
-    }
-    .dataTable tbody tr td:last-child{
+    .dataTable thead tr th:last-child,
+    .dataTable tbody tr td:last-child
+    {
         text-align: center !important;
     }
 </style>
@@ -13,9 +12,9 @@
     <section class="content-header">
         <div class="row justify-content-between">
             <div class="col-6 p-0">
-                <h3 class="top-left-header mt-2"><?php echo lang('therapist_report'); ?></h3>
+                <h3 class="top-left-header mt-2"><?php echo lang('summary_sales_package_report'); ?></h3>
             </div>
-            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('report'), 'secondSection'=> lang('therapist_report')])?>
+            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('report'), 'secondSection'=> lang('summary_sales_package_report')])?>
         </div>
     </section>
 
@@ -27,7 +26,7 @@
                 <?php echo escape_output($this->session->userdata('business_name'));?> 
             </h3>
             <h5 class="outlet_info">
-                <strong><?php echo lang('therapist_report'); ?></strong>
+                <strong><?php echo lang('summary_sales_package_report'); ?></strong>
             </h5>
             <?php if(isset($outlet_id)  && $outlet_id){
                 $outlet_info = getOutletInfoById($outlet_id); 
@@ -50,11 +49,6 @@
             <h5 class="outlet_info">
                 <?php if(isset($outlet_id)  && $outlet_id){ ?>
                     <strong><?php echo lang('phone'); ?>: </strong> <?= escape_output($outlet_info->phone); ?>
-                <?php } ?>
-            </h5>
-            <h5 class="outlet_info" >
-                <?php if(isset($userdata)  && $userdata){ ?>
-                    <strong><?php echo lang('therapist'); ?>: </strong> <span id="therapist_name"><?= escape_output($userdata->full_name); ?></span>
                 <?php } ?>
             </h5>
             <?php if(isset($start_date) && $start_date != '' && $start_date != '1970-01-01' || isset($end_date) && $end_date != '' && $end_date != '1970-01-01'){ ?>
@@ -83,51 +77,72 @@
         <div class="table-box">
             <!-- /.box-header -->
             <div class="table-responsive">
-            <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('therapist_report'); ?>" data-id_name="datatable">
+            <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('summary_sales_package_report'); ?>" data-id_name="datatable">
                 <table id="datatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th class="text-center"><?php echo lang('date'); ?></th>
-                            <th class="text-center" style="text-align: center !important;"><?php echo lang('invoice_no'); ?></th>
-                            <th class="text-center"><?php echo lang('bill_amt'); ?></th>
+                            <th><?php echo lang('date_and_time'); ?></th>
+                            <th class="text-center"><?php echo lang('total_bill_amt'); ?></th>
+                            <th class="text-center"><?php echo lang('discount_amount'); ?></th>
+
+                            <?php foreach($payment_methods as $method): ?>
+                                <th class="text-center">Total <?= $method->name ?> Amt</th>
+                            <?php endforeach; ?>
+
+                            <th class="text-center"><?php echo lang('vat_amount'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
                         $totalPayable = 0;
-                        $paidAmount = 0;
-                        $dueAmount = 0;
                         $disAmount = 0;
-                        $subTotal = 0;
-                        $chargeTotal = 0;
                         $totalTax = 0;
+                        $totals = []; // dynamic totals by payment type
+
                         if (isset($saleReport)):
-                            foreach ($saleReport as $key => $value) {
-                                $key++;
+                            foreach ($saleReport as $value):
                                 $totalPayable += $value->total_payable;
-                                $paidAmount += $value->paid_amount;
-                                $dueAmount += $value->due_amount;
                                 $disAmount += $value->total_discount_amount;
-                                $subTotal += $value->sub_total;
-                                $totalTax += $value->vat;
-                                $chargeTotal += $value->delivery_charge;
+                                $totalTax += @$value->total_vat;
+                        ?>
+                            <tr>
+                                <td><?= date('d-m-Y', strtotime($value->sale_date)) ?></td>
+                                <td class="text-center"><?= getAmtCustom($value->total_payable) ?></td>
+                                <td class="text-center"><?= getAmtCustom($value->total_discount_amount) ?></td>
+
+                                <?php foreach ($payment_methods as $method): 
+                                    $field = 'total_' . strtolower(str_replace(' ', '_', $method->name)) . '_amount';
+                                    $field = preg_replace('/[^a-z0-9_]/', '', $field); // sanitize
+                                    $amt = isset($value->$field) ? $value->$field : 0;
+                                    if (!isset($totals[$field])) $totals[$field] = 0;
+                                    $totals[$field] += $amt;
                                 ?>
-                                <tr>
-                                    <td class="text-center"><?php echo date('d/m/Y',strtotime($value->sale_date)); ?></td>
-                                    <td class="text-center" style="text-align: center !important;"><?php echo escape_output($value->sale_no); ?></td>
-                                    <td class="text-center"><?php echo getAmtCustom($value->total_payable); ?></td>
-                                </tr>
-                                <?php
-                            }
+                                    <td class="text-center"><?= getAmtCustom($amt) ?></td>
+                                <?php endforeach; ?>
+
+                                <td class="text-center"><?= getAmtCustom($value->total_vat) ?></td>
+                            </tr>
+                        <?php 
+                            endforeach;
                         endif;
                         ?>
-                        <tr>
-                            <th class="text-center" style="border-right: 0px;font-weight: bold"><?php echo lang('total'); ?></th>
-                            <th style="border-left: 0px;"></th>
-                            <th class="text-center"><?php echo getAmtCustom($totalPayable); ?></th>
-                        </tr>
-                    </tbody>
-                    
+                            <tr>
+                                <th class="text-right"><?php echo lang('total'); ?></th>
+                                <th class="text-center"><?= getAmtCustom($totalPayable) ?></th>
+                                <th class="text-center"><?= getAmtCustom($disAmount) ?></th>
+
+                                <?php foreach ($payment_methods as $method): 
+                                    $field = 'total_' . strtolower(str_replace(' ', '_', $method->name)) . '_amount';
+                                    $field = preg_replace('/[^a-z0-9_]/', '', $field);
+                                    $amt = isset($totals[$field]) ? $totals[$field] : 0;
+                                ?>
+                                    <th class="text-center"><?= getAmtCustom($amt) ?></th>
+                                <?php endforeach; ?>
+
+                                <th class="text-center"><?= getAmtCustom($totalTax) ?></th>
+                            </tr> 
+                        </tbody>
+
                 </table>
             </div>
             <!-- /.box-body -->
@@ -147,7 +162,7 @@
                     </span>
                 </button>
         </header>
-        <?php echo form_open(base_url() . 'Report/therapistReport', $arrayName = array('id' => 'saleReport')) ?>
+        <?php echo form_open(base_url() . 'Report/summarySalesPackageReport', $arrayName = array('id' => 'saleReport')) ?>
         <div class="row">
             <div class="col-sm-12 col-md-6 mb-2">
                 <div class="form-group">
@@ -191,22 +206,6 @@
             <?php
                 endif;
             ?> 
-            <div class="col-sm-12 col-md-6 mb-2">
-                <div class="form-group">
-                    <select  class="form-control select2 op_width_100_p" id="user_id" name="user_id">
-                        <option value="">Select Therapist</option>
-                        <?php
-                        foreach ($users as $value) {
-                            ?>
-                            <option value="<?php echo escape_output($value->id) ?>" <?php echo set_select('user_id', $value->id); ?>><?php echo escape_output($value->full_name) ?> <?= $value->phone ? '('. $value->phone .')' : '' ?></option>
-                        <?php } ?>
-                    </select>
-                    <div class="alert alert-error error-msg user_id_err_msg_contnr ">
-                        <p id="user_id_err_msg"></p>
-                    </div>
-                </div>
-            </div>
-
             <div class="clear-fix"></div>
             <div class="col-12 mb-2">
                 <button type="submit" name="submit" value="submit" class="new-btn saleReport">

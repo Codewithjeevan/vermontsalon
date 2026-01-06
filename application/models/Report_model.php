@@ -996,7 +996,7 @@ class Report_model extends CI_Model {
 
 
    public function summarySaleReport($startDate, $endDate, $outlet_id = '')
-    {
+   {
         $company_id      = $this->session->userdata('company_id');
         $payment_methods = $this->Common_model->getAllPaymentMethods();
 
@@ -1021,6 +1021,7 @@ class Report_model extends CI_Model {
             's.sale_date',
             'SUM(s.total_payable)         AS total_payable',
             'SUM(s.total_discount_amount) AS total_discount_amount',
+            'SUM(s.vat) AS total_vat',
             "COALESCE(
             GROUP_CONCAT(s.sale_vat_objects SEPARATOR '|||'),
             ''
@@ -1060,6 +1061,214 @@ class Report_model extends CI_Model {
             ->order_by('s.sale_date', 'asc');
 
         return $this->db->get()->result();
+    }
+
+   public function summarySalePackageReport($startDate, $endDate, $outlet_id = '')
+   {
+        $company_id      = $this->session->userdata('company_id');
+        $payment_methods = [
+            (object)['name' => 'Cash'],
+            (object)['name' => 'Card']
+        ];
+
+        // build dynamic PM select
+        $pmSelect = [];
+        foreach ($payment_methods as $method) {
+            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
+
+            $pmSelect[] = "
+                SUM(
+                    CASE WHEN ps.payment_method = '{$method->name}'
+                    THEN s.price ELSE 0 END
+                ) AS total_{$alias}_amount
+            ";
+        }
+        $pmSelectSQL = implode(',', $pmSelect);
+
+
+       $outerSelect = "
+            s.in_time AS sale_date,
+            SUM(s.price) AS total_payable,
+            SUM(s.discount) AS total_discount_amount,
+            SUM(s.tax_amt) AS total_vat,
+            COALESCE(GROUP_CONCAT(s.vat_obj SEPARATOR '|||'), '') AS sale_vat_objects_grouped,
+            $pmSelectSQL
+        ";
+
+        $this->db->select($outerSelect, FALSE)
+            ->from('package_sessions AS s')
+            ->join('package_sale AS ps', 'ps.id = s.package_sale_id', 'left')
+            ->where('ps.del_status', 'Live')
+            ->where('s.status', 1);  // 🔥 Only valid sessions
+
+
+        // date filters
+        if ($startDate && $endDate) {
+            $this->db->where('s.in_time >=', $startDate.' 00:00:00');
+            $this->db->where('s.in_time <=', $endDate.' 23:59:59');
+        } elseif ($startDate) {
+            $this->db->where('s.in_time', $startDate.' 00:00:00');
+        } elseif ($endDate) {
+            $this->db->where('s.in_time', $endDate.' 23:59:59');
+        }
+
+        // outlet filter
+        if ($outlet_id) {
+            $this->db->where('ps.outlet_id', $outlet_id);
+        }
+
+        $this->db->group_by('s.in_time')
+                ->order_by('s.in_time', 'asc');
+
+
+        return $this->db->get()->result();
+    }
+
+
+    public function summarySalesWithPackageReport($startDate, $endDate, $outlet_id = '')
+    {
+        $company_id = $this->session->userdata('company_id');
+        $sql = "
+        SELECT 
+            d.sale_date,
+
+            /* -------- PACKAGE ADVANCE -------- */
+            IFNULL(pa.package_advance_cash, 0) AS package_advance_cash,
+            IFNULL(pa.package_advance_card, 0) AS package_advance_card,
+
+            /* -------- USED PACKAGE -------- */
+            IFNULL(up.used_package_cash, 0) AS used_package_cash,
+            IFNULL(up.used_package_card, 0) AS used_package_card,
+
+            /* -------- GENERAL SALES TOTAL -------- */
+            IFNULL(gs.general_total, 0) AS general_total,
+
+            /* -------- GENERAL SALES PAYMENTS -------- */
+            IFNULL(gp.general_cash, 0) AS general_cash,
+            IFNULL(gp.general_card, 0) AS general_card,
+            IFNULL(gp.groupon_amount, 0) AS groupon_amount,
+
+            /* -------- DAILY SUB-TOTAL -------- */
+            (
+                IFNULL(gs.sub_total, 0)
+                + IFNULL(up.sub_total, 0)
+            ) AS sub_total,
+
+            /* -------- DAILY TOTAL -------- */
+            (
+                IFNULL(gs.general_total, 0)
+                + IFNULL(up.used_package_cash, 0)
+                + IFNULL(up.used_package_card, 0)
+            ) AS daily_total,
+
+            /* -------- CANCELLED PACKAGE AMOUNT -------- */
+            IFNULL(pc.cancelled_amount, 0) AS cancelled_amount, 
+
+            /* -------- VAT total -------- */
+            (
+                IFNULL(up.vat_total, 0)
+                + IFNULL(gs.vat_total, 0)
+            ) AS vat_total,
+
+            /* -------- Total cash/card -------- */
+            (IFNULL(pa.package_advance_card, 0) + IFNULL(gp.general_card, 0)) AS total_card_on_bank,
+            (IFNULL(pa.package_advance_cash, 0) + IFNULL(gp.general_cash, 0)) AS total_cash_amount
+
+
+        FROM (
+            SELECT DATE('$startDate') + INTERVAL n DAY AS sale_date
+            FROM (
+                SELECT a.a + 10*b.a AS n FROM
+                (SELECT 0 a UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+                 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) a,
+                (SELECT 0 a UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+                 UNION SELECT 5 UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9) b
+            ) x
+            WHERE DATE('$startDate') + INTERVAL n DAY <= '$endDate'
+        ) d
+
+        /* ---------------- PACKAGE ADVANCE ---------------- */
+        LEFT JOIN (
+            SELECT 
+                DATE(purchase_date) AS date,
+                SUM(CASE WHEN payment_method='Cash' THEN total_amt ELSE 0 END) AS package_advance_cash,
+                SUM(CASE WHEN payment_method='Card' THEN total_amt ELSE 0 END) AS package_advance_card
+            FROM package_sale
+            WHERE payment_status=1
+            AND company_id='$company_id'
+            AND del_status='Live'
+            " . ($outlet_id ? "AND outlet_id='$outlet_id'" : "") . "
+            GROUP BY DATE(purchase_date)
+        ) pa ON pa.date = d.sale_date
+
+
+        /* ---------------- USED PACKAGE ---------------- */
+        LEFT JOIN (
+            SELECT
+                DATE(ps.in_time) AS date,
+                SUM(CASE WHEN ps.payment_method='Cash' THEN ps.price ELSE 0 END) AS used_package_cash,
+                SUM(CASE WHEN ps.payment_method='Card' THEN ps.price ELSE 0 END) AS used_package_card,
+                SUM(IFNULL(ps.tax_amt, 0)) AS vat_total,
+                SUM(IFNULL(ps.sub_total, 0)) AS sub_total
+            FROM package_sessions ps
+            JOIN package_sale psa ON psa.id = ps.package_sale_id
+            WHERE psa.del_status='Live'
+            GROUP BY DATE(ps.in_time)
+        ) up ON up.date = d.sale_date
+
+
+        /* ---------------- PACKAGE CANCELLATION ---------------- */
+        LEFT JOIN (
+            SELECT
+                DATE(psc.created_at) AS date,
+                SUM(psc.remaining_amount) AS cancelled_amount,
+                SUM(psc.remaining_session) AS cancelled_sessions
+            FROM package_sale_cancelation psc
+            JOIN package_sale ps ON ps.id = psc.package_sale_id
+            WHERE ps.del_status='Live'
+            GROUP BY DATE(created_at)
+        ) pc ON pc.date = d.sale_date
+
+
+
+        /* ---------------- GENERAL SALE TOTAL ---------------- */
+        LEFT JOIN (
+            SELECT
+                DATE(sale_date) AS date,
+                SUM(total_payable) AS general_total,
+                SUM(IFNULL(vat, 0)) AS vat_total,
+                SUM(IFNULL(sub_total, 0)) AS sub_total
+            FROM tbl_sales
+            WHERE company_id='$company_id'
+            AND del_status='Live'
+            " . ($outlet_id ? "AND outlet_id='$outlet_id'" : "") . "
+            GROUP BY DATE(sale_date)
+        ) gs ON gs.date = d.sale_date
+
+
+        /* ---------------- GENERAL SALE PAYMENT SUM ---------------- */
+        LEFT JOIN (
+            SELECT 
+                ts.date,
+                SUM(CASE WHEN sp.payment_name='Cash' THEN sp.amount ELSE 0 END) AS general_cash,
+                SUM(CASE WHEN sp.payment_name='Card' THEN sp.amount ELSE 0 END) AS general_card,
+                SUM(CASE WHEN sp.payment_name='Groupon' THEN sp.amount ELSE 0 END) AS groupon_amount
+            FROM (
+                SELECT id, DATE(sale_date) AS date
+                FROM tbl_sales
+                WHERE company_id='$company_id'
+                AND del_status='Live'
+                " . ($outlet_id ? "AND outlet_id='$outlet_id'" : "") . "
+            ) ts
+            LEFT JOIN tbl_sale_payments sp ON sp.sale_id = ts.id
+            GROUP BY ts.date
+        ) gp ON gp.date = d.sale_date
+
+
+        ORDER BY d.sale_date ASC
+    ";
+
+    return $this->db->query($sql)->result();
     }
 
 

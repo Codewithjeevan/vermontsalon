@@ -167,6 +167,7 @@ class Item extends Cl_Controller {
                     $product_info['code'] = htmlspecialcharscustom($this->input->post('code'));
                     $product_info['brand_id'] = htmlspecialcharscustom($this->input->post('brand_id'));
                     $product_info['alert_quantity'] = htmlspecialcharscustom($this->input->post('alert_quantity'));
+                    $product_info['session_count'] = htmlspecialcharscustom($this->input->post('session_count'));
                     if($type == 'IMEI_Product' || $type == 'Serial_Product' || $type == 'Installment_Product'){
                         $product_info['unit_type'] = 1;
                     }else{
@@ -443,6 +444,7 @@ class Item extends Cl_Controller {
                 $data['combo_items'] = $this->Common_model->getComboChildItemByComboId($id);
                 $data['units'] = $this->Common_model->getAllByCompanyId($company_id, 'tbl_units');
                 $data['categories'] = $this->Common_model->getAllByCompanyId($company_id, 'tbl_item_categories');
+                
                 $data['suppliers'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, 'tbl_suppliers');
                 $data['brands'] = $this->Common_model->getAllByCompanyId($company_id, "tbl_brands");
                 $data['racks'] = $this->Common_model->getAllByCompanyIdForDropdownProduct($company_id, 'tbl_racks');
@@ -456,7 +458,8 @@ class Item extends Cl_Controller {
                 }else{
                     $data['autoCode'] = $generated_code;
                 }
-                $data['item_details'] = $this->Common_model->getItemDetailsWithOpeningStockByItemId($id);
+                $data['item_details'] = $itemdetails = $this->Common_model->getItemDetailsWithOpeningStockByItemId($id);
+                $data['current_category'] = $this->Common_model->getSingleData('tbl_item_categories', ['id' => $itemdetails->category_id]);
                 $data['item_type_info'] = $this->Common_model->getItemDetailsDataById($id, "item_id", "tbl_set_opening_stocks");
                 $data['stockDetails'] = getOpeningStockDetails($id);
                 $data['variation_products'] = $this->Common_model->getAllByCustomId($id,"parent_id","tbl_items",$order='');

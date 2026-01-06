@@ -95,7 +95,7 @@ if ($this->session->flashdata('exception')) {
                             <select  class="form-control select2" id="customer_id" name="customer_id">
                                 <option value=""><?php echo lang('select_customer');?></option>
                                 <?php foreach($customers as $key=>$customer){?>
-                                    <option value="<?php echo escape_output($customer->id);?>"><?php echo escape_output($customer->name);?></option>
+                                    <option value="<?php echo escape_output($customer->id);?>"><?php echo escape_output($customer->name);?> <?php echo escape_output($customer->phone) ?></option>
                                 <?php } ?>
                             </select>
                             <div class="alert alert-error error-msg customer_id_err_msg_contnr modal_err_msg">
@@ -146,7 +146,14 @@ if ($this->session->flashdata('exception')) {
                     <div class="col-md-6 col-12">
                         <div class="form-group">
                             <label >End Date</label>
-                            <input autocomplete="off" type="text" class="form-control customDateTimePicker" id="end_date" placeholder="End Date" readonly>
+                            <div class="d-flex gap-2">
+                                <div>
+                                <input autocomplete="off" name="time_frame" type="number" class="form-control no-arrow" id="time_frame" placeholder="Time Frame Eg. 30 Minutes">
+                                </div>
+                                <div>
+                                <input autocomplete="off" type="text" class="form-control customDateTimePicker" id="end_date" placeholder="End Date" readonly>
+                                </div>
+                            </div>
                             <div class="alert alert-error error-msg end_date_err_msg_contnr modal_err_msg">
                                 <p id="end_date_err_msg"></p>
                             </div>

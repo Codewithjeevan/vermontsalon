@@ -18,11 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function calanderCall() {
         let calendarEl = document.getElementById('calendar');
         let calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
+            initialView: 'timeGridDay',
             headerToolbar: {
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                right: 'timeGridDay,timeGridWeek,dayGridMonth,'
             },
             events: function(fetchInfo, successCallback, failureCallback) {
                 // Fetch events from the server
@@ -99,6 +99,14 @@ document.addEventListener('DOMContentLoaded', function() {
     jQuery(document).on('click', '#add_booking_triger', function(){
         jQuery('#add_booking').modal('show');
         jQuery('#booking_edit_hidden_id').val('');
+        $('#service_seller_id').val(null).trigger('change');
+        $('#customer_id').val(null).trigger('change');
+        $('#status').val(null).trigger('change');
+
+        jQuery('#start_date').val('');
+        jQuery('#end_date').val('');
+        jQuery('#time_frame').val('');
+        jQuery('#note').val('');
         jQuery('#add_booking .modal-title').text('Add Booking');
     });
 
@@ -175,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let service_seller_id = jQuery('#service_seller_id').val();
         let start_date = jQuery('#start_date').val();
         let end_date = jQuery('#end_date').val();
+        let time_frame = jQuery('#time_frame').val();
         let note = jQuery('#note').val();
         let is_sent_invoice = jQuery('#is_sent_invoice').is(':checked');
         let edit_booking_id = jQuery('#booking_edit_hidden_id').val();
@@ -187,6 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 customer_id: customer_id,
                 service_seller_id: service_seller_id,
                 start_date: start_date,
+                time_frame: time_frame,
                 end_date: end_date,
                 note: note,
                 is_sent_invoice: is_sent_invoice,
@@ -283,8 +293,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if(response.status == 'success'){
                     jQuery('#add_booking').modal('show');
                     jQuery('#add_booking .modal-title').text('Edit Booking');
-                    let book_id = jQuery(this).attr('data-id');
+                    // let book_id = jQuery(this).attr('data-id');
                     jQuery('#booking_edit_hidden_id').val(book_id);
+                    jQuery('#time_frame').val(response.data.time_frame);
                     jQuery("#customer_id").val(response.data.customer_id).trigger("change");
                     jQuery("#service_seller_id").val(response.data.service_seller_id).trigger("change");
                     jQuery("#outlet_id").val(response.data.outlet_id).trigger("change");
@@ -304,4 +315,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    $('#time_frame').on('keyup', function () {
+        let time_frame = parseInt($(this).val()); // minutes
+
+        if (time_frame) {
+            let start_date = $('#start_date').val(); // datetime string
+
+            // Add minutes to start_date
+            let end_date = moment(start_date, "YYYY-MM-DD HH:mm")
+                .add(time_frame, 'minutes')
+                .format("YYYY-MM-DD HH:mm");
+
+            $('#end_date').val(end_date);
+        }
+    });
+
+
+
 });

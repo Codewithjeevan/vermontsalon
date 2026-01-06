@@ -63,7 +63,7 @@ class Booking extends Cl_Controller {
             $start_time = (new DateTime($startDateTime))->format('H:i');
             $end_time = (new DateTime($endDateTime))->format('H:i');
             $data[] = [
-                "title" => $start_time . '-' . $end_time . ':' . $item->customer_name,
+                "title" => $start_time . '-' . $end_time . ':' . $item->customer_name . ' ' . $item->customer_phone,
                 "start" => $item->start_date,
                 "end" => $item->end_date,
                 "status" => $item->status,
@@ -105,6 +105,7 @@ class Booking extends Cl_Controller {
             $booking['end_date'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('end_date')));
             $booking['note'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('note')));
             $booking['status'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('status')));
+            $booking['time_frame'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('time_frame')));
             $booking['user_id'] = $this->session->userdata('user_id');
             $booking['company_id'] = $this->session->userdata('company_id');
             if($edit_booking_id){
@@ -112,6 +113,26 @@ class Booking extends Cl_Controller {
                 $this->Common_model->updateInformation($booking, $id, "tbl_bookings");
                 $message = lang('update_success');
             }else{
+                $this->db->from('tbl_bookings');
+                $this->db->where('service_seller_id', $booking['service_seller_id']);
+                $this->db->where_in('status', ['Booked','Waiting']);
+                $this->db->where('outlet_id', $booking['outlet_id']);
+
+                // Main overlap condition
+                $this->db->where('start_date', $booking['start_date']);
+                $query = $this->db->get();
+                if ($query->num_rows() > 0) {
+                    $message = 'Service seller already has a booking on this time.';
+                    $response = [
+                        'status' => 'error',
+                        'errors' => [
+                            'service_seller_id' => $message,
+                        ]
+                    ];
+                    return $this->output
+                        ->set_content_type('application/json')
+                        ->set_output(json_encode($response));
+                }
 
                 $booking['added_date'] = date('Y-m-d H:i:s');
                 $id = $this->Common_model->insertInformation($booking, "tbl_bookings");

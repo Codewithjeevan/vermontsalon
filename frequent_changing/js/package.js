@@ -66,7 +66,7 @@ $(function () {
         'processing'   : true,
         'serverSide'    : true,
         'ajax'    : {
-            url: base_url+'Sale/getAjaxData',
+            url: base_url+'Sale/getPackageAjaxData',
             type: "POST",
             dataType:'json',
             data:{
@@ -132,8 +132,6 @@ $(function () {
         } else if (print_format == "Half A4 Print") {
             open("print_invoice/" + id, 'Print Invoice', 'width=1600,height=550');
         } else if (print_format == "Letter Head") {
-            open("print_invoice/" + id, 'Print Invoice', 'width=1600,height=550');
-        } else if (print_format == "TCM") {
             open("print_invoice/" + id, 'Print Invoice', 'width=1600,height=550');
         } else if(print_format == 'No Print'){
             toastr['error'](("Printer is not configured."), '');

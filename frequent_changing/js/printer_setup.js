@@ -392,6 +392,7 @@ $(function () {
                                     <option ${response.data.print_format == '56mm' ? 'selected' : '' } value="56mm">Tharmal 56mm</option>
                                     <option ${response.data.print_format == '80mm' ? 'selected' : '' } value="80mm">Tharmal 80mm</option>
                                     <option ${response.data.print_format == 'A4 Print' ? 'selected' : '' } value="A4 Print">A4 Print</option>
+                                    <option ${response.data.print_format == 'TCM' ? 'selected' : '' } value="TCM">A4 Print (2)</option>
                                     <option ${response.data.print_format == 'Half A4 Print' ? 'selected' : '' } value="Half A4 Print">Half A4 Print</option>
                                     <option ${response.data.print_format == 'Letter Head' ? 'selected' : '' } value="Letter Head">Letter Head Print</option>
                                 `);
