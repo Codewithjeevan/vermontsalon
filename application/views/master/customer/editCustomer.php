@@ -1,5 +1,10 @@
 <script src="<?php echo base_url(); ?>frequent_changing/js/add_customer.js"></script>
-
+<?php $customer_documents = isset($customer_documents) ? $customer_documents : []; ?>
+<style>
+    .document-section iconify-icon {
+        font-size: 24px;
+    }
+</style>
 <div class="main-content-wrapper">
 <?php
     if ($this->session->flashdata('exception')) {
@@ -27,7 +32,7 @@
 
     <div class="box-wrapper">
         <div class="table-box">
-            <?php echo form_open(base_url('Customer/addEditCustomer/' . $encrypted_id)); ?>
+            <?php echo form_open_multipart(base_url('Customer/addEditCustomer/' . $encrypted_id)); ?>
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-4 mb-3">
@@ -232,10 +237,49 @@
                                 value="<?php echo $customer_information->date_of_anniversary; ?>">
                         </div>
                     </div>
+                    <div class="col-12 mb-3">
+                        <div class="border rounded p-3 document-section">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label class="fw-semibold mb-0">Customer Documents</label>
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="addCustomerDocumentRow">
+                                    <iconify-icon icon="solar:add-circle-broken"></iconify-icon>
+                                    Add Row
+                                </button>
+                            </div>
+                            <div id="existingCustomerDocumentRows">
+                                <?php if (!empty($customer_documents)) { ?>
+                                    <?php foreach ($customer_documents as $document) { ?>
+                                        <div class="document-existing-row row g-2 align-items-center mb-2">
+                                            <div class="col-md-5">
+                                                <input type="text" name="existing_document_label[<?php echo $document->id; ?>]"
+                                                    class="form-control form-control-sm"
+                                                    placeholder="Label"
+                                                    value="<?php echo escape_output($document->file_label); ?>">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <iconify-icon icon="solar:eye-bold"></iconify-icon>
+                                                    <a href="<?php echo base_url($document->file_path); ?>" target="_blank" rel="noopener" class="text-decoration-none text-truncate">
+                                                        <?php echo escape_output(basename($document->file_path)); ?>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3 text-end">
+                                                <button type="button" class="btn btn-outline-danger btn-sm delete-existing-document" data-id="<?php echo $document->id; ?>">
+                                                    <iconify-icon icon="solar:trash-bin-trash-bold"></iconify-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
+                                <?php } ?>
+                            </div>
+                            <div id="newCustomerDocumentRows" class="mt-3"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="box-footer">
+            </div>
+            <div class="box-footer">
             <button type="submit" name="submit" value="submit" class="btn bg-blue-btn">
                 <iconify-icon icon="solar:upload-minimalistic-broken"></iconify-icon>
                 <?php echo lang('submit'); ?>
