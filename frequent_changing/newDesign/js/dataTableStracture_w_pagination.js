@@ -26,12 +26,20 @@ jqry(function () {
             extend: "print",
             title: company_name,
             messageTop: function () {
+                var headerHtml = getReportHeaderHtml();
+                var therapistName = gettherapist();
+                if (headerHtml) {
+                    var output = '<div style="text-align:center; font-weight:bold;">' + headerHtml + '</div>';
+                    if (therapistName) {
+                        output += '<div style="text-align:left;">Therapist: <span style="color: green;">' + therapistName + '</span></div>';
+                    }
+                    return output;
+                }
                 var dateText = '';
                 if (outlet_info) {
                     dateText += '<div style="text-align:center;">' + outlet_info + '</div>';
                 }
                 dateText += getDateRangeText();
-                var therapistName = gettherapist();
                 if (therapistName) {
                     dateText += '<div style="text-align:left;">Therapist: <span style="color: green;">' + therapistName + '</span></div>';
                 }
@@ -71,8 +79,8 @@ jqry(function () {
                 text: '<span style="display: flex; align-items-center; gap: 8px;"><iconify-icon icon="icon-park-solid:excel" width="16"></iconify-icon> '+excel_db+'</span>',
                 titleAttr: "Excel",
                 customize: function (xlsx) {
-                    var dateText = getDateRangeText();
-                    if (!dateText) return;
+                    var headerText = getReportHeaderPlainText() || getDateRangeText(1);
+                    if (!headerText) return;
 
                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
                     var sheetData = sheet.getElementsByTagName('sheetData')[0];
@@ -89,7 +97,7 @@ jqry(function () {
                     // Create inline string content
                     var is = sheet.createElement('is');
                     var t = sheet.createElement('t');
-                    t.textContent = dateText;
+                    t.textContent = headerText;
 
                     // Build the structure
                     is.appendChild(t);
@@ -170,4 +178,41 @@ function gettherapist() {
         therapistname = '';
     }
     return therapistname ? therapistname : '';
+}
+
+function getReportHeaderLines() {
+    var selector = jqry('#datatable').data('report-header');
+    if (!selector) {
+        return [];
+    }
+    var header = jqry(selector);
+    if (!header.length) {
+        return [];
+    }
+    var lines = [];
+    header.children().each(function () {
+        var elementText = jqry(this).text().replace(/\s+/g, ' ').trim();
+        if (elementText) {
+            lines.push(elementText);
+        }
+    });
+    return lines;
+}
+
+function getReportHeaderHtml() {
+    var lines = getReportHeaderLines();
+    if (!lines.length) {
+        return '';
+    }
+    return lines.map(function (line) {
+        return '<div>' + line + '</div>';
+    }).join('');
+}
+
+function getReportHeaderPlainText() {
+    var lines = getReportHeaderLines();
+    if (!lines.length) {
+        return '';
+    }
+    return lines.join(' \n ');
 }
