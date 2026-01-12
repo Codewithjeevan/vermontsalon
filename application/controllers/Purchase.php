@@ -233,6 +233,7 @@ class Purchase extends Cl_Controller {
                 $fmi['divided_price'] =$_POST['unit_price'][$row] / 1;
             }
             $fmi['quantity_amount'] = $_POST['quantity_amount'][$row];
+            $fmi['current_qty'] = $_POST['quantity_amount'][$row];
             $fmi['total'] = $_POST['total'][$row];
             $fmi['purchase_id'] = $purchase_id;
             $fmi['outlet_id'] = $this->session->userdata('outlet_id');

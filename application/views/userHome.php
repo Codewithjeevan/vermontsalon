@@ -733,6 +733,16 @@
                                             <?php echo lang('list_supplier'); ?>
                                         </a>
                                     </li>
+                                    <li data-access="list-109" class="menu_assign_class">
+                                        <a class="child-menu " href="<?php echo base_url();?>OutStock/outStockList">
+                                            <?php echo lang('list_stock_out'); ?>
+                                        </a>
+                                    </li>
+                                    <li data-access="view-164" class="menu_assign_class">
+                                        <a class="child-menu " href="<?php echo base_url();?>OutStock/stockAvailability">
+                                            Stock Availability
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="treeview parent-menu">
