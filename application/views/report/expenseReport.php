@@ -1,5 +1,24 @@
 <!-- shuvo -->
 <link rel="stylesheet" href="<?php echo base_url(); ?>frequent_changing/css/report.css">
+<style>
+    .category-header-cell {
+        background-color: #f3f4f6;
+        font-weight: 600;
+        border-top: 1px solid #e1e1e1;
+    }
+    .category-header-cell.empty-cell {
+        padding: 0;
+        border: none;
+        visibility: hidden;
+    }
+    .category-total-row td {
+        background-color: #fdfdfd;
+        font-weight: 600;
+    }
+    .category-row td {
+        border-top: 2px solid transparent;
+    }
+</style>
 
 <div class="main-content-wrapper">
 
@@ -14,6 +33,27 @@
 
 
     <div class="box-wrapper">
+        <?php
+        $groupedExpenses = [];
+        $grandTotal = 0;
+        if (isset($expenseReport) && !empty($expenseReport)) {
+            foreach ($expenseReport as $expense) {
+                $categoryName = trim($expense->categoryName);
+                if ($categoryName === '') {
+                    $categoryName = lang('expense_category');
+                }
+                if (!isset($groupedExpenses[$categoryName])) {
+                    $groupedExpenses[$categoryName] = [
+                        'items' => [],
+                        'total' => 0,
+                    ];
+                }
+                $groupedExpenses[$categoryName]['items'][] = $expense;
+                $groupedExpenses[$categoryName]['total'] += $expense->amount;
+                $grandTotal += $expense->amount;
+            }
+        }
+        ?>
     
         <!-- Report Header Start -->
         <div class="report_header">
@@ -78,6 +118,15 @@
 
 
         <div class="table-box">
+            <div class="table-actions mb-3 d-flex justify-content-between">
+                <div></div>
+                <div>
+                    <button type="button" class="dataFilterBy new-btn manual-filter-btn">
+                        <iconify-icon icon="solar:filter-broken" width="22"></iconify-icon>
+                        <?php echo lang('filter_by'); ?>
+                    </button>
+                </div>
+            </div>
             <div class="box-body">
                 <div class="table-responsive">
                 <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('expense_report'); ?>" data-id_name="datatable">
@@ -90,34 +139,55 @@
                                 <th class="text-center"><?php echo lang('amount'); ?></th>
                                 <th><?php echo lang('category'); ?></th>
                                 <th><?php echo lang('responsible_person'); ?></th>
+                                <th><?php echo lang('note'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                            $grandTotal = 0;
-                            $countTotal = 0;
-                            if (isset($expenseReport)):
-                                foreach ($expenseReport as $key => $value) {
-                                    $grandTotal+=$value->amount;
-                                    $key++;
-                                    ?>
-                                    <tr>
-                                        <td><?php echo $key; ?></td>
-                                        <td><?php echo escape_output($value->reference_no) ?></td>
-                                        <td><?php echo dateFormat($value->added_date) ?></td>
-                                        <td class="text-center"><?php echo getAmtCustom($value->amount) ?></td>
-                                        <td><?php echo escape_output($value->categoryName) ?></td>
-                                        <td><?php echo escape_output($value->EmployeedName); ?></td>
+                            <?php if (!empty($groupedExpenses)): ?>
+                                <?php $sn = 1; ?>
+                                <?php foreach ($groupedExpenses as $categoryName => $categoryData): ?>
+                                    <tr class="category-row">
+                                        <td class="category-header-cell">
+                                            <strong><?php echo lang('category'); ?>:</strong> <?php echo escape_output($categoryName); ?>
+                                        </td>
+                                        <?php for ($i = 1; $i < 7; $i++): ?>
+                                            <td class="category-header-cell empty-cell"></td>
+                                        <?php endfor; ?>
                                     </tr>
-                                    <?php
-                                }
-                            endif;
-                            ?>
+                                    <?php foreach ($categoryData['items'] as $expense): ?>
+                                        <tr>
+                                            <td><?php echo $sn++; ?></td>
+                                            <td><?php echo escape_output($expense->reference_no); ?></td>
+                                            <td><?php echo dateFormat($expense->added_date); ?></td>
+                                            <td class="text-center"><?php echo getAmtCustom($expense->amount); ?></td>
+                                            <td><?php echo escape_output($expense->categoryName); ?></td>
+                                        <td><?php echo escape_output($expense->EmployeedName); ?></td>
+                                        <td><?php echo !empty($expense->note) ? escape_output($expense->note) : '-'; ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                    <tr class="category-total-row">
+                                        <td></td>
+                                        <td></td>
+                                        <td class="op_right"><?php echo lang('total'); ?></td>
+                                        <td class="text-center"><?php echo getAmtCustom($categoryData['total']); ?></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <?php echo lang('no_data_found'); ?>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
                             <tr>
                                 <th></th>
                                 <th></th>
                                 <th class="op_right"><?php echo lang('total'); ?> </th>
                                 <th class="text-center"><?php echo getAmtCustom($grandTotal) ?></th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                             </tr>

@@ -33,7 +33,7 @@
      * Append Add New Button And Filter by Button
      */
     let filter_status = bodyElement.find(".datatable_name").attr("data-filter");
-    if (filter_status === "yes") {
+    if (filter_status === "yes" && !$(document).find(".manual-filter-btn").length) {
       $(document).find(".left-btn-box").prepend(`
       <button type="button" class="dataFilterBy new-btn me-1"><iconify-icon icon="solar:filter-broken"  width="22"></iconify-icon>${filter_by}</button>
         `);
