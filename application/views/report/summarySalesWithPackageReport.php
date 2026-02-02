@@ -6,6 +6,10 @@
     {
         text-align: center !important;
     }
+
+    .bottom-line td{
+        font-weight: 600 !important;
+    }
 </style>
 <div class="main-content-wrapper">
 
@@ -100,6 +104,14 @@
 
                         <tbody>
                             <?php if(!empty($saleReport)): ?>
+                            <?php
+                            $total_package_advance_cash = $total_package_advance_card = 0;
+                            $total_used_package_cash = $total_used_package_card = 0;
+                            $total_general_cash = $total_general_card = 0;
+                            $total_groupon_amount = $total_sub_total = $total_vat_total = 0;
+                            $total_daily_total = $total_card_on_bank = $total_cash_amount = 0;
+                            $total_cancelled_amount = 0;
+                            ?>
                             <?php foreach($saleReport as $r): ?>
                             <tr>
                                 <td><?= $r->sale_date ?></td>
@@ -117,7 +129,38 @@
                                 <td><?= round($r->total_cash_amount,2) ?></td>
                                 <td><?= round($r->cancelled_amount, 2) ?></td>
                             </tr>
+                            <?php
+                                $total_package_advance_cash += $r->package_advance_cash;
+                                $total_package_advance_card += $r->package_advance_card;
+                                $total_used_package_cash   += $r->used_package_cash;
+                                $total_used_package_card   += $r->used_package_card;
+                                $total_general_cash        += $r->general_cash;
+                                $total_general_card        += $r->general_card;
+                                $total_groupon_amount      += $r->groupon_amount;
+                                $total_sub_total           += $r->sub_total;
+                                $total_vat_total           += $r->vat_total;
+                                $total_daily_total         += $r->daily_total;
+                                $total_card_on_bank        += $r->total_card_on_bank;
+                                $total_cash_amount         += $r->total_cash_amount;
+                                $total_cancelled_amount    += $r->cancelled_amount;
+                            ?>
                             <?php endforeach; ?>
+                            <tr class="bottom-line">
+                                <td><?php echo lang('total'); ?></td>
+                                <td><?= round($total_package_advance_cash, 2) ?></td>
+                                <td><?= round($total_package_advance_card, 2) ?></td>
+                                <td><?= round($total_used_package_cash, 2) ?></td>
+                                <td><?= round($total_used_package_card, 2) ?></td>
+                                <td><?= round($total_general_cash, 2) ?></td>
+                                <td><?= round($total_general_card, 2) ?></td>
+                                <td><?= round($total_groupon_amount, 2) ?></td>
+                                <td><?= round($total_sub_total, 2) ?></td>
+                                <td><?= round($total_vat_total, 2) ?></td>
+                                <td><?= round($total_daily_total, 2) ?></td>
+                                <td><?= round($total_card_on_bank, 2) ?></td>
+                                <td><?= round($total_cash_amount, 2) ?></td>
+                                <td><?= round($total_cancelled_amount, 2) ?></td>
+                            </tr>
                             <?php endif; ?>
 
                         </tbody>
