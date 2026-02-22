@@ -1148,7 +1148,13 @@ class Report_model extends CI_Model {
             IFNULL(gp.general_card, 0) AS general_card,
             IFNULL(gp.groupon_amount, 0) AS groupon_amount,
 
-            /* -------- DAILY SUB-TOTAL -------- */
+            /* -------- SERVICE WITHOUT VAT (items with 0 tax) -------- */
+            (
+                IFNULL(gs.no_vat_sub_total, 0)
+                + IFNULL(up.no_vat_sub_total, 0)
+            ) AS no_vat_sub_total,
+
+            /* -------- DAILY SUB-TOTAL (only items WITH vat) -------- */
             (
                 IFNULL(gs.sub_total, 0)
                 + IFNULL(up.sub_total, 0)
@@ -1209,7 +1215,8 @@ class Report_model extends CI_Model {
                 SUM(CASE WHEN ps.payment_method='Cash' THEN ps.price ELSE 0 END) AS used_package_cash,
                 SUM(CASE WHEN ps.payment_method='Card' THEN ps.price ELSE 0 END) AS used_package_card,
                 SUM(IFNULL(ps.tax_amt, 0)) AS vat_total,
-                SUM(IFNULL(ps.sub_total, 0)) AS sub_total
+                SUM(CASE WHEN IFNULL(ps.tax_amt, 0) > 0 THEN (IFNULL(ps.price, 0) - IFNULL(ps.tax_amt, 0)) ELSE 0 END) AS sub_total,
+                SUM(CASE WHEN IFNULL(ps.tax_amt, 0) = 0 THEN IFNULL(ps.price, 0) ELSE 0 END) AS no_vat_sub_total
             FROM package_sessions ps
             JOIN package_sale psa ON psa.id = ps.package_sale_id
             WHERE psa.del_status='Live'
@@ -1237,7 +1244,8 @@ class Report_model extends CI_Model {
                 DATE(sale_date) AS date,
                 SUM(total_payable) AS general_total,
                 SUM(IFNULL(vat, 0)) AS vat_total,
-                SUM(IFNULL(sub_total, 0)) AS sub_total
+                SUM(CASE WHEN IFNULL(vat, 0) > 0 THEN (IFNULL(total_payable, 0) - IFNULL(vat, 0)) ELSE 0 END) AS sub_total,
+                SUM(CASE WHEN IFNULL(vat, 0) = 0 THEN IFNULL(total_payable, 0) ELSE 0 END) AS no_vat_sub_total
             FROM tbl_sales
             WHERE company_id='$company_id'
             AND del_status='Live'

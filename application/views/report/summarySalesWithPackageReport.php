@@ -93,11 +93,12 @@
                                 <th>General Cash</th>
                                 <th>General Card</th>
                                 <th>Groupon</th>
+                                <th>Service Without VAT</th>
                                 <th>Total Without Vat</th>
+                                <th>Total Sales</th>
                                 <th>VAT</th>
-                                <th>Daily Total</th>
-                                <th>Total Card Bank</th>
-                                <th>Total Cash</th>
+                                <th>Total Card/Pkg. Adv</th>
+                                <th>Total Cash/Pkg. Adv</th>
                                 <th>Cancellation Amount</th>
                             </tr>
                         </thead>
@@ -108,7 +109,7 @@
                             $total_package_advance_cash = $total_package_advance_card = 0;
                             $total_used_package_cash = $total_used_package_card = 0;
                             $total_general_cash = $total_general_card = 0;
-                            $total_groupon_amount = $total_sub_total = $total_vat_total = 0;
+                            $total_groupon_amount = $total_no_vat_sub_total = $total_sub_total = $total_vat_total = 0;
                             $total_daily_total = $total_card_on_bank = $total_cash_amount = 0;
                             $total_cancelled_amount = 0;
                             ?>
@@ -122,9 +123,10 @@
                                 <td><?= round($r->general_cash,2) ?></td>
                                 <td><?= round($r->general_card,2) ?></td>
                                 <td><?= round($r->groupon_amount,2) ?></td>
+                                <td><?= round($r->no_vat_sub_total, 2) ?></td>
                                 <td><?= round($r->sub_total, 2) ?></td>
-                                <td><?= round($r->vat_total, 2) ?></td>
                                 <td><?= round($r->daily_total,2) ?></td>
+                                <td><?= round($r->vat_total, 2) ?></td>
                                 <td><?= round($r->total_card_on_bank,2) ?></td>
                                 <td><?= round($r->total_cash_amount,2) ?></td>
                                 <td><?= round($r->cancelled_amount, 2) ?></td>
@@ -137,6 +139,7 @@
                                 $total_general_cash        += $r->general_cash;
                                 $total_general_card        += $r->general_card;
                                 $total_groupon_amount      += $r->groupon_amount;
+                                $total_no_vat_sub_total    += $r->no_vat_sub_total;
                                 $total_sub_total           += $r->sub_total;
                                 $total_vat_total           += $r->vat_total;
                                 $total_daily_total         += $r->daily_total;
@@ -154,9 +157,10 @@
                                 <td><?= round($total_general_cash, 2) ?></td>
                                 <td><?= round($total_general_card, 2) ?></td>
                                 <td><?= round($total_groupon_amount, 2) ?></td>
+                                <td><?= round($total_no_vat_sub_total, 2) ?></td>
                                 <td><?= round($total_sub_total, 2) ?></td>
-                                <td><?= round($total_vat_total, 2) ?></td>
                                 <td><?= round($total_daily_total, 2) ?></td>
+                                <td><?= round($total_vat_total, 2) ?></td>
                                 <td><?= round($total_card_on_bank, 2) ?></td>
                                 <td><?= round($total_cash_amount, 2) ?></td>
                                 <td><?= round($total_cancelled_amount, 2) ?></td>
