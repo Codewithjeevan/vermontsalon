@@ -78,7 +78,7 @@
             <!-- /.box-header -->
             <div class="table-responsive">
             <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('summary_sales_report'); ?>" data-id_name="datatable">
-                <table id="datatable" class="table table-bordered table-striped">
+                <table id="datatable" class="table table-bordered table-striped" data-report-header=".report_header">
                     <thead>
                         <tr>
                             <th><?php echo lang('date_and_time'); ?></th>
