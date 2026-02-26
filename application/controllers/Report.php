@@ -52,7 +52,7 @@ class Report extends Cl_Controller {
             $function = "register_report";
         }elseif($segment_1=="Report" && $segment_2 == "customerDueReceiveReport"){
             $function = "customer_receive_report";
-        }elseif($segment_1=="Report" && $segment_2 == "dailySummaryReport" || $segment_1=="Report" && $segment_2 == "summarySalesReport" || $segment_2 == "therapistReport" || $segment_1=="Report" && $segment_2 == "printDailySummaryReport" || $segment_2 == "summarySalesPackageReport" || $segment_2 == "summarySalesWithPackageReport"){
+        }elseif($segment_1=="Report" && $segment_2 == "dailySummaryReport" || $segment_1=="Report" && $segment_2 == "summarySalesReport" || $segment_2 == "therapistReport" || $segment_1=="Report" && $segment_2 == "printDailySummaryReport" || $segment_2 == "summarySalesPackageReport" || $segment_2 == "summarySalesWithPackageReport" || $segment_2 == "combinedSummaryReport"){
             $function = "daily_summary_report";
         }elseif($segment_1=="Report" && $segment_2 == "saleReport" || $segment_2 == 'dueSaleReport'){
             $function = "sale_report";
@@ -360,6 +360,32 @@ class Report extends Cl_Controller {
 
         $data['main_content'] = $this->load->view('report/summarySalesWithPackageReport', $data, TRUE);
         $data['page_title'] = "Summary Sales Package Report";
+        $this->load->view('userHome', $data);
+    }
+
+    /**
+     * combinedSummaryReport
+     * Merges summarySalesReport + summarySalesPackageReport into one
+     * @access public
+     * @return void
+     */
+    public function combinedSummaryReport() {
+        $data = array();
+        $outlet_id  = isset($_POST['outlet_id']) && $_POST['outlet_id'] ? $_POST['outlet_id'] : '';
+        $data['outlet_id'] = $outlet_id;
+        if (htmlspecialcharscustom($this->input->post('submit'))) {
+            $data['report_generate_time'] = generatedOnCurrentDateTime();
+            $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
+            $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
+            $data['start_date'] = $start_date;
+            $data['end_date'] = $end_date;
+            $data['saleReport'] = $this->Report_model->combinedSummaryReport($start_date, $end_date, $outlet_id);
+        }
+
+        $data['payment_methods'] = $this->Common_model->getAllPaymentMethods();
+
+        $data['main_content'] = $this->load->view('report/combinedSummaryReport', $data, TRUE);
+        $data['page_title'] = "Accountent Sales Report";
         $this->load->view('userHome', $data);
     }
 

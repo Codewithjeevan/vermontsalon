@@ -1279,6 +1279,75 @@ class Report_model extends CI_Model {
     return $this->db->query($sql)->result();
     }
 
+    /**
+     * combinedSummaryReport
+     * Merges summarySaleReport + summarySalePackageReport by date
+     * and sums Cash, Card, total_payable, discount, VAT per day.
+     */
+    public function combinedSummaryReport($startDate, $endDate, $outlet_id = '')
+    {
+        // Fetch all dynamic payment methods from DB
+        $payment_methods = $this->Common_model->getAllPaymentMethods();
+
+        // Build list of payment field names (e.g. total_cash_amount, total_card_amount, total_groupon_amount...)
+        $paymentFields = [];
+        foreach ($payment_methods as $method) {
+            $alias = strtolower(preg_replace('/\W+/', '_', $method->name));
+            $paymentFields[] = 'total_' . $alias . '_amount';
+        }
+
+        // Fetch both reports
+        $salesData   = $this->summarySaleReport($startDate, $endDate, $outlet_id);
+        $packageData = $this->summarySalePackageReport($startDate, $endDate, $outlet_id);
+
+        $merged = [];
+
+        // Helper: merge a single row into $merged
+        $mergeRow = function($row) use (&$merged, $paymentFields) {
+            $date = date('Y-m-d', strtotime($row->sale_date));
+            if (!isset($merged[$date])) {
+                $base = (object)[
+                    'sale_date'              => $date,
+                    'total_payable'          => 0,
+                    'total_discount_amount'  => 0,
+                    'total_vat'              => 0,
+                ];
+                // Initialize all payment fields to 0
+                foreach ($paymentFields as $f) {
+                    $base->$f = 0;
+                }
+                $merged[$date] = $base;
+            }
+            $merged[$date]->total_payable         += floatval(@$row->total_payable);
+            $merged[$date]->total_discount_amount += floatval(@$row->total_discount_amount);
+            $merged[$date]->total_vat             += floatval(@$row->total_vat);
+
+            // Sum every payment field that exists on this row
+            foreach ($paymentFields as $f) {
+                $merged[$date]->$f += floatval(@$row->$f);
+            }
+        };
+
+        // Merge sales data
+        if (!empty($salesData)) {
+            foreach ($salesData as $row) {
+                $mergeRow($row);
+            }
+        }
+
+        // Merge package data (only has cash/card, others will stay 0)
+        if (!empty($packageData)) {
+            foreach ($packageData as $row) {
+                $mergeRow($row);
+            }
+        }
+
+        // Sort by date ascending
+        ksort($merged);
+
+        return array_values($merged);
+    }
+
 
     /**
      * dueSaleReport

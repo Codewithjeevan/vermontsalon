@@ -2746,6 +2746,7 @@ $lang['out_time'] = 'Out Time';
 $lang['advance_payment'] = 'Advance Payment';
 $lang['patient_name'] = 'Patient Name';
 $lang['summary_sales_package_report'] = 'Summary Sales Package Report';
+$lang['accountent_sales_report'] = 'Accountant Sales Report';
 
 
 
