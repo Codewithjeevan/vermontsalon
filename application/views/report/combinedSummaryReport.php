@@ -12,9 +12,9 @@
     <section class="content-header">
         <div class="row justify-content-between">
             <div class="col-6 p-0">
-                <h3 class="top-left-header mt-2">Accountent Sales Report</h3>
+                <h3 class="top-left-header mt-2">Audit Sales Report</h3>
             </div>
-            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('report'), 'secondSection'=> 'Accountent Sales Report'])?>
+            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('report'), 'secondSection'=> 'Audit Sales Report'])?>
         </div>
     </section>
 
@@ -26,7 +26,7 @@
                 <?php echo escape_output($this->session->userdata('business_name'));?> 
             </h3>
             <h5 class="outlet_info">
-                <strong>Accountent Sales Report</strong>
+                <strong>Audit Sales Report</strong>
             </h5>
             <?php if(isset($outlet_id)  && $outlet_id){
                 $outlet_info = getOutletInfoById($outlet_id); 
@@ -77,7 +77,7 @@
         <div class="table-box">
             <!-- /.box-header -->
             <div class="table-responsive">
-            <input type="hidden" class="datatable_name"  data-filter="yes" data-title="Accountent Sales Report" data-id_name="datatable">
+            <input type="hidden" class="datatable_name"  data-filter="yes" data-title="Audit Sales Report" data-id_name="datatable">
                 <table id="datatable" class="table table-bordered table-striped" data-report-header=".report_header">
                     <thead>
                         <tr>

@@ -888,7 +888,7 @@
                                     </li>
                                     <li data-access="summary_sales_report-249" class="menu_assign_class " module-is-hide="PackageSummary Sales Report-YES">
                                         <a class="child-menu " href="<?php echo base_url(); ?>Report/combinedSummaryReport">
-                                            <?php echo lang('accountent_sales_report'); ?>
+                                            <?php echo lang('audit_sales_report'); ?>
                                         </a>
                                     </li>
                                     <li data-access="therapist_report-249" class="menu_assign_class " module-is-hide="Therapist Report-YES">

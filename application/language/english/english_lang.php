@@ -2747,6 +2747,7 @@ $lang['advance_payment'] = 'Advance Payment';
 $lang['patient_name'] = 'Patient Name';
 $lang['summary_sales_package_report'] = 'Summary Sales Package Report';
 $lang['accountent_sales_report'] = 'Accountant Sales Report';
+$lang['audit_sales_report'] = 'Audit Sales Report';
 
 
 
