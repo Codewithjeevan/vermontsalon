@@ -998,7 +998,7 @@ $(function () {
         let slash = input.split('-').length;
         if (ponto > 2)
             $(this).val(input.substr(0, (input.length) - 1));
-        $(this).val(input.replace(/[^0-9]/, ''));
+        $(this).val(input.replace(/[^0-9.]/g, ''));
         if (slash > 2)
             $(this).val(input.substr(0, (input.length) - 1));
         if (ponto == 2)

@@ -468,7 +468,7 @@
                         <label class="col-sm-4 control-label"><?php echo lang('quantity_amount'); ?><span
                                 class="op_color_red"> *</span></label>
                         <div class="input-group">
-                            <input type="number" autocomplete="off" min="1" class="form-control integerchk1"
+                            <input type="text" autocomplete="off" class="form-control integerchk1"
                                 onfocus="select();" name="qty_modal" id="qty_modal"
                                 placeholder="<?php echo lang('quantity_amount'); ?>" value="" aria-describedby="basic-addon">
                             <span class="modal_item_unit input-group-text new-btn" id="basic-addon"></span>

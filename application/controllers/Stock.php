@@ -115,17 +115,17 @@ class Stock extends Cl_Controller {
             $saleUnitSum = 0;
             $itemStockAlertCls = '';
             if($item->type != 'Variation_Product'){
-                if(((int)$item->stock_qty - (int)$item->out_qty) < $item->alert_quantity){
+                if(((float)$item->stock_qty - (float)$item->out_qty) < $item->alert_quantity){
                     $itemStockAlertCls = 'stock-alert-color';
                     $alertQtySum ++;
                 }
             }
             if($item->type == 'General_Product' || $item->type == 'Installment_Product' || ($item->type == 'Medicine_Product' && $item->expiry_date_maintain == 'No')){
-                $generalStock = ((int)$item->stock_qty - (int)$item->out_qty);
+                $generalStock = ((float)$item->stock_qty - (float)$item->out_qty);
                 $genConvertedPrice = (float)$item->last_three_purchase_avg / (int)$item->conversion_rate;
                 $purchasePriceSum = ($genConvertedPrice) * $generalStock;
                 if($item->unit_type == '1'){
-                    $saleUnitSum = (int)$generalStock;
+                    $saleUnitSum = (float)$generalStock;
                 } else if($item->unit_type == '2'){
                     $purchaseUnitSum = (int)((int)$generalStock / $item->conversion_rate);
                     $saleUnitSum = ((int)$generalStock) % $item->conversion_rate;
