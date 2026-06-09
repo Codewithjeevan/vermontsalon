@@ -15,6 +15,77 @@ document.addEventListener('DOMContentLoaded', function() {
     // Calender Call
     let base_url = jQuery("#base_url").val();
 
+    // AJAX-driven Customer dropdown.
+    // The booking page used to render every customer as an <option>, which made the
+    // page very slow for accounts with many customers. We now load them on demand
+    // through Booking/getCustomersAjax (paginated, server-side search). The selected
+    // customer is injected dynamically when editing a booking.
+    //
+    // We wrap the init in window.load so it runs AFTER user_home.js's
+    // `$('.select2').select2()` (Select2 adds the "select2" class to its own wrapper
+    // span — the global call would otherwise re-wrap our element into a second
+    // Select2 instance without the AJAX config, producing an empty "No results
+    // found" dropdown).
+    function initBookingCustomerSelect2() {
+        var $sel = jQuery('#customer_id');
+        if (!$sel.length) return;
+        // Destroy any prior Select2 (e.g. one created by a global $('.select2').select2() call).
+        if ($sel.hasClass('select2-hidden-accessible')) {
+            $sel.select2('destroy');
+        }
+        $sel.select2({
+            placeholder: 'Select Customer',
+            allowClear: false,
+            minimumInputLength: 0,
+            ajax: {
+                url: base_url + 'Booking/getCustomersAjax',
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        search: params.term || '',
+                        page: params.page || 1
+                    };
+                },
+                processResults: function (data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: (data.data || []).map(function (v) {
+                            return {
+                                id: v.id,
+                                text: v.name + (v.phone ? ' ' + v.phone : '')
+                            };
+                        }),
+                        pagination: { more: !!data.more }
+                    };
+                },
+                cache: true
+            }
+        });
+
+        // Trigger an empty search when the dropdown opens so the first page appears immediately.
+        $sel.off('select2:open.bookingAjax').on('select2:open.bookingAjax', function () {
+            var $search = jQuery('.select2-container--open .select2-search__field');
+            if ($search.length && !$search.val()) {
+                $search.trigger('input');
+            }
+        });
+    }
+    jQuery(window).on('load', initBookingCustomerSelect2);
+
+    // Helper: ensure a given customer option exists in #customer_id and select it.
+    function setBookingCustomer(customer_id, customer_name) {
+        var $sel = jQuery('#customer_id');
+        if (!customer_id) {
+            $sel.val('').trigger('change');
+            return;
+        }
+        if (!$sel.find("option[value='" + customer_id + "']").length) {
+            $sel.append(new Option(customer_name || '', customer_id, true, true));
+        }
+        $sel.val(customer_id).trigger('change');
+    }
+
     function calanderCall() {
         let calendarEl = document.getElementById('calendar');
         let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -124,12 +195,11 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function (response) {
                 if(response.status == 'success'){
-                    jQuery("#customer_id").val(response.data.customer_id).trigger("change");
+                    setBookingCustomer(response.data.customer_id, response.data.customer_name);
                     jQuery("#service_seller_id").val(response.data.service_seller_id).trigger("change");
                     jQuery("#outlet_id").val(response.data.outlet_id).trigger("change");
                     jQuery("#status").val(response.data.status).trigger("change");
                     setTimeout(function(){
-                        jQuery(".customer_id .select2-selection__rendered").text('').text(response.data.customer_name);
                         jQuery(".service_seller_id .select2-selection__rendered").text(response.data.service_seller_name);
                         jQuery(".outlet_id .select2-selection__rendered").text(response.data.outlet_name);
                         jQuery(".status .select2-selection__rendered").text(response.data.status);

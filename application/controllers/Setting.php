@@ -39,7 +39,7 @@ class Setting extends Cl_Controller {
         $segment_2 = $this->uri->segment(2);
         $controller = "1";
         $function = "";
-        if($segment_2 == "index" || $segment_2 == "validate_invoice_logo" || $segment_2 == 'moduleManagement' || $segment_2 == 'invoiceSetting'){
+        if($segment_2 == "index" || $segment_2 == "validate_invoice_logo" || $segment_2 == 'moduleManagement' || $segment_2 == 'invoiceSetting' || $segment_2 == 'getCustomersAjax'){
             $function = "edit";
         }else if($segment_2 == "add_dummy_data"){
             $controller = "325";
@@ -213,6 +213,32 @@ class Setting extends Cl_Controller {
             $this->load->view('userHome', $data);
         }
         
+    }
+
+    /**
+     * getCustomersAjax
+     * Returns paginated customers (id, name, phone) for the Settings page Select2.
+     * Kept on this controller so the request is not redirected by Sale's guards.
+     * @access public
+     * @return json
+     */
+    public function getCustomersAjax() {
+        $search      = $this->input->get('search');
+        $customer_id = $this->input->get('customer_id') ?: null;
+        $page        = max(1, (int) $this->input->get('page'));
+        $perPage     = 100;
+        $offset      = ($page - 1) * $perPage;
+
+        $result     = $this->Common_model->getCustomersPaginated($search, $customer_id, $perPage, $offset);
+        $totalCount = $this->Common_model->getCustomersCount($search);
+
+        $response = [
+            'data' => $result,
+            'more' => ($offset + $perPage) < $totalCount
+        ];
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
     }
     /**
      * invoiceSetting

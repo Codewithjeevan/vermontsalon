@@ -92,11 +92,14 @@ if ($this->session->flashdata('exception')) {
                     <div class="col-md-6 col-12 customer_id">
                         <div class="form-group">
                             <label><?php echo lang('customer');?></label>
-                            <select  class="form-control select2" id="customer_id" name="customer_id">
+                            <select class="form-control customer_id_ajax" id="customer_id" name="customer_id">
                                 <option value=""><?php echo lang('select_customer');?></option>
-                                <?php foreach($customers as $key=>$customer){?>
-                                    <option value="<?php echo escape_output($customer->id);?>"><?php echo escape_output($customer->name);?> <?php echo escape_output($customer->phone) ?></option>
-                                <?php } ?>
+                                <?php
+                                // Customers are loaded on demand via AJAX (Sale/getCustomersAjax)
+                                // to avoid rendering thousands of options on page load.
+                                // When editing a booking, the selected customer option is
+                                // injected dynamically by booking.js before triggering change.
+                                ?>
                             </select>
                             <div class="alert alert-error error-msg customer_id_err_msg_contnr modal_err_msg">
                                 <p id="customer_id_err_msg"></p>
@@ -188,5 +191,5 @@ if ($this->session->flashdata('exception')) {
 </div>
 
 <?php $this->view('updater/reuseJs2'); ?>
-<script src="<?php echo base_url();?>frequent_changing/js/booking.js"></script>
+<script src="<?php echo base_url();?>frequent_changing/js/booking.js?v=ajax3"></script>
 

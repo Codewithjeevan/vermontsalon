@@ -36,7 +36,7 @@ class Booking extends Cl_Controller {
             $function = "edit";
         }elseif($segment_2=="deleteBooking"){
             $function = "delete";
-        }elseif($segment_2=="bookingData" || $segment_2 == 'booking' || $segment_2 == 'getAllBooking'){
+        }elseif($segment_2=="bookingData" || $segment_2 == 'booking' || $segment_2 == 'getAllBooking' || $segment_2 == 'getCustomersAjax'){
             $function = "list";
         }else{
             $this->session->set_flashdata('exception_1',lang('no_access'));
@@ -253,11 +253,40 @@ class Booking extends Cl_Controller {
         $company_id = $this->session->userdata('company_id');
         $data = array();
         $data['outlets'] = getDataByCompanyId($company_id, 'tbl_outlets'); 
-        $data['customers'] = getDataByCompanyId($company_id, 'tbl_customers'); 
+        // Customers are loaded on demand via Booking/getCustomersAjax (Select2 AJAX)
+        // to keep the booking page fast even for accounts with many customers.
+        $data['customers'] = array();
         $data['sellers'] = getDataByCompanyId($company_id, 'tbl_users'); 
         $data['booking'] = $this->Common_model->getAllBooking();
         $data['main_content'] = $this->load->view('booking/booking', $data, TRUE);
         $this->load->view('userHome', $data);
+    }
+
+    /**
+     * getCustomersAjax
+     * Returns paginated customers (id, name, phone) for the booking page Select2.
+     * Kept on this controller (instead of Sale/getCustomersAjax) so the request is
+     * not redirected by Sale's register/outlet guards.
+     * @access public
+     * @return json
+     */
+    public function getCustomersAjax() {
+        $search      = $this->input->get('search');
+        $customer_id = $this->input->get('customer_id') ?: null;
+        $page        = max(1, (int) $this->input->get('page'));
+        $perPage     = 100;
+        $offset      = ($page - 1) * $perPage;
+
+        $result     = $this->Common_model->getCustomersPaginated($search, $customer_id, $perPage, $offset);
+        $totalCount = $this->Common_model->getCustomersCount($search);
+
+        $response = [
+            'data' => $result,
+            'more' => ($offset + $perPage) < $totalCount
+        ];
+        return $this->output
+            ->set_content_type('application/json')
+            ->set_output(json_encode($response));
     }
     /**
      * getAllBooking
