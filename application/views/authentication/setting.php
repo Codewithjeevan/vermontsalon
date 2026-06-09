@@ -430,12 +430,15 @@
                     <div class="col-md-6 col-lg-3 mb-3">
                         <div class="form-group">
                             <label> <?php echo lang('Default_Customer'); ?> <span class="required_star">*</span></label>
-                            <select  class="form-control select2" name="default_customer" id="default_customer">
+                            <select class="form-control default_customer_ajax" name="default_customer" id="default_customer">
                                 <option value=""><?php echo lang('select'); ?></option>
                                 <?php
+                                // Only the currently-selected customer is rendered here.
+                                // The rest are fetched on demand via Sale/getCustomersAjax
+                                // to keep this page fast.
                                 foreach ($customers as $value1){
                                 ?>
-                                    <option <?=($outlet_information->default_customer == $value1->id ? 'selected':'')?> value="<?=escape_output($value1->id)?>"><?=escape_output($value1->name)?></option>
+                                    <option <?=($outlet_information->default_customer == $value1->id ? 'selected':'')?> value="<?=escape_output($value1->id)?>"><?=escape_output($value1->name)?><?=!empty($value1->phone) ? ' ('.escape_output($value1->phone).')' : ''?></option>
                                 <?php
                                 }
                             ?>
@@ -810,3 +813,53 @@
 <script src="<?php echo base_url(); ?>assets/cropper/cropper.min.js"></script>
 <script src="<?php echo base_url(); ?>frequent_changing/js/image_crop.js"></script>
 <script src="<?php echo base_url(); ?>frequent_changing/js/settings.js"></script>
+
+<script>
+// AJAX-driven Default Customer dropdown.
+// The Settings page previously loaded every customer into a giant <select>,
+// which made the page very slow to render for accounts with many customers.
+// We now load only the currently-selected customer server-side and pull the
+// rest on demand through the existing Sale/getCustomersAjax endpoint.
+$(function () {
+    var $defaultCustomer = $('#default_customer');
+    if (!$defaultCustomer.length) return;
+
+    $defaultCustomer.select2({
+        placeholder: "<?php echo lang('select'); ?>",
+        allowClear: false,
+        minimumInputLength: 0,
+        ajax: {
+            url: '<?php echo base_url(); ?>Sale/getCustomersAjax',
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                    search: params.term || '',
+                    page: params.page || 1
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                return {
+                    results: (data.data || []).map(function (v) {
+                        return {
+                            id: v.id,
+                            text: v.name + (v.phone ? ' (' + v.phone + ')' : '')
+                        };
+                    }),
+                    pagination: { more: !!data.more }
+                };
+            },
+            cache: true
+        }
+    });
+
+    // Trigger an empty search when the dropdown opens so users see the first page immediately.
+    $defaultCustomer.on('select2:open', function () {
+        var $search = $('.select2-container--open .select2-search__field');
+        if ($search.length && !$search.val()) {
+            $search.trigger('input');
+        }
+    });
+});
+</script>

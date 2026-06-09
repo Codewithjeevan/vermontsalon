@@ -198,7 +198,11 @@ class Setting extends Cl_Controller {
                 $data = array();
                 $data['outlet_information'] = $this->Common_model->getDataById($company_id, "tbl_companies");
                 $data['zone_names'] = $this->Common_model->getAllForDropdown("tbl_time_zone");
-                $data['customers'] = $this->Common_model->getAllCustomerNameMobile();
+                // Only load the currently selected default customer; the dropdown is
+                // populated on demand via AJAX (Sale/getCustomersAjax) to avoid loading
+                // every customer on page load (was the main cause of slow Settings page).
+                $defaultCustomerId = !empty($data['outlet_information']->default_customer) ? $data['outlet_information']->default_customer : '';
+                $data['customers'] = $defaultCustomerId ? $this->Common_model->getCustomersPaginated('', $defaultCustomerId, 1, 0) : array();
                 $data['paymentMethods'] = $this->Common_model->getAllByCompanyId($company_id, "tbl_payment_methods");
                 $data['main_content'] = $this->load->view('authentication/setting', $data, TRUE);
                 $this->load->view('userHome', $data);
@@ -207,7 +211,11 @@ class Setting extends Cl_Controller {
             $data = array();
             $data['outlet_information'] = $this->Common_model->getDataById($company_id, "tbl_companies");
             $data['zone_names'] = $this->Common_model->getAllForDropdown("tbl_time_zone");
-            $data['customers'] = $this->Common_model->getAllCustomerNameMobile();
+            // Only load the currently selected default customer; the dropdown is
+            // populated on demand via AJAX (Sale/getCustomersAjax) to avoid loading
+            // every customer on page load (was the main cause of slow Settings page).
+            $defaultCustomerId = !empty($data['outlet_information']->default_customer) ? $data['outlet_information']->default_customer : '';
+            $data['customers'] = $defaultCustomerId ? $this->Common_model->getCustomersPaginated('', $defaultCustomerId, 1, 0) : array();
             $data['paymentMethods'] = $this->Common_model->getAllByCompanyId($company_id, "tbl_payment_methods");
             $data['main_content'] = $this->load->view('authentication/setting', $data, TRUE);
             $this->load->view('userHome', $data);
