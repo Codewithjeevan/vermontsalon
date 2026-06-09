@@ -384,7 +384,7 @@ class Purchase extends Cl_Controller {
             $sub_array[] = $i--;
             $sub_array[] = $purchase->reference_no;
             $sub_array[] = $purchase->invoice_no;
-            $sub_array[] = dateFormat($purchase->added_date);
+            $sub_array[] = dateFormat($purchase->date);
             $sub_array[] = ($purchase->supplier_name);
             $sub_array[] = getAmtCustom($purchase->grand_total);
             $sub_array[] = getAmtCustom($purchase->paid);
