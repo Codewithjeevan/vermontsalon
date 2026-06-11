@@ -80,6 +80,8 @@
                                     foreach ($suppliers as $splrs) {
                                         ?>
                                     <option value="<?php echo escape_output($splrs->id) ?>"
+                                        data-vat="<?php echo escape_output(isset($splrs->vat_percentage) ? $splrs->vat_percentage : 0); ?>"
+                                        data-vat-number="<?php echo escape_output(isset($splrs->vat_number) ? $splrs->vat_number : ''); ?>"
                                         <?php echo set_select('supplier_id', $splrs->id); ?>>
                                         <?php echo escape_output($splrs->name) ?></option>
                                     <?php } ?>
@@ -219,6 +221,22 @@
                         </div>
                     </div>
                 </div>
+                <div class="row justify-content-end" id="vat_breakdown_row" style="display:none;">
+                    <div class="col-sm-12 col-md-12 col-lg-8 col-xl-6">
+                        <div class="vat-breakdown-box mt-3 mb-0" style="background:#e7f6fb;color:#0c5889;border:1px solid #0c5889;border-left:4px solid #0dcaf0;border-radius:4px;padding:8px 12px;">
+                            <div class="d-flex justify-content-between flex-wrap" style="gap:8px;">
+                                <strong>VAT Breakdown <small class="text-muted">(Inclusive of VAT)</small></strong>
+                                <span><strong>VAT %:</strong> <span id="vat_rate_label">0</span>%</span>
+                                <span><strong>Taxable:</strong> <span id="taxable_amount_label">0</span></span>
+                                <span><strong>VAT:</strong> <span id="vat_amount_label">0</span></span>
+                                <span><strong>Total (Inc.):</strong> <span id="grand_total_label">0</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="vat_percentage" id="vat_percentage_hidden" value="0">
+                <input type="hidden" name="taxable_amount" id="taxable_amount_hidden" value="0">
+                <input type="hidden" name="vat_amount" id="vat_amount_hidden" value="0">
                 <div class="row justify-content-end">
                     <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3">
                         <div class="form-group mt-3 mb-2">
@@ -409,6 +427,27 @@
                                 <span class="error_paragraph"><?php echo form_error('opening_balance'); ?></span>
                             </div>
                             <?php } ?>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group mb-3">
+                                <label>VAT %</label>
+                                <input autocomplete="off" type="number" step="0.0001" min="0" max="100"
+                                    name="vat_percentage" id="supplier_vat_percentage" class="form-control"
+                                    placeholder="VAT % (e.g. 5)" value="">
+                                <div class="alert alert-error error-msg vat_percentage_err_msg_contnr ">
+                                    <p class="vat_percentage_err_msg"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="form-group mb-3">
+                                <label>VAT / GST Number</label>
+                                <input autocomplete="off" type="text" name="vat_number" id="supplier_vat_number"
+                                    class="form-control" placeholder="VAT / GST Number" value="">
+                                <div class="alert alert-error error-msg vat_number_err_msg_contnr ">
+                                    <p class="vat_number_err_msg"></p>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-md-6 col-lg-4">
                             <div class="form-group mb-3">

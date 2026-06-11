@@ -105,6 +105,32 @@
                     </div>
                     <div class="col-md-6 col-lg-4">
                         <div class="form-group mb-3">
+                            <label>VAT %</label>
+                            <input  autocomplete="off" type="number" step="0.0001" min="0" max="100" name="vat_percentage"
+                                class="form-control" placeholder="VAT % (e.g. 5)"
+                                value="<?php echo escape_output(isset($supplier_information->vat_percentage) ? $supplier_information->vat_percentage : 0); ?>">
+                        </div>
+                        <?php if (form_error('vat_percentage')) { ?>
+                        <div class="callout callout-danger my-2">
+                            <span class="error_paragraph"><?php echo form_error('vat_percentage'); ?></span>
+                        </div>
+                        <?php } ?>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group mb-3">
+                            <label>VAT / GST Number</label>
+                            <input  autocomplete="off" type="text" name="vat_number"
+                                class="form-control" placeholder="VAT / GST Number"
+                                value="<?php echo escape_output(isset($supplier_information->vat_number) ? $supplier_information->vat_number : ''); ?>">
+                        </div>
+                        <?php if (form_error('vat_number')) { ?>
+                        <div class="callout callout-danger my-2">
+                            <span class="error_paragraph"><?php echo form_error('vat_number'); ?></span>
+                        </div>
+                        <?php } ?>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="form-group mb-3">
                             <label><?php echo lang('description'); ?></label>
                             <input  class="form-control" name="description"
                                 placeholder="<?php echo lang('description'); ?>" value="<?php echo escape_output($supplier_information->description); ?>">

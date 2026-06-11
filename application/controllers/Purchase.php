@@ -126,6 +126,12 @@ class Purchase extends Cl_Controller {
                 $purchase_info['due_amount'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('due')));
                 $purchase_info['note'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('note')));
                 $purchase_info['discount'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('discount')));
+                $vat_percentage = htmlspecialcharscustom($this->input->post($this->security->xss_clean('vat_percentage')));
+                $taxable_amount = htmlspecialcharscustom($this->input->post($this->security->xss_clean('taxable_amount')));
+                $vat_amount = htmlspecialcharscustom($this->input->post($this->security->xss_clean('vat_amount')));
+                $purchase_info['vat_percentage'] = ($vat_percentage === '' || $vat_percentage === null) ? 0 : (float)$vat_percentage;
+                $purchase_info['taxable_amount'] = ($taxable_amount === '' || $taxable_amount === null) ? 0 : (float)$taxable_amount;
+                $purchase_info['vat_amount'] = ($vat_amount === '' || $vat_amount === null) ? 0 : (float)$vat_amount;
                 $purchase_info['user_id'] = $this->session->userdata('user_id');
                 $purchase_info['outlet_id'] = $this->session->userdata('outlet_id');
                 $purchase_info['company_id'] = $this->session->userdata('company_id');
@@ -504,6 +510,9 @@ class Purchase extends Cl_Controller {
         $fmc_info['email'] = $this->input->post($this->security->xss_clean('email'));
         $fmc_info['opening_balance'] = $this->input->post($this->security->xss_clean('opening_balance'));
         $fmc_info['opening_balance_type'] = $this->input->post($this->security->xss_clean('opening_balance_type'));
+        $vat_percentage = $this->input->post($this->security->xss_clean('vat_percentage'));
+        $fmc_info['vat_percentage'] = ($vat_percentage === '' || $vat_percentage === null) ? 0 : (float)$vat_percentage;
+        $fmc_info['vat_number'] = $this->input->post($this->security->xss_clean('vat_number'));
         $fmc_info['description'] = $this->input->post($this->security->xss_clean('supplier_description'));
         $fmc_info['address'] = $this->input->post($this->security->xss_clean('supplier_address'));
         $fmc_info['added_date'] = date('Y-m-d H:i:s');

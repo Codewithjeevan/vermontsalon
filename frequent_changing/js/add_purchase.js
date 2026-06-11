@@ -114,6 +114,35 @@ $(function () {
         let grand_total = parseFloat(subtotal) + parseFloat(other) - parseFloat(totalDiscount);
         $("#grand_total").val(Number(grand_total).toFixed(op_precision));
 
+        // VAT (inclusive) breakdown based on selected supplier's vat_percentage
+        let vat_rate = parseFloat($('#supplier_id option:selected').attr('data-vat'));
+        if (isNaN(vat_rate) || vat_rate < 0) {
+            vat_rate = 0;
+        }
+        let taxable_amount = 0;
+        let vat_amount = 0;
+        if (vat_rate > 0 && grand_total > 0) {
+            taxable_amount = grand_total / (1 + (vat_rate / 100));
+            vat_amount = grand_total - taxable_amount;
+        } else {
+            taxable_amount = grand_total > 0 ? grand_total : 0;
+            vat_amount = 0;
+        }
+        $('#vat_percentage_hidden').val(vat_rate);
+        $('#taxable_amount_hidden').val(Number(taxable_amount).toFixed(op_precision));
+        $('#vat_amount_hidden').val(Number(vat_amount).toFixed(op_precision));
+        $('#vat_rate_label').text(vat_rate);
+        $('#taxable_amount_label').text(Number(taxable_amount).toFixed(op_precision));
+        $('#vat_amount_label').text(Number(vat_amount).toFixed(op_precision));
+        $('#grand_total_label').text(Number(grand_total).toFixed(op_precision));
+        // Show breakdown as soon as there is any amount in the cart,
+        // regardless of whether the selected supplier has a VAT % configured.
+        if (grand_total > 0) {
+            $('#vat_breakdown_row').show();
+        } else {
+            $('#vat_breakdown_row').hide();
+        }
+
         let multi_pay_sum = 0;
         $(".multi_pay_row").each(function () {
             let payment_id = $(this).attr('payment_id');
@@ -1117,6 +1146,8 @@ $(function () {
                         let opening_balance_type = $('#opening_balance_type').val();
                         let supplier_description = $('#supplier_description').val();
                         let supplier_address = $('#supplier_address').val();
+                        let vat_percentage = $('#supplier_vat_percentage').val();
+                        let vat_number = $('#supplier_vat_number').val();
                         $.ajax({
                             method: "POST",
                             url: base_url_+'Purchase/addNewSupplierByAjax',
@@ -1129,13 +1160,17 @@ $(function () {
                                 opening_balance_type: opening_balance_type,
                                 supplier_description: supplier_description,
                                 supplier_address: supplier_address,
+                                vat_percentage: vat_percentage,
+                                vat_number: vat_number,
                             },
                             success: function (data) {
                                 if (data) {
                                     let json = $.parseJSON(data);
                                     let html = '<option>'+select+'</option>';
                                     $.each(json.supplier, function (i, v) {
-                                        html += '<option value="' + v.id + '">' + v.name +
+                                        let vatPct = (v.vat_percentage !== undefined && v.vat_percentage !== null) ? v.vat_percentage : 0;
+                                        let vatNum = (v.vat_number !== undefined && v.vat_number !== null) ? v.vat_number : '';
+                                        html += '<option value="' + v.id + '" data-vat="' + vatPct + '" data-vat-number="' + vatNum + '">' + v.name +
                                             '</option>';
                                     });
                                     $("#supplier_id").html(html);
@@ -1245,6 +1280,10 @@ $(function () {
             }
         });
         $('.supplier_id_err_msg_contnr').hide();
+        // Recompute totals so VAT breakdown reflects the newly selected supplier
+        if (typeof calculateAll === 'function') {
+            calculateAll();
+        }
     });
 
 
@@ -1265,6 +1304,11 @@ $(function () {
         }
     }
     supplierBalance();
+
+    // Initial calculation on page load so VAT breakdown reflects preselected supplier (edit mode)
+    if (typeof calculateAll === 'function') {
+        calculateAll();
+    }
 
 
 

@@ -82,6 +82,8 @@ class Supplier extends Cl_Controller {
             $this->form_validation->set_rules('email', lang('email_address'), "valid_email|max_length[50]");
             $this->form_validation->set_rules('opening_balance', lang('opening_balance'), 'max_length[11]');
             $this->form_validation->set_rules('address', lang('address'), 'max_length[255]');
+            $this->form_validation->set_rules('vat_percentage', 'VAT %', 'numeric|greater_than_equal_to[0]|less_than_equal_to[100]');
+            $this->form_validation->set_rules('vat_number', 'VAT / GST Number', 'max_length[50]');
             if ($this->form_validation->run() == TRUE) {
                 $fmc_info = array();
                 $fmc_info['name'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('name')));
@@ -92,6 +94,9 @@ class Supplier extends Cl_Controller {
                 $fmc_info['description'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('description')));
                 $fmc_info['opening_balance'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('opening_balance')));
                 $fmc_info['opening_balance_type'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('opening_balance_type')));
+                $vat_percentage = htmlspecialcharscustom($this->input->post($this->security->xss_clean('vat_percentage')));
+                $fmc_info['vat_percentage'] = ($vat_percentage === '' || $vat_percentage === null) ? 0 : (float)$vat_percentage;
+                $fmc_info['vat_number'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('vat_number')));
                 $fmc_info['user_id'] = $this->session->userdata('user_id');
                 $fmc_info['company_id'] = $this->session->userdata('company_id');
                 if ($id == "") {

@@ -200,6 +200,20 @@ $outlet_info = getOutletInfoById($purchase_details->outlet_id);
                                 <p class="color-71"><?php echo lang('grand_total');?></p>
                                 <p><?php echo getAmtCustom($purchase_details->grand_total) ?></p>
                             </div>
+                            <?php if (isset($purchase_details->vat_percentage) && (float)$purchase_details->vat_percentage > 0) { ?>
+                            <div class="details_footer d-flex justify-content-between br-3">
+                                <p class="color-71">VAT % (Inclusive)</p>
+                                <p><?php echo escape_output($purchase_details->vat_percentage); ?>%</p>
+                            </div>
+                            <div class="details_footer d-flex justify-content-between br-3">
+                                <p class="color-71">Taxable Amount</p>
+                                <p><?php echo getAmtCustom($purchase_details->taxable_amount); ?></p>
+                            </div>
+                            <div class="details_footer d-flex justify-content-between br-3">
+                                <p class="color-71">VAT Amount</p>
+                                <p><?php echo getAmtCustom($purchase_details->vat_amount); ?></p>
+                            </div>
+                            <?php } ?>
                             <div class="details_footer d-flex justify-content-between br-3">
                                 <p class="color-71"><?php echo lang('paid_amount');?></p>
                                 <p><?php echo getAmtCustom($purchase_details->paid) ?></p>

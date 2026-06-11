@@ -2459,7 +2459,7 @@ class Common_model extends CI_Model {
      */
     public function getAllSupplierNameMobile(){
         $company_id = $this->session->userdata('company_id');
-        $this->db->select('id,name,phone');
+        $this->db->select('id,name,phone,vat_percentage,vat_number');
         $this->db->from('tbl_suppliers');
         $this->db->where('company_id', $company_id);
 		$this->db->where('del_status','Live');
