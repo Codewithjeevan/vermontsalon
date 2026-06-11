@@ -57,21 +57,33 @@ class Booking extends Cl_Controller {
 
     function bookingData(){
         $booking_data = getBookingData();
+        $data = array();
         foreach ($booking_data as $item) {
             $startDateTime = $item->start_date;
-            $endDateTime = $item->end_date;
-            $start_time = (new DateTime($startDateTime))->format('H:i');
-            $end_time = (new DateTime($endDateTime))->format('H:i');
+            $endDateTime   = $item->end_date;
+
+            // Guard against NULL / '0000-00-00 00:00:00' / malformed values
+            // that some client databases may contain. Without this, DateTime
+            // throws: "Failed to parse time string (Invalid date) at position 0".
+            $startTs = !empty($startDateTime) ? strtotime($startDateTime) : false;
+            $endTs   = !empty($endDateTime)   ? strtotime($endDateTime)   : false;
+            if ($startTs === false || $endTs === false) {
+                continue; // skip this booking, do not break the calendar feed
+            }
+
+            $start_time = date('H:i', $startTs);
+            $end_time   = date('H:i', $endTs);
+
             $data[] = [
-                "title" => $start_time . '-' . $end_time . ':' . $item->customer_name . ' ' . $item->customer_phone,
-                "start" => $item->start_date,
-                "end" => $item->end_date,
+                "title"  => $start_time . '-' . $end_time . ':' . $item->customer_name . ' ' . $item->customer_phone,
+                "start"  => $startDateTime,
+                "end"    => $endDateTime,
                 "status" => $item->status,
-                "id" => $item->id,
+                "id"     => $item->id,
             ];
         }
         $response = [
-            'status' => 'success',
+            'status'  => 'success',
             'message' => $data,
         ];
         $this->output
