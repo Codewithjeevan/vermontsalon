@@ -501,6 +501,11 @@
                             <input type="text" autocomplete="off" class="form-control integerchk1"
                                 onfocus="select();" name="unit_price_modal" id="unit_price_modal"
                                 placeholder="<?php echo lang('unit_price'); ?>" value="">
+                            <small class="op_color_red d-none mt-1 d-block" id="last_unit_price_label">
+                                Last <?php echo lang('unit_price'); ?>:
+                                <strong id="last_unit_price_value">0</strong>
+                                <span class="text-muted" id="last_unit_price_date"></span>
+                            </small>
                         </div>
                     </div>
                     <div class="form-group mb-3">

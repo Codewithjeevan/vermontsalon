@@ -324,6 +324,7 @@ $(function () {
         $('.modal_item_unit').text(item_details_array[2]);
         $("#unit_price_modal").val(item_details_array[3]);
         $('#hidden_input_expiry_date_maintain').val(expiry_date_maintain);
+        fetchLastUnitPrice(item_details_array[0]);
         if(getType == 'General_Product' || getType == '' || (getType == 'Medicine_Product' && expiry_date_maintain == 'No')){
             $(".imei_p_f").addClass('d-none');
         }else if(getType == 'Medicine_Product' && expiry_date_maintain == 'Yes'){
@@ -943,7 +944,36 @@ $(function () {
     });
     $(document).on('hidden.bs.modal', '#cartPreviewModal', function() {
         $("#menu_note").val('');
+        $('#last_unit_price_label').addClass('d-none');
+        $('#last_unit_price_value').text('0');
+        $('#last_unit_price_date').text('');
     });
+
+    function fetchLastUnitPrice(item_id) {
+        // Reset previous value/state before requesting.
+        $('#last_unit_price_label').addClass('d-none');
+        $('#last_unit_price_value').text('0');
+        $('#last_unit_price_date').text('');
+        if (!item_id) {
+            return;
+        }
+        $.ajax({
+            url: base_url_ + 'Ajax/getLastPurchasePrice',
+            method: 'POST',
+            data: { item_id: item_id },
+            dataType: 'json',
+            success: function (response) {
+                if (response && response.status === 'success' && response.unit_price !== null && response.unit_price !== undefined) {
+                    let price = Number(response.unit_price).toFixed(op_precision);
+                    $('#last_unit_price_value').text(price);
+                    if (response.date) {
+                        $('#last_unit_price_date').text(' (' + response.date + ')');
+                    }
+                    $('#last_unit_price_label').removeClass('d-none');
+                }
+            }
+        });
+    }
 
     $(document).on('click', '#pull_low_stock_products', function() {
         let supplier_id = $("#supplier_id").val();

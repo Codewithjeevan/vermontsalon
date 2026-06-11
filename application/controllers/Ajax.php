@@ -628,4 +628,27 @@ class Ajax extends Cl_Controller {
         ];	
         $this->output->set_content_type('application/json')->set_output(json_encode($response));
     }
+
+    /**
+     * getLastPurchasePrice
+     * @access public
+     * @param no
+     * @return json
+     */
+    public function getLastPurchasePrice() {
+        $item_id = (int) htmlspecialcharscustom($this->input->post($this->security->xss_clean('item_id')));
+        $response = [
+            'status'     => 'success',
+            'unit_price' => null,
+            'date'       => null,
+        ];
+        if ($item_id > 0) {
+            $row = $this->Ajax_model->getLastPurchasePrice($item_id);
+            if ($row) {
+                $response['unit_price'] = $row->unit_price;
+                $response['date']       = $row->date;
+            }
+        }
+        $this->output->set_content_type('application/json')->set_output(json_encode($response));
+    }
 }
