@@ -102,6 +102,8 @@ class Report extends Cl_Controller {
             $function = "installment_due_report";
         }elseif($segment_1=="Report" && $segment_2 == "taxReport"){
             $function = "tax_report";
+        }elseif($segment_1=="Report" && $segment_2 == "purchaseTaxReport"){
+            $function = "tax_report";
         }elseif($segment_1=="Report" && $segment_2 == "servicingReport"){
             $function = "servicing_report";
         }elseif($segment_1=="Report" && $segment_2 == "itemMoving"){
@@ -1063,6 +1065,31 @@ class Report extends Cl_Controller {
             $data['taxReport'] = $this->Report_model->taxReport($start_date, $end_date, $outlet_id);
         }
         $data['main_content'] = $this->load->view('report/taxReport', $data, TRUE);
+        $this->load->view('userHome', $data);
+    }
+
+    /**
+     * purchaseTaxReport
+     * @access public
+     * @param no
+     * @return void
+     */
+    public function purchaseTaxReport(){
+        $data = array();
+        $data['suppliers'] = $this->Common_model->getAllSupplierNameMobile();
+        if (htmlspecialcharscustom($this->input->post('submit'))) {
+            $data['report_generate_time'] = generatedOnCurrentDateTime();
+            $outlet_id = isset($_POST['outlet_id']) && $_POST['outlet_id'] ? $_POST['outlet_id'] : '';
+            $data['outlet_id'] = $outlet_id;
+            $supplier_id = isset($_POST['supplier_id']) && $_POST['supplier_id'] ? $_POST['supplier_id'] : '';
+            $data['supplier_id'] = $supplier_id;
+            $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
+            $data['start_date'] = $start_date;
+            $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
+            $data['end_date'] = $end_date;
+            $data['purchaseTaxReport'] = $this->Report_model->purchaseTaxReport($start_date, $end_date, $supplier_id, $outlet_id);
+        }
+        $data['main_content'] = $this->load->view('report/purchaseTaxReport', $data, TRUE);
         $this->load->view('userHome', $data);
     }
 

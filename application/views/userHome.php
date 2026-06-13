@@ -1017,6 +1017,12 @@
                                             <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
                                         </a>
                                     </li>
+                                    <li data-access="tax_report-249" class="menu_assign_class " module-is-hide="Tax Report-YES">
+                                        <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/purchaseTaxReport'?>">
+                                            <?php echo lang('purchase_tax_report'); ?>
+                                            <iconify-icon icon="solar:crown-star-line-duotone" class="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? '' : 'd-none'?>"></iconify-icon>
+                                        </a>
+                                    </li>
                                     <?php } ?>
                                     <li data-access="detailed_sale_report-249" class="menu_assign_class " module-is-hide="Detailed Sale Report-YES">
                                         <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Report/detailedSaleReport'?>">

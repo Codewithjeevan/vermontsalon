@@ -82,6 +82,7 @@
                                         <th class="w-10"><?php echo lang('purchase_date'); ?></th>
                                         <th class="w-10"><?php echo lang('supplier'); ?></th>
                                         <th class="w-20"><?php echo lang('items'); ?></th>
+                                        <th class="w-10 text-center"><?php echo lang('tax'); ?></th>
                                         <th class="w-10 text-center"><?php echo lang('grand_total'); ?></th>
                                         <th class="w-10 text-center"><?php echo lang('paid'); ?></th>
                                         <th class="w-10 text-center"><?php echo lang('due'); ?></th>
@@ -93,11 +94,13 @@
                                     $sum_of_grand_total = 0;
                                     $sum_of_paid = 0;
                                     $sum_of_due = 0;
+                                    $sum_of_tax = 0;
                                     if (isset($purchaseReportByDate)):
                                         foreach ($purchaseReportByDate as $key => $value) {
                                             $sum_of_grand_total += $value->grand_total;
                                             $sum_of_paid += $value->paid;
                                             $sum_of_due += $value->due_amount;
+                                            $sum_of_tax += (isset($value->vat_amount) ? (float)$value->vat_amount : 0);
                                             $key++;
                                             ?>
                                             <tr>
@@ -115,6 +118,7 @@
                                                     }
                                                 }
                                                 ?></td>
+                                                <td class="text-center"><?php echo (isset($value->vat_amount) && (float)$value->vat_amount > 0) ? getAmtCustom($value->vat_amount) : '-' ?></td>
                                                 <td class="text-center"><?php echo getAmtCustom($value->grand_total) ?></td>
                                                 <td class="text-center"><?php echo getAmtCustom($value->paid) ?></td>
                                                 <td class="text-center"><?php echo getAmtCustom($value->due_amount) ?></td>
@@ -131,6 +135,7 @@
                                         <th></th>
                                         <th></th>
                                         <th class="op_right"><?php echo lang('total'); ?> </th>
+                                        <th class="text-center"><?php echo getAmtCustom($sum_of_tax) ?></th>
                                         <th class="text-center"><?php echo getAmtCustom($sum_of_grand_total) ?></th>
                                         <th class="text-center"><?php echo getAmtCustom($sum_of_paid) ?></th>
                                         <th class="text-center"><?php echo getAmtCustom($sum_of_due) ?></th>

@@ -368,6 +368,47 @@ class Report_model extends CI_Model {
     }
 
 
+    /**
+     * purchaseTaxReport
+     * @access public
+     * @param string
+     * @param string
+     * @param int
+     * @param int
+     * @return object
+     */
+    public function purchaseTaxReport($startDate = '', $endDate = '', $supplier_id = '', $outlet_id = '') {
+        $company_id = $this->session->userdata('company_id');
+        $this->db->select('p.id, p.reference_no, p.invoice_no, p.date, p.added_date, p.vat_percentage, p.taxable_amount, p.vat_amount, p.grand_total, p.paid, p.due_amount, s.name as supplier_name, u.full_name as user_name');
+        $this->db->from('tbl_purchase p');
+        $this->db->join('tbl_suppliers s', 's.id = p.supplier_id', 'left');
+        $this->db->join('tbl_users u', 'u.id = p.user_id', 'left');
+        if ($startDate != '' && $endDate != '') {
+            $this->db->where('p.date>=', $startDate);
+            $this->db->where('p.date <=', $endDate);
+        }
+        if ($startDate != '' && $endDate == '') {
+            $this->db->where('p.date', $startDate);
+        }
+        if ($startDate == '' && $endDate != '') {
+            $this->db->where('p.date', $endDate);
+        }
+        if ($supplier_id != '') {
+            $this->db->where('p.supplier_id', $supplier_id);
+        }
+        if ($outlet_id != '') {
+            $this->db->where('p.outlet_id', $outlet_id);
+        }
+        $this->db->where('p.company_id', $company_id);
+        $this->db->where('p.del_status', "Live");
+        $this->db->where('p.vat_amount >', 0);
+        $this->db->group_by('p.id');
+        $query_result = $this->db->get();
+        $result = $query_result->result();
+        return $result;
+    }
+
+
 
     /**
      * total_purchase
@@ -1472,7 +1513,7 @@ class Report_model extends CI_Model {
      */
     public function purchaseReportByDate($startDate = '', $endDate = '', $supplier_id ='', $outlet_id='') {
         $company_id = $this->session->userdata('company_id');
-        $this->db->select('p.id,p.reference_no, p.date,p.added_date, s.name as supplier_name,p.grand_total,p.paid,p.due_amount, u.full_name as user_name');
+        $this->db->select('p.id,p.reference_no, p.date,p.added_date, s.name as supplier_name,p.vat_amount,p.grand_total,p.paid,p.due_amount, u.full_name as user_name');
         $this->db->from('tbl_purchase p');
         $this->db->join('tbl_suppliers s', 's.id = p.supplier_id', 'left');
         $this->db->join('tbl_users u', 'u.id = p.user_id', 'left');
