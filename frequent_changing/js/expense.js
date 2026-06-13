@@ -34,13 +34,62 @@ $(function () {
     });
     
     
-    $(document).on('keyup', '#amount', function(e){ 
+    $(document).on('keyup input', '#amount', function(e){ 
         let amount=$('#amount').val();
         if(Number(amount)==0){              
             $("#payment_method_id").prop("disabled", true);          
         }else{            
             $("#payment_method_id").prop("disabled", false);
         }
-    }); 
-    
+        updateVatBreakdown();
+    });
+
+    // Allow only numbers and a single decimal point in the VAT % field
+    $(document).on('input', '#vat_percentage', function(){
+        let v = $(this).val();
+        // strip anything that is not digit or dot
+        v = v.replace(/[^0-9.]/g, '');
+        // keep only the first dot
+        let firstDot = v.indexOf('.');
+        if (firstDot !== -1) {
+            v = v.substring(0, firstDot + 1) + v.substring(firstDot + 1).replace(/\./g, '');
+        }
+        // clamp 0..100
+        if (v !== '' && v !== '.' && Number(v) > 100) {
+            v = '100';
+        }
+        $(this).val(v);
+        updateVatBreakdown();
+    });
+
+    function updateVatBreakdown(){
+        let $bd = $('#vat_breakdown');
+        if ($bd.length === 0) return;
+
+        let amount = parseFloat($('#amount').val());
+        let vat    = parseFloat($('#vat_percentage').val());
+
+        if (isNaN(amount)) amount = 0;
+        if (isNaN(vat))    vat    = 0;
+
+        // Hide if no amount entered
+        if (amount <= 0) {
+            $bd.hide();
+            return;
+        }
+
+        // Inclusive calculation: amount already contains VAT
+        let net    = vat > 0 ? amount / (1 + (vat / 100)) : amount;
+        let vatAmt = amount - net;
+
+        $('#vat_rate_label').text(vat);
+        $('#vat_net_amount').text(net.toFixed(2));
+        $('#vat_amount_value').text(vatAmt.toFixed(2));
+        $('#vat_total_value').text(amount.toFixed(2));
+        $bd.show();
+    }
+
+    // Run once on load to show breakdown when editing
+    updateVatBreakdown();
+
 });

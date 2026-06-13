@@ -88,6 +88,7 @@ class Expense extends Cl_Controller {
             $this->form_validation->set_rules('reference_no', lang('ref_no'), 'required|max_length[50]');
             $this->form_validation->set_rules('date',lang('date'), 'required|max_length[50]');
             $this->form_validation->set_rules('amount',lang('amount'), 'required|max_length[11]');
+            $this->form_validation->set_rules('vat_percentage',lang('vat'), 'numeric|less_than_equal_to[100]|greater_than_equal_to[0]|max_length[6]');
             $this->form_validation->set_rules('category_id',lang('category'), 'required|max_length[10]');
             $this->form_validation->set_rules('payment_method_id',lang('payment_methods'), 'required');
             $this->form_validation->set_rules('employee_id',lang('responsible_person'), 'max_length[10]');
@@ -97,6 +98,8 @@ class Expense extends Cl_Controller {
                 $expnse_info['reference_no'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('reference_no')));
                 $expnse_info['date'] = date("Y-m-d", strtotime($this->input->post($this->security->xss_clean('date'))));
                 $expnse_info['amount'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('amount')));
+                $vat_percentage_raw = htmlspecialcharscustom($this->input->post($this->security->xss_clean('vat_percentage')));
+                $expnse_info['vat_percentage'] = ($vat_percentage_raw === '' || $vat_percentage_raw === null) ? 0 : $vat_percentage_raw;
                 $expnse_info['category_id'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('category_id')));
                 $expnse_info['payment_method_id'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('payment_method_id')));
                 $expnse_info['employee_id'] = htmlspecialcharscustom($this->input->post($this->security->xss_clean('employee_id')));

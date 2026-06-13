@@ -60,6 +60,22 @@
                         <?php } ?>
                     </div>
                     <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="form-group">
+                            <label><?php echo lang('vat'); ?> (%)</label>
+                            <input  autocomplete="off" type="text" id="vat_percentage" name="vat_percentage" onfocus="this.select();" class="form-control" placeholder="0" value="<?php echo escape_output(isset($expense_information->vat_percentage) ? $expense_information->vat_percentage : 0); ?>">
+                        </div>
+                        <div id="vat_breakdown" class="vat-breakdown small text-muted mt-1" style="display:none;">
+                            <div class="d-flex justify-content-between"><span>Net Amount:</span><span id="vat_net_amount">0.00</span></div>
+                            <div class="d-flex justify-content-between"><span><?php echo lang('vat'); ?> (<span id="vat_rate_label">0</span>%):</span><span id="vat_amount_value">0.00</span></div>
+                            <div class="d-flex justify-content-between fw-bold"><span>Total (Inclusive):</span><span id="vat_total_value">0.00</span></div>
+                        </div>
+                        <?php if (form_error('vat_percentage')) { ?>
+                            <div class="callout callout-danger my-2">
+                                <span class="error_paragraph"><?php echo form_error('vat_percentage'); ?></span>
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <div class="col-md-6 col-lg-4 mb-3">
                             <div class="form-group">
                                 <label><?php echo lang('category'); ?> <span class="required_star">*</span></label>
                                 <select  class="form-control select2 op_width_100_p" name="category_id">

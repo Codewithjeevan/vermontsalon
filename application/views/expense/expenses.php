@@ -34,6 +34,7 @@
                             <th class="w-5"><?php echo lang('sn'); ?></th>
                             <th class="w-10"><?php echo lang('date'); ?></th>
                             <th class="w-10 text-center"><?php echo lang('amount'); ?></th>
+                            <th class="w-5 text-center"><?php echo lang('vat'); ?> (%)</th>
                             <th class="w-10"><?php echo lang('category'); ?></th>
                             <th class="w-10"><?php echo lang('payment_methods'); ?></th>
                             <th class="w-15"><?php echo lang('responsible_person'); ?></th>
@@ -55,6 +56,7 @@
                             <td><?php echo date($this->session->userdata('date_format'), strtotime($expnss->date)); ?>
                             </td>
                             <td class="text-center"><?php echo getAmtCustom($expnss->amount); ?></td>
+                            <td class="text-center"><?php echo isset($expnss->vat_percentage) ? rtrim(rtrim(number_format((float)$expnss->vat_percentage, 2, '.', ''), '0'), '.') : '0'; ?></td>
                             <td><?php echo expenseItemName($expnss->category_id); ?></td>
                             <td><?php echo getPaymentName($expnss->payment_method_id); ?></td>
                             <td><?php echo employeeName($expnss->employee_id); ?></td>
