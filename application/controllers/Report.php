@@ -82,6 +82,8 @@ class Report extends Cl_Controller {
             $function = "attendance_report";
         }elseif($segment_1=="Report" && $segment_2 == "purchaseReportByDate"){
             $function = "purchase_report";
+        }elseif($segment_1=="Report" && $segment_2 == "supplierSummaryReport"){
+            $function = "purchase_report";
         }elseif($segment_1=="Report" && $segment_2 == "productPurchaseReport"){
             $function = "product_purchase_report";
         }elseif($segment_1=="Report" && $segment_2 == "expenseReport"){
@@ -801,6 +803,32 @@ class Report extends Cl_Controller {
         }
         $data['suppliers'] = $this->Common_model->getAllSupplierNameMobile();
         $data['main_content'] = $this->load->view('report/purchaseReportByDate', $data, TRUE);
+        $this->load->view('userHome', $data);
+    }
+
+    /**
+     * supplierSummaryReport
+     * Aggregated purchase totals grouped by supplier within a date range.
+     * @access public
+     * @param no
+     * @return void
+     */
+    public function supplierSummaryReport() {
+        $data = array();
+        $outlet_id  = isset($_POST['outlet_id']) && $_POST['outlet_id']?$_POST['outlet_id']:'';
+        $data['outlet_id'] = $outlet_id;
+        if (htmlspecialcharscustom($this->input->post('submit'))) {
+            $data['report_generate_time'] = generatedOnCurrentDateTime();
+            $start_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('startDate')));
+            $end_date = htmlspecialcharscustom($this->input->post($this->security->xss_clean('endDate')));
+            $supplier_id = htmlspecialcharscustom($this->input->post($this->security->xss_clean('supplier_id')));
+            $data['start_date'] = $start_date;
+            $data['end_date'] = $end_date;
+            $data['supplier_id'] = $supplier_id;
+            $data['supplierSummaryReport'] = $this->Report_model->supplierSummaryReport($start_date, $end_date, $supplier_id, $outlet_id);
+        }
+        $data['suppliers'] = $this->Common_model->getAllSupplierNameMobile();
+        $data['main_content'] = $this->load->view('report/supplierSummaryReport', $data, TRUE);
         $this->load->view('userHome', $data);
     }
 

@@ -520,6 +520,7 @@ $lang['customer_ledger_report'] = 'Customer Ledger Report';
 $lang['receive_amount'] = 'Receive Amount';
 $lang['due_receive'] = 'Due Receive';
 $lang['purchase_report'] = 'Purchase Report';
+$lang['supplier_summary_report'] = 'Supplier Summary Report';
 $lang['grand_total'] = 'Grand Total';
 $lang['purchased_by'] = 'Purchased By';
 $lang['expense_report'] = 'Expense Report';

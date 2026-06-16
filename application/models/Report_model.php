@@ -1542,6 +1542,45 @@ class Report_model extends CI_Model {
     }
 
 
+    /**
+     * supplierSummaryReport
+     * Returns total purchase amount grouped per supplier within the given date range.
+     * @access public
+     * @param string
+     * @param string
+     * @param int
+     * @param int
+     * @return object
+     */
+    public function supplierSummaryReport($startDate = '', $endDate = '', $supplier_id = '', $outlet_id = '') {
+        $company_id = $this->session->userdata('company_id');
+        $this->db->select('p.supplier_id, COALESCE(s.name, "") as supplier_name, SUM(p.grand_total) as total_grand_total, SUM(p.paid) as total_paid, SUM(p.due_amount) as total_due');
+        $this->db->from('tbl_purchase p');
+        $this->db->join('tbl_suppliers s', 's.id = p.supplier_id', 'left');
+        if ($startDate != '' && $endDate != '') {
+            $this->db->where('p.date>=', $startDate);
+            $this->db->where('p.date <=', $endDate);
+        }
+        if ($startDate != '' && $endDate == '') {
+            $this->db->where('p.date', $startDate);
+        }
+        if ($startDate == '' && $endDate != '') {
+            $this->db->where('p.date', $endDate);
+        }
+        if ($supplier_id != '') {
+            $this->db->where('p.supplier_id', $supplier_id);
+        }
+        if ($outlet_id != '') {
+            $this->db->where('p.outlet_id', $outlet_id);
+        }
+        $this->db->where('p.company_id', $company_id);
+        $this->db->where('p.del_status', "Live");
+        $this->db->group_by('p.supplier_id');
+        $this->db->order_by('supplier_name', 'ASC');
+        $query_result = $this->db->get();
+        return $query_result->result();
+    }
+
 
     /**
      * productPurchaseReport

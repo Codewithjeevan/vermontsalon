@@ -5,22 +5,22 @@
     <section class="content-header">
         <div class="row justify-content-between">
             <div class="col-6 p-0">
-                <h3 class="top-left-header mt-2"><?php echo lang('purchase_report'); ?></h3>
+                <h3 class="top-left-header mt-2"><?php echo lang('supplier_summary_report'); ?></h3>
             </div>
-            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('report'), 'secondSection'=> lang('purchase_report')])?>
+            <?php $this->view('updater/breadcrumb', ['firstSection'=> lang('report'), 'secondSection'=> lang('supplier_summary_report')])?>
         </div>
     </section>
-    
-    
-    <div class="box-wrapper"> 
+
+
+    <div class="box-wrapper">
         <!-- Report Header Start -->
         <div class="report_header">
             <h3 class="company_name"><?php echo escape_output($this->session->userdata('business_name'));?> </h3>
             <h5 class="outlet_info">
-                <strong><?php echo lang('purchase_report'); ?></strong>
+                <strong><?php echo lang('supplier_summary_report'); ?></strong>
             </h5>
             <?php if(isset($outlet_id) && $outlet_id){
-                $outlet_info = getOutletInfoById($outlet_id); 
+                $outlet_info = getOutletInfoById($outlet_id);
             }?>
             <h5 class="outlet_info">
                 <?php if(isset($outlet_id) && $outlet_id){ ?>
@@ -42,7 +42,7 @@
                     <strong><?php echo lang('phone'); ?>: </strong> <?= escape_output($outlet_info->phone); ?>
                 <?php } ?>
             </h5>
-            <?php if(isset($start_date) && $start_date != '' && $start_date != '1970-01-01' || isset($end_date) && $end_date != '' && $end_date != '1970-01-01'){ ?>
+            <?php if((isset($start_date) && $start_date != '' && $start_date != '1970-01-01') || (isset($end_date) && $end_date != '' && $end_date != '1970-01-01')){ ?>
             <h5 class="outlet_info">
                 <strong><?php echo lang('date');?>:</strong>
                 <?php
@@ -68,90 +68,70 @@
 
 
 
-        <div class="table-box"> 
+        <div class="table-box">
             <div class="box-body">
                 <div class="table-responsive">
-                    
-                    <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('purchase_report'); ?>" data-id_name="datatable">
+
+                    <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('supplier_summary_report'); ?>" data-id_name="datatable">
                     <table id="datatable" class="table table-bordered table-striped">
-                                <thead>
-                                    <tr>
-                                        <th class="w-5"><?php echo lang('sn'); ?></th>
-                                        <th class="w-10"><?php echo lang('ref_no'); ?></th>
-                                        <th class="w-10">Created <?php echo lang('date_and_time'); ?></th>
-                                        <th class="w-10"><?php echo lang('purchase_date'); ?></th>
-                                        <th class="w-10"><?php echo lang('supplier'); ?></th>
-                                        <th class="w-20"><?php echo lang('items'); ?></th>
-                                        <th class="w-10 text-center"><?php echo lang('tax'); ?></th>
-                                        <th class="w-10 text-center"><?php echo lang('grand_total'); ?></th>
-                                        <th class="w-10 text-center"><?php echo lang('paid'); ?></th>
-                                        <th class="w-10 text-center"><?php echo lang('due'); ?></th>
-                                        <th class="w-15 text-right"><?php echo lang('purchased_by'); ?></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $sum_of_grand_total = 0;
-                                    $sum_of_paid = 0;
-                                    $sum_of_due = 0;
-                                    $sum_of_tax = 0;
-                                    if (isset($purchaseReportByDate)):
-                                        foreach ($purchaseReportByDate as $key => $value) {
-                                            $sum_of_grand_total += $value->grand_total;
-                                            $sum_of_paid += $value->paid;
-                                            $sum_of_due += $value->due_amount;
-                                            $sum_of_tax += (isset($value->vat_amount) ? (float)$value->vat_amount : 0);
-                                            $key++;
-                                            ?>
-                                            <tr>
-                                                <td><?php echo $key; ?></td>
-                                                <td><?php echo escape_output($value->reference_no); ?></td>
-                                                <td><?php echo dateFormat($value->added_date) ?></td>
-                                                <td><?php echo dateFormat($value->date) ?></td>
-                                                <td><?php echo escape_output($value->supplier_name); ?></td>
-                                                <td><?php 
-                                                $items = getPurchaseItemsByPurchaseId($value->id);
-                                                if($items){
-                                                    echo "<strong>Name(Code)-Qty(Unit)-Price</strong><br>";
-                                                    foreach($items as $item){
-                                                        echo escape_output($item->name). '('. $item->code . ')-' . $item->quantity_amount . '(' .$item->unit_name . ')-' . getAmtCustom($item->unit_price) . "<br>";
-                                                    }
-                                                }
-                                                ?></td>
-                                                <td class="text-center"><?php echo (isset($value->vat_amount) && (float)$value->vat_amount > 0) ? getAmtCustom($value->vat_amount) : '-' ?></td>
-                                                <td class="text-center"><?php echo getAmtCustom($value->grand_total) ?></td>
-                                                <td class="text-center"><?php echo getAmtCustom($value->paid) ?></td>
-                                                <td class="text-center"><?php echo getAmtCustom($value->due_amount) ?></td>
-                                                <td><?php echo escape_output($value->user_name) ?></td>
-                                            </tr>
-                                            <?php
-                                        }
-                                    endif;
+                        <thead>
+                            <tr>
+                                <th class="w-10"><?php echo lang('sn'); ?></th>
+                                <th class="w-40"><?php echo lang('date_and_time'); ?></th>
+                                <th class="w-30"><?php echo lang('supplier'); ?></th>
+                                <th class="w-20 text-center"><?php echo lang('total'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $sum_of_total = 0;
+                            // Build the displayed date range string (used under each row's Date & Time column)
+                            $range_text = '';
+                            $has_start = (isset($start_date) && !empty($start_date) && $start_date != '1970-01-01');
+                            $has_end   = (isset($end_date) && !empty($end_date) && $end_date != '1970-01-01');
+                            if ($has_start) {
+                                $range_text .= dateFormat($start_date);
+                            }
+                            if ($has_start && $has_end) {
+                                $range_text .= ' - ';
+                            }
+                            if ($has_end) {
+                                $range_text .= dateFormat($end_date);
+                            }
+                            if ($range_text === '') {
+                                $range_text = '-';
+                            }
+
+                            if (isset($supplierSummaryReport)):
+                                foreach ($supplierSummaryReport as $key => $value) {
+                                    $sum_of_total += $value->total_grand_total;
+                                    $key++;
+                                    $supplier_display = !empty($value->supplier_name) ? $value->supplier_name : '-';
                                     ?>
-                                <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th class="op_right"><?php echo lang('total'); ?> </th>
-                                        <th class="text-center"><?php echo getAmtCustom($sum_of_tax) ?></th>
-                                        <th class="text-center"><?php echo getAmtCustom($sum_of_grand_total) ?></th>
-                                        <th class="text-center"><?php echo getAmtCustom($sum_of_paid) ?></th>
-                                        <th class="text-center"><?php echo getAmtCustom($sum_of_due) ?></th>
-                                        <th></th>
+                                    <tr>
+                                        <td><?php echo $key; ?></td>
+                                        <td><?php echo escape_output($range_text); ?></td>
+                                        <td><?php echo escape_output($supplier_display); ?></td>
+                                        <td class="text-center"><?php echo getAmtCustom($value->total_grand_total) ?></td>
                                     </tr>
-                                </tbody>
-                                
+                                    <?php
+                                }
+                            endif;
+                            ?>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th class="op_right"><?php echo lang('total'); ?> </th>
+                                <th class="text-center"><?php echo getAmtCustom($sum_of_total) ?></th>
+                            </tr>
+                        </tbody>
+
                     </table>
                 </div>
             </div>
-        </div> 
-    </div>   
+        </div>
+    </div>
 </div>
-
-
-
 
 
 
@@ -167,7 +147,7 @@
                     </span>
                 </button>
         </header>
-        <?php echo form_open(base_url() . 'Report/purchaseReportByDate') ?>
+        <?php echo form_open(base_url() . 'Report/supplierSummaryReport') ?>
         <div class="row">
             <div class="col-sm-12 col-md-6 mb-2">
                 <div class="form-group">

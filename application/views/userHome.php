@@ -976,6 +976,11 @@
                                             <?php echo lang('supplier_ledger_report'); ?>
                                         </a>
                                     </li>
+                                    <li>
+                                        <a class="child-menu " href="<?php echo base_url(); ?>Report/supplierSummaryReport">
+                                            <?php echo lang('supplier_summary_report'); ?>
+                                        </a>
+                                    </li>
                                     <li data-access="supplier_balance_report-249" class="menu_assign_class " module-is-hide="Supplier Balance Report-YES">
                                         <a class="child-menu <?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'biponi_silver' : ''?>" href="<?php echo ($s_status == 'Bangladesh' && $pakl == 'silver') ? 'javascript:void(0)' : base_url().'Company_report/supplierBalanceReport'?>">
                                             <?php echo lang('supplier_balance_report'); ?>
