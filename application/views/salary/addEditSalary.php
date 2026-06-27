@@ -40,7 +40,7 @@
             <!-- form start -->
             <?php
             $attributes = array('id' => 'add_salary');
-            echo form_open_multipart(base_url('salary/addEditSalary/'), $attributes); ?>
+            echo form_open_multipart(base_url('salary/addEditSalary'), $attributes); ?>
             <input type="hidden" name="month" value="<?php echo escape_output($month)?>">
             <input type="hidden" name="year" value="<?php echo escape_output($year)?>">
             <div class="box-body table-responsive salary_tbl_wrap">

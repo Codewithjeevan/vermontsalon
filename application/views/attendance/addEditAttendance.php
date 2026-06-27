@@ -26,7 +26,7 @@
     <!-- Main content -->
     <div class="box-wrapper">
         <div class="table-box">
-            <?php echo form_open(base_url('Attendance/addEditAttendance/' . $encrypted_id) ); ?>
+            <?php echo form_open(base_url('Attendance/addEditAttendance' . ($encrypted_id != '' ? '/' . $encrypted_id : '')) ); ?>
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6 col-lg-4 mb-3">

@@ -233,10 +233,10 @@ class Purchase extends Cl_Controller {
                 $fmi['expiry_imei_serial'] = $_POST['expiry_imei_serial'][$row];
             }
             $fmi['unit_price'] = $_POST['unit_price'][$row];
-            if(!empty((int)$_POST['conversion_rate'][$row])){
-                $fmi['divided_price'] = round(($_POST['unit_price'][$row]/$_POST['conversion_rate'][$row]), 2);
+            if(!empty((float)$_POST['conversion_rate'][$row])){
+                $fmi['divided_price'] = $_POST['unit_price'][$row] / $_POST['conversion_rate'][$row];
             }else{
-                $fmi['divided_price'] =$_POST['unit_price'][$row] / 1;
+                $fmi['divided_price'] = $_POST['unit_price'][$row];
             }
             $fmi['quantity_amount'] = $_POST['quantity_amount'][$row];
             $fmi['current_qty'] = $_POST['quantity_amount'][$row];

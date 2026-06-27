@@ -27,7 +27,7 @@
         <div class="table-box">
             <?php 
             $attributes = array('id' => 'change_profile');
-            echo form_open_multipart(base_url('User/changeProfile/' . (isset($encrypted_id) && $encrypted_id?$encrypted_id:'')), $attributes); ?>
+            echo form_open_multipart(base_url('User/changeProfile' . (isset($encrypted_id) && $encrypted_id ? '/' . $encrypted_id : '')), $attributes); ?>
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6 col-lg-4 mb-3">

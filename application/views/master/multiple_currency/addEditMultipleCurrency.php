@@ -34,7 +34,7 @@
 
     <div class="box-wrapper">
         <div class="table-box">
-            <?php echo form_open(base_url('MultipleCurrency/addEditMultipleCurrency/' . (isset($multipleCurrencies) ? $this->custom->encrypt_decrypt($multipleCurrencies->id, 'encrypt') : ''))); ?>
+            <?php echo form_open(base_url('MultipleCurrency/addEditMultipleCurrency' . (isset($multipleCurrencies) ? '/' . $this->custom->encrypt_decrypt($multipleCurrencies->id, 'encrypt') : ''))); ?>
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6 col-lg-4 mb-3">

@@ -33,7 +33,7 @@
     <div class="box-wrapper">
         <div class="table-box"> 
             <!-- form start -->
-            <?php echo form_open(base_url('Unit/addEditUnit/' . (isset($Units) ? $this->custom->encrypt_decrypt($Units->id, 'encrypt') : ''))); ?>
+            <?php echo form_open(base_url('Unit/addEditUnit' . (isset($Units) ? '/' . $this->custom->encrypt_decrypt($Units->id, 'encrypt') : ''))); ?>
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6 col-lg-4 mb-3">

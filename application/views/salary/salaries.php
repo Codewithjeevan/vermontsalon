@@ -105,7 +105,7 @@
         <div class="">
         <?php
             $attributes = array('id' => 'generate');
-            echo form_open_multipart(base_url('salary/generate/'), $attributes); ?>
+            echo form_open_multipart(base_url('salary/generate'), $attributes); ?>
             <div class="row">
                 <div class="col-sm-12 col-md-6 mb-10">
                     <div class="form-group">

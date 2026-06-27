@@ -36,7 +36,7 @@
     <section class="box-wrapper">
     <h3 class="display_none">&nbsp;</h3>
         <div class="table-box"> 
-            <?php echo form_open(base_url() . 'Variation/addEditVariation/' . (isset($Variations) ? $this->custom->encrypt_decrypt($Variations->id, 'encrypt') : ''), $arrayName = array('id' => 'add_variation', 'class' => 'mb-0')) ?>
+            <?php echo form_open(base_url() . 'Variation/addEditVariation' . (isset($Variations) ? '/' . $this->custom->encrypt_decrypt($Variations->id, 'encrypt') : ''), $arrayName = array('id' => 'add_variation', 'class' => 'mb-0')) ?>
             <div class="box-body">
                 <div class="row">
                     <div class="col-12">

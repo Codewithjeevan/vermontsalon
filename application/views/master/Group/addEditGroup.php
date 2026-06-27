@@ -36,7 +36,7 @@
     <div class="box-wrapper">
         <div class="table-box">
             <!-- form start -->
-            <?php echo form_open(base_url('Group/addEditGroup/' . (isset($Groups) ? $this->custom->encrypt_decrypt($Groups->id, 'encrypt') : ''))); ?>
+            <?php echo form_open(base_url('Group/addEditGroup' . (isset($Groups) ? '/' . $this->custom->encrypt_decrypt($Groups->id, 'encrypt') : ''))); ?>
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-6 col-lg-4 mb-3">

@@ -25,7 +25,7 @@
 
     <div class="box-wrapper">
         <div class="table-box">
-            <?= form_open(base_url('User/securityQuestion/' . (isset($profile_info) && $profile_info ? $this->custom->encrypt_decrypt($profile_info->id, 'encrypt') : ''))); ?>
+            <?= form_open(base_url('User/securityQuestion' . (isset($profile_info) && $profile_info ? '/' . $this->custom->encrypt_decrypt($profile_info->id, 'encrypt') : ''))); ?>
             <div class="box-body"> 
                 <div class="row">
 

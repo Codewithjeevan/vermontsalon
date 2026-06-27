@@ -99,7 +99,7 @@ if(!function_exists('htmlspecialcharscustom')){
 if(!function_exists('getAmtPre')){
     function getAmtPre($value) {
         $CI = & get_instance();
-        $value = (int)$value;
+        $value = (float)$value;
         $getCompanyInfo = getCompanyInfo();
         $precision = $getCompanyInfo->precision;
         if($precision == ''){
