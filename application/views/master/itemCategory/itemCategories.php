@@ -65,9 +65,9 @@
                                         data-bs-original-title="<?php echo lang('edit'); ?>">
                                             <i class="far fa-edit"></i>
                                         </a>
-                                        <a class="delete btn btn-danger" href="<?php echo base_url() ?>Category/deleteItemCategory/<?php echo $this->custom->encrypt_decrypt($fmc->id, 'encrypt'); ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="<?php echo lang('delete'); ?>">
+                                        <!-- <a class="delete btn btn-danger" href="<?php echo base_url() ?>Category/deleteItemCategory/<?php echo $this->custom->encrypt_decrypt($fmc->id, 'encrypt'); ?>" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="<?php echo lang('delete'); ?>">
                                             <i class="fa-regular fa-trash-can"></i>
-                                        </a>
+                                        </a> -->
                                     </div>
                                 </td>
                             </tr>
