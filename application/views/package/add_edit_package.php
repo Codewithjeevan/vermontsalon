@@ -256,7 +256,7 @@ $inv_config = json_decode($invoice_configuration);
     
     $(document).ready(function () {
         const $first = $('#walk_in_customer');
-        getAllCustomers($first, <?= @$editdata->customer_id ?>, true);
+        getAllCustomers($first, <?= @$editdata->customer_id ? $editdata->customer_id : 'null' ?>, true);
     });
     
 </script>
