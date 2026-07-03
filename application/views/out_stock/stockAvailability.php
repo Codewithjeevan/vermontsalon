@@ -27,7 +27,8 @@
             <div class="col-auto">
                 <h3 class="top-left-header mt-2">Stock Availability Report</h3>
             </div>
-            <div class="col-auto">
+            <div class="col-auto d-flex gap-2">
+                <button type="button" class="dataFilterBy new-btn"><iconify-icon icon="solar:filter-broken" width="22"></iconify-icon> <?php echo lang('filter_by'); ?></button>
                 <a href="<?php echo base_url('OutStock/addEditOutStock'); ?>" class="btn bg-blue-btn">
                     <iconify-icon icon="solar:add-circle-broken" width="18"></iconify-icon>
                     Add Stock Out
@@ -40,7 +41,7 @@
         <div class="table-box">
             <div class="box-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="dataTable">
+                    <table class="table table-bordered" id="stockAvailabilityTable">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -204,17 +205,44 @@
     </div>
 </div>
 
+<div class="filter-overlay"></div>
+<div id="product-filter" class="filter-modal">
+    <div class="filter-modal-body">
+        <header>
+                <h3 class="filter-modal-title"><span><?php echo lang('FilterOptions'); ?></span></h3>
+                <button type="button" class="close-filter-modal" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">
+                        <i data-feather="x"></i>
+                    </span>
+                </button>
+        </header>
+        <?php echo form_open(base_url() . 'OutStock/stockAvailability') ?>
+        <div class="row">
+            <div class="col-sm-12 col-md-12 mb-2">
+                <div class="form-group">
+                    <select name="category_id" id="category_id" class="form-control select2 width_100_p">
+                        <option value=""><?php echo lang('category'); ?></option>
+                        <?php foreach ($itemCategories as $ctry) { ?>
+                            <option value="<?php echo escape_output($ctry->id) ?>" <?php echo set_select('category_id', $ctry->id, ($selected_category_id == $ctry->id)); ?>><?php echo escape_output($ctry->name) ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <button type="submit" name="submit" value="submit" class="new-btn">
+                    <iconify-icon icon="solar:hourglass-broken" width="22"></iconify-icon>
+                    <?php echo lang('submit'); ?>
+                </button>
+            </div>
+        </div>
+        <?php echo form_close(); ?>
+    </div>
+</div>
+
 <script>
     window.stockAdjustmentUrl = '<?php echo base_url('OutStock/addStockAdjustment'); ?>';
     window.stockAdjustmentHistoryUrl = '<?php echo base_url('OutStock/getStockAdjustments'); ?>';
 </script>
-<script src="<?php echo base_url(); ?>frequent_changing/js/dataTable/jquery.dataTables.min.js"></script>
-<script src="<?php echo base_url(); ?>frequent_changing/js/dataTable/dataTables.bootstrap4.min.js"></script>
-<script src="<?php echo base_url(); ?>frequent_changing/js/dataTable/dataTables.buttons.min.js"></script>
-<script src="<?php echo base_url(); ?>frequent_changing/js/dataTable/buttons.html5.min.js"></script>
-<script src="<?php echo base_url(); ?>frequent_changing/js/dataTable/buttons.print.min.js"></script>
-<script src="<?php echo base_url(); ?>frequent_changing/js/dataTable/jszip.min.js"></script>
-<script src="<?php echo base_url(); ?>frequent_changing/js/dataTable/pdfmake.min.js"></script>
-<script src="<?php echo base_url(); ?>frequent_changing/js/dataTable/vfs_fonts.js"></script>
+<?php $this->load->view('updater/reuseJs2'); ?>
 <script src="<?php echo base_url(); ?>frequent_changing/js/stock_availability_list.js"></script>
 

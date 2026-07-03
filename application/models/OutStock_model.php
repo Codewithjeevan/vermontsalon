@@ -60,7 +60,12 @@ class OutStock_model extends CI_Model {
      * @param int
      * @return object
      */
-    public function getStockAvailabilityReport($company_id, $outlet_id) {
+    public function getStockAvailabilityReport($company_id, $outlet_id, $category_id = '') {
+        $category_filter = "";
+        if (!empty($category_id)) {
+            $category_filter = " AND i.category_id = ? ";
+        }
+
         $sql = "
             SELECT
                 pd.item_id,
@@ -93,7 +98,7 @@ class OutStock_model extends CI_Model {
                 ) last_ids ON last_ids.item_id = pd3.item_id AND last_ids.last_id = pd3.id
                 WHERE pd3.company_id = ? AND pd3.outlet_id = ? AND pd3.del_status = 'Live'
             ) last_pd ON last_pd.item_id = pd.item_id
-            WHERE pd.company_id = ? AND pd.outlet_id = ? AND pd.del_status = 'Live'
+            WHERE pd.company_id = ? AND pd.outlet_id = ? AND pd.del_status = 'Live' {$category_filter}
             GROUP BY pd.item_id, i.name, i.code, consumed.consumed_qty, last_pd.last_purchase_detail_id, last_pd.unit_price, u.unit_name
             HAVING (COALESCE(SUM(pd.quantity_amount), 0) + COALESCE(consumed.consumed_qty, 0)) > 0
             ORDER BY i.name ASC
@@ -109,6 +114,10 @@ class OutStock_model extends CI_Model {
             $company_id,
             $outlet_id,
         ];
+
+        if (!empty($category_id)) {
+            $bindings[] = $category_id;
+        }
 
         $result = $this->db->query($sql, $bindings);
         return $result->result();

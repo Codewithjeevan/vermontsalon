@@ -76,7 +76,10 @@ class OutStock extends Cl_Controller {
     public function stockAvailability() {
         $company_id = $this->session->userdata('company_id');
         $outlet_id = $this->session->userdata('outlet_id');
-        $data['stock_report'] = $this->OutStock_model->getStockAvailabilityReport($company_id, $outlet_id);
+        $category_id = htmlspecialcharscustom($this->input->post('category_id'));
+        $data['selected_category_id'] = $category_id;
+        $data['itemCategories'] = $this->Common_model->getAllByCompanyIdForDropdown($company_id, "tbl_item_categories");
+        $data['stock_report'] = $this->OutStock_model->getStockAvailabilityReport($company_id, $outlet_id, $category_id);
         $data['active_tab'] = 'stock_availability';
         $data['main_content'] = $this->load->view('out_stock/stockAvailability', $data, TRUE);
         $this->load->view('userHome', $data);
