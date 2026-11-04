@@ -7,6 +7,9 @@ jqry(function () {
     let pdf_db = $('#pdf_db_exp').val();
     let company_name = $('.company_name').text().trim();
     let outlet_info = $('.outlet_info').first().text().trim();
+    // A table with data-export-header prints/exports only the lines of that element on top, nothing else
+    let export_header = jqry('#datatable').data('export-header');
+    let export_lines = export_header ? getHeaderLines(export_header) : [];
 
     let APPLICATION_DEMO_TYPE = $('#APPLICATION_DEMO_TYPE').val();
 
@@ -24,8 +27,13 @@ jqry(function () {
         buttons: APPLICATION_DEMO_TYPE != 'Pharmacy' ? [
             {
             extend: "print",
-            title: company_name,
+            title: export_header ? (export_lines[0] || '') : company_name,
             messageTop: function () {
+                if (export_header) {
+                    return export_lines.slice(1).map(function (line) {
+                        return '<div style="text-align:center; font-weight:bold;">' + line + '</div>';
+                    }).join('');
+                }
                 var headerHtml = getReportHeaderHtml();
                 var therapistName = gettherapist();
                 if (headerHtml) {
@@ -67,6 +75,9 @@ jqry(function () {
                 }
 
                 head.appendChild(style);
+                if (export_header) {
+                    jqry(win.document.body).find('h1').css('text-align', 'center');
+                }
             }
             },
             {
@@ -78,42 +89,91 @@ jqry(function () {
                 extend: "excelHtml5",
                 text: '<span style="display: flex; align-items-center; gap: 8px;"><iconify-icon icon="icon-park-solid:excel" width="16"></iconify-icon> '+excel_db+'</span>',
                 titleAttr: "Excel",
-                customize: function (xlsx) {
-                    var headerText = getReportHeaderPlainText() || getDateRangeText(1);
-                    if (!headerText) return;
+                // The export header lines become the title rows, so DataTables' own title row is skipped
+                title: export_header ? '' : '*',
+                createEmptyCells: !!export_header,
+                customize: function (xlsx, config, dt) {
+                    if (export_header) {
+                        buildExcelLayout(xlsx, dt, export_lines);
+                        return;
+                    }
+
+                    var headerLines = getReportHeaderLines();
+                    if (!headerLines.length) {
+                        var dateText = getDateRangeText(1);
+                        if (dateText) headerLines = [dateText];
+                    }
+                    if (!headerLines.length) return;
 
                     var sheet = xlsx.xl.worksheets['sheet1.xml'];
                     var sheetData = sheet.getElementsByTagName('sheetData')[0];
+                    var mergeCells = sheet.getElementsByTagName('mergeCells')[0];
+                    var shift = headerLines.length;
+                    var shiftRef = function (ref) {
+                        return ref.replace(/\d+/g, function (n) { return parseInt(n, 10) + shift; });
+                    };
 
-                    // Create a new row at the top
-                    var newRow = sheet.createElement('row');
-                    newRow.setAttribute('r', 1); // row number
+                    // Push down the rows DataTables already wrote (title, headings, data),
+                    // otherwise they share row numbers with the header rows and Excel drops the header
+                    var colCount = 1;
+                    jqry('row', sheet).each(function () {
+                        var row = jqry(this);
+                        row.attr('r', shiftRef(row.attr('r')));
+                        row.children('c').each(function () {
+                            jqry(this).attr('r', shiftRef(jqry(this).attr('r')));
+                        });
+                        colCount = Math.max(colCount, row.children('c').length);
+                    });
+                    jqry('mergeCell, autoFilter', sheet).each(function () {
+                        jqry(this).attr('ref', shiftRef(jqry(this).attr('ref')));
+                    });
 
-                    // Create a new cell
-                    var newCell = sheet.createElement('c');
-                    newCell.setAttribute('t', 'inlineStr');
-                    newCell.setAttribute('r', 'A1'); // cell location
-
-                    // Create inline string content
-                    var is = sheet.createElement('is');
-                    var t = sheet.createElement('t');
-                    t.textContent = headerText;
-
-                    // Build the structure
-                    is.appendChild(t);
-                    newCell.appendChild(is);
-                    newRow.appendChild(newCell);
-
-                    // Insert the new row at the top
+                    // One row per header line (company, report, outlet, address, date...), centred across the table
+                    var lastCol = excelColumnName(colCount);
                     var firstRow = sheetData.getElementsByTagName('row')[0];
-                    sheetData.insertBefore(newRow, firstRow);
+                    headerLines.forEach(function (line, i) {
+                        var rowNum = i + 1;
+                        var newRow = sheet.createElement('row');
+                        newRow.setAttribute('r', rowNum);
+
+                        var newCell = sheet.createElement('c');
+                        newCell.setAttribute('t', 'inlineStr');
+                        newCell.setAttribute('r', 'A' + rowNum);
+                        newCell.setAttribute('s', '51'); // DataTables' centred style, same as the title row
+
+                        var is = sheet.createElement('is');
+                        var t = sheet.createElement('t');
+                        t.textContent = line;
+                        is.appendChild(t);
+                        newCell.appendChild(is);
+                        newRow.appendChild(newCell);
+                        sheetData.insertBefore(newRow, firstRow);
+
+                        if (colCount > 1) {
+                            var mergeCell = sheet.createElement('mergeCell');
+                            mergeCell.setAttribute('ref', 'A' + rowNum + ':' + lastCol + rowNum);
+                            mergeCells.appendChild(mergeCell);
+                        }
+                    });
+                    mergeCells.setAttribute('count', mergeCells.getElementsByTagName('mergeCell').length);
                 }
             },
             {
                 extend: "pdfHtml5",
                 text: '<span style="display: flex; align-items-center; gap: 8px;"><iconify-icon icon="teenyicons:pdf-outline" width="16"></iconify-icon> ' + pdf_db + '</span>',
                 titleAttr: "PDF",
+                title: export_header ? '' : '*',
                 customize: function (doc) {
+                    if (export_header) {
+                        doc.content.splice(0, 0, {
+                            text: export_lines.join('\n'),
+                            alignment: 'center',
+                            margin: [0, 0, 0, 12],
+                            fontSize: 12,
+                            bold: true
+                        });
+                        return;
+                    }
                     var dateText = getDateRangeText(1);
                     var therapistName = gettherapist();
                     if (therapistName) {
@@ -181,7 +241,10 @@ function gettherapist() {
 }
 
 function getReportHeaderLines() {
-    var selector = jqry('#datatable').data('report-header');
+    return getHeaderLines(jqry('#datatable').data('report-header'));
+}
+
+function getHeaderLines(selector) { // text of each child of the header element, one line each
     if (!selector) {
         return [];
     }
@@ -209,10 +272,126 @@ function getReportHeaderHtml() {
     }).join('');
 }
 
-function getReportHeaderPlainText() {
-    var lines = getReportHeaderLines();
-    if (!lines.length) {
-        return '';
+function excelColumnName(colNumber) { // 1 => A, 15 => O, 27 => AA
+    var name = '';
+    while (colNumber > 0) {
+        var mod = (colNumber - 1) % 26;
+        name = String.fromCharCode(65 + mod) + name;
+        colNumber = Math.floor((colNumber - 1) / 26);
     }
-    return lines.join(' \n ');
+    return name;
+}
+
+// Plain bordered sheet for tables with data-export-header: the title lines on top (merged, centred),
+// headings split on <br> over two rows, then the data, with the .bottom-line row in bold
+function buildExcelLayout(xlsx, dt, titleLines) {
+    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+    var sheetData = sheet.getElementsByTagName('sheetData')[0];
+    var mergeCells = sheet.getElementsByTagName('mergeCells')[0];
+    var style = addExcelLayoutStyles(xlsx.xl['styles.xml']);
+
+    var headings = dt.columns().header().toArray().map(function (th) {
+        return th.innerHTML.split(/<br\s*\/?>/i).map(function (part) {
+            return jqry('<div>').html(part).text().replace(/\s+/g, ' ').trim();
+        });
+    });
+    var colCount = headings.length;
+    var lastCol = excelColumnName(colCount);
+    var headingRowCount = Math.max.apply(null, headings.map(function (lines) { return lines.length; }));
+    var widths = headings.map(function (lines) {
+        return Math.max.apply(null, lines.map(function (line) { return line.length; }));
+    });
+
+    // With no title row, DataTables wrote the headings in row 1 and the data below; rebuild the sheet around the data rows
+    var rows = Array.prototype.slice.call(sheetData.getElementsByTagName('row'));
+    var dataRows = rows.slice(1);
+    rows.forEach(function (row) {
+        sheetData.removeChild(row);
+    });
+
+    var rowNum = 0;
+    var appendTextRow = function (values, styleId) {
+        rowNum++;
+        var row = sheet.createElement('row');
+        row.setAttribute('r', rowNum);
+        for (var col = 0; col < colCount; col++) { // every cell is written so the borders cover merged and empty ones too
+            var cell = sheet.createElement('c');
+            cell.setAttribute('t', 'inlineStr');
+            cell.setAttribute('r', excelColumnName(col + 1) + rowNum);
+            cell.setAttribute('s', styleId);
+            var is = sheet.createElement('is');
+            var t = sheet.createElement('t');
+            t.textContent = values[col] || '';
+            is.appendChild(t);
+            cell.appendChild(is);
+            row.appendChild(cell);
+        }
+        sheetData.appendChild(row);
+    };
+
+    titleLines.forEach(function (line) {
+        appendTextRow([line], style.heading);
+        var mergeCell = sheet.createElement('mergeCell');
+        mergeCell.setAttribute('ref', 'A' + rowNum + ':' + lastCol + rowNum);
+        mergeCells.appendChild(mergeCell);
+    });
+    mergeCells.setAttribute('count', mergeCells.getElementsByTagName('mergeCell').length);
+
+    for (var i = 0; i < headingRowCount; i++) {
+        appendTextRow(headings.map(function (lines) { return lines[i]; }), style.heading);
+    }
+
+    // Exported rows come in the same order as the filtered table rows
+    var rowNodes = dt.rows({ search: 'applied', order: 'applied' }).nodes().toArray();
+    dataRows.forEach(function (row, index) {
+        rowNum++;
+        var isTotal = jqry(rowNodes[index]).hasClass('bottom-line');
+        row.setAttribute('r', rowNum);
+        jqry(row).children('c').each(function (col) {
+            var isText = this.getAttribute('t') === 'inlineStr';
+            this.setAttribute('r', excelColumnName(col + 1) + rowNum);
+            this.setAttribute('s', isText ? (isTotal ? style.totalText : style.text) : (isTotal ? style.totalNumber : style.number));
+            widths[col] = Math.max(widths[col], jqry(this).text().length);
+        });
+        sheetData.appendChild(row);
+    });
+
+    jqry('cols col', sheet).each(function (col) {
+        this.setAttribute('width', widths[col] + 3);
+    });
+}
+
+// Adds the bordered styles used by buildExcelLayout to DataTables' styles.xml and returns their indexes.
+// fontId 2 = bold, borderId 1 = thin border on every side, numFmtId 4 = #,##0.00 (all built in)
+function addExcelLayoutStyles(styles) {
+    var cellXfs = styles.getElementsByTagName('cellXfs')[0];
+    var xfs = {
+        heading:     { fontId: 2, numFmtId: 0, align: 'center' },
+        text:        { fontId: 0, numFmtId: 0, align: 'left' },
+        number:      { fontId: 0, numFmtId: 4 },
+        totalText:   { fontId: 2, numFmtId: 0, align: 'left' },
+        totalNumber: { fontId: 2, numFmtId: 4 }
+    };
+    var ids = {};
+    Object.keys(xfs).forEach(function (name) {
+        var xf = styles.createElement('xf');
+        xf.setAttribute('numFmtId', xfs[name].numFmtId);
+        xf.setAttribute('fontId', xfs[name].fontId);
+        xf.setAttribute('fillId', 0);
+        xf.setAttribute('borderId', 1);
+        xf.setAttribute('applyFont', 1);
+        xf.setAttribute('applyBorder', 1);
+        xf.setAttribute('applyNumberFormat', 1);
+        if (xfs[name].align) {
+            xf.setAttribute('applyAlignment', 1);
+            var alignment = styles.createElement('alignment');
+            alignment.setAttribute('horizontal', xfs[name].align);
+            alignment.setAttribute('vertical', 'center');
+            xf.appendChild(alignment);
+        }
+        cellXfs.appendChild(xf);
+        ids[name] = cellXfs.getElementsByTagName('xf').length - 1;
+    });
+    cellXfs.setAttribute('count', cellXfs.getElementsByTagName('xf').length);
+    return ids;
 }

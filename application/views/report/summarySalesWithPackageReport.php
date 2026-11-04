@@ -78,28 +78,34 @@
             </h5>
         </div>
         <!-- Report Header End -->
+        <!-- Print / Excel / PDF header: only the report name and the branch -->
+        <div class="export_report_header d-none">
+            <div><?php echo lang('all_summary_sales_report'); ?></div>
+            <div><?php echo isset($outlet_info) ? escape_output(strtoupper($outlet_info->outlet_name)) : 'ALL BRANCHES'; ?></div>
+        </div>
         <div class="table-box">
             <!-- /.box-header -->
             <div class="table-responsive">
             <input type="hidden" class="datatable_name"  data-filter="yes" data-title="<?php echo lang('all_summary_sales_report'); ?>" data-id_name="datatable">
-                <table id="datatable" class="table table-bordered table-striped" data-report-header=".report_header">
+                <table id="datatable" class="table table-bordered table-striped" data-report-header=".report_header" data-export-header=".export_report_header">
                         <thead>
+                            <!-- In Excel, a heading with <br> is split over two heading rows -->
                             <tr>
                                 <th>Date</th>
-                                <th>Pkg Adv Cash</th>
-                                <th>Pkg Adv Card</th>
+                                <th>Pkg/Adv Cash</th>
+                                <th>Pkg. Adv/Card</th>
                                 <th>Used Pkg Cash</th>
                                 <th>Used Pkg Card</th>
                                 <th>General Cash</th>
                                 <th>General Card</th>
                                 <th>Groupon</th>
-                                <th>Service Without VAT</th>
-                                <th>Total Without Vat</th>
-                                <th>Total Sales</th>
+                                <th>0 % Tax Amount <br>Service</th>
+                                <th>5% Tax Amount Service <br>Tax Excl.</th>
                                 <th>VAT</th>
-                                <th>Total Card/Pkg. Adv</th>
-                                <th>Total Cash/Pkg. Adv</th>
-                                <th>Cancellation Amount</th>
+                                <th>Total Sales</th>
+                                <th>Total <br>CASH</th>
+                                <th>Total <br>CARD</th>
+                                <th>Refund</th>
                             </tr>
                         </thead>
 
@@ -115,7 +121,7 @@
                             ?>
                             <?php foreach($saleReport as $r): ?>
                             <tr>
-                                <td><?= $r->sale_date ?></td>
+                                <td><?= date('d/m/Y', strtotime($r->sale_date)) ?></td>
                                 <td><?= round($r->package_advance_cash,2) ?></td>
                                 <td><?= round($r->package_advance_card,2) ?></td>
                                 <td><?= round($r->used_package_cash,2) ?></td>
@@ -125,10 +131,10 @@
                                 <td><?= round($r->groupon_amount,2) ?></td>
                                 <td><?= round($r->no_vat_sub_total, 2) ?></td>
                                 <td><?= round($r->sub_total, 2) ?></td>
-                                <td><?= round($r->daily_total,2) ?></td>
                                 <td><?= round($r->vat_total, 2) ?></td>
-                                <td><?= round($r->total_card_on_bank,2) ?></td>
+                                <td><?= round($r->daily_total,2) ?></td>
                                 <td><?= round($r->total_cash_amount,2) ?></td>
+                                <td><?= round($r->total_card_on_bank,2) ?></td>
                                 <td><?= round($r->cancelled_amount, 2) ?></td>
                             </tr>
                             <?php
@@ -159,10 +165,10 @@
                                 <td><?= round($total_groupon_amount, 2) ?></td>
                                 <td><?= round($total_no_vat_sub_total, 2) ?></td>
                                 <td><?= round($total_sub_total, 2) ?></td>
-                                <td><?= round($total_daily_total, 2) ?></td>
                                 <td><?= round($total_vat_total, 2) ?></td>
-                                <td><?= round($total_card_on_bank, 2) ?></td>
+                                <td><?= round($total_daily_total, 2) ?></td>
                                 <td><?= round($total_cash_amount, 2) ?></td>
+                                <td><?= round($total_card_on_bank, 2) ?></td>
                                 <td><?= round($total_cancelled_amount, 2) ?></td>
                             </tr>
                             <?php endif; ?>
