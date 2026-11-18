@@ -1,0 +1,15 @@
+# CodeIgniter runtime logs (keep directory protection files)
+/application/logs/*
+!/application/logs/index.html
+!/application/logs/.htaccess
+/script/application/logs/*
+!/script/application/logs/index.html
+!/script/application/logs/.htaccess
+
+# Runtime logs and rotated log files anywhere in the project
+*.log
+*.log.*
+error_log
+error_log.*
+access_log
+access_log.*
